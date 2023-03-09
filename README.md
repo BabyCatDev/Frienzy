@@ -1,1 +1,1 @@
-# SocialNav
+# SocialNavApp
