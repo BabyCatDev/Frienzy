@@ -1,0 +1,56 @@
+{
+    "en": {
+        "common": {
+            "threeDots": "...",
+            "currency": "RUB",
+            "sum": "Cost",
+            "assembly": "Assembly",
+            "productNotFound": "Sorry, item not found",
+            "productNotFoundInfo": "Try to write the name of the product\ndifferently or shorten the query",
+            "alertHeader": "The \"lavanda\" application requests access to Photos",
+            "alertMessage": "Go to settings to give the app permission to access Photos",
+            "toSettings": "Go to settings",
+            "cancel": "Cancel",
+            "toastDeniedPhoto": "Failed to upload photo",
+            "orders": "Orders",
+            "products": "Products",
+            "stock": "Storage",
+            "profile": "Profile"
+        },
+        "login": {
+            "login": "User name",
+            "password": "Password",
+            "signIn": "Sign in"
+        },
+        "pin": {
+            "enterPin": "Enter PIN-code"
+        }
+    },
+    "ru": {
+        "common": {
+            "threeDots": "...",
+            "currency": "₽",
+            "sum": "Сумма",
+            "assembly": "Сборка",
+            "productNotFound": "Простите, товар не найден",
+            "productNotFoundInfo": "Попробуйте написать название товара\nпо-другому или сократить запрос",
+            "alertHeader": "Приложение \"lavanda\" запрашивает доступ к Фото",
+            "alertMessage": "Перейдите в настройки, чтобы предоставить приложению разрешение на доступ к Фото",
+            "toSettings": "Перейти в настройки",
+            "cancel": "Отмена",
+            "toastDeniedPhoto": "Не удалось загрузить фото",
+            "orders": "Заказы",
+            "products": "Товары",
+            "stock": "Склад",
+            "profile": "Профиль"
+        },
+        "login": {
+            "login": "Логин",
+            "password": "Пароль",
+            "signIn": "Войти"
+        },
+        "pin": {
+            "enterPin": "Введите пин-код"
+        }
+    }
+}
