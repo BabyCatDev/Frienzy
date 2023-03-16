@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		076B9E86E2BB4D5F9344A518 /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EF031B23C5554184AB26C3D2 /* Poppins-Medium.ttf */; };
+		0C8CE869EF6B409B83285E29 /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 632762CE4EBA4C698450B473 /* Poppins-Regular.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -24,6 +26,7 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		9F1ED7C72B3E2162F97B8FAC /* libPods-lavanda.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F47F5999200DAB52F0AD0B /* libPods-lavanda.a */; };
 		A1A01C4EFCF643469E0C842A /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C4A1CC8E56DF4355BAE66AAD /* Roboto-Regular.ttf */; };
+		BEB212DC7D0C4CA39A3366BF /* Poppins-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D5A3760DDE394209B019C494 /* Poppins-SemiBold.ttf */; };
 		CD73D7DB314E440384D58255 /* Roboto-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C69C21CF2A2848D59FE84635 /* Roboto-MediumItalic.ttf */; };
 		F4DFD22C1F47463DA8519F4A /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6585FC6BA9FD4CDEA547065F /* Roboto-LightItalic.ttf */; };
 		FECE72288E074F25B3DF86F1 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8C59BE29A0D410F99EFFDF6 /* Roboto-Medium.ttf */; };
@@ -46,6 +49,7 @@
 		2D02E47B1E0B4A5D006451C7 /* lavanda-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "lavanda-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3C51E560677F4423A3C349A9 /* Roboto-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-ThinItalic.ttf"; path = "../assets/fonts/Roboto/Roboto-ThinItalic.ttf"; sourceTree = "<group>"; };
 		42B4C08738815413B73AB748 /* Pods-lavanda.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lavanda.release.xcconfig"; path = "Target Support Files/Pods-lavanda/Pods-lavanda.release.xcconfig"; sourceTree = "<group>"; };
+		632762CE4EBA4C698450B473 /* Poppins-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Regular.ttf"; path = "../assets/fonts/Poppins/Poppins-Regular.ttf"; sourceTree = "<group>"; };
 		6585FC6BA9FD4CDEA547065F /* Roboto-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-LightItalic.ttf"; path = "../assets/fonts/Roboto/Roboto-LightItalic.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = lavanda/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		81B864CA870440BC9D1DF9CA /* Roboto-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Italic.ttf"; path = "../assets/fonts/Roboto/Roboto-Italic.ttf"; sourceTree = "<group>"; };
@@ -53,9 +57,11 @@
 		C4A1CC8E56DF4355BAE66AAD /* Roboto-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Regular.ttf"; path = "../assets/fonts/Roboto/Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		C69C21CF2A2848D59FE84635 /* Roboto-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-MediumItalic.ttf"; path = "../assets/fonts/Roboto/Roboto-MediumItalic.ttf"; sourceTree = "<group>"; };
 		C8C59BE29A0D410F99EFFDF6 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Medium.ttf"; path = "../assets/fonts/Roboto/Roboto-Medium.ttf"; sourceTree = "<group>"; };
+		D5A3760DDE394209B019C494 /* Poppins-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBold.ttf"; path = "../assets/fonts/Poppins/Poppins-SemiBold.ttf"; sourceTree = "<group>"; };
 		E4A71AEAC06D4D7CA71C45B2 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Thin.ttf"; path = "../assets/fonts/Roboto/Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
+		EF031B23C5554184AB26C3D2 /* Poppins-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Medium.ttf"; path = "../assets/fonts/Poppins/Poppins-Medium.ttf"; sourceTree = "<group>"; };
 		F77BE1A4F8C1481E956C56E3 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Bold.ttf"; path = "../assets/fonts/Roboto/Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		FB88F17C62E743A59D07E105 /* Roboto-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-BlackItalic.ttf"; path = "../assets/fonts/Roboto/Roboto-BlackItalic.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -151,6 +157,9 @@
 				C4A1CC8E56DF4355BAE66AAD /* Roboto-Regular.ttf */,
 				E4A71AEAC06D4D7CA71C45B2 /* Roboto-Thin.ttf */,
 				3C51E560677F4423A3C349A9 /* Roboto-ThinItalic.ttf */,
+				EF031B23C5554184AB26C3D2 /* Poppins-Medium.ttf */,
+				D5A3760DDE394209B019C494 /* Poppins-SemiBold.ttf */,
+				632762CE4EBA4C698450B473 /* Poppins-Regular.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -279,6 +288,9 @@
 				A1A01C4EFCF643469E0C842A /* Roboto-Regular.ttf in Resources */,
 				4F626369452B4CF1A664212C /* Roboto-Thin.ttf in Resources */,
 				25B563E92BA3415EB59A85EE /* Roboto-ThinItalic.ttf in Resources */,
+				076B9E86E2BB4D5F9344A518 /* Poppins-Medium.ttf in Resources */,
+				BEB212DC7D0C4CA39A3366BF /* Poppins-SemiBold.ttf in Resources */,
+				0C8CE869EF6B409B83285E29 /* Poppins-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -459,7 +471,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.frienzy-app";
 				PRODUCT_NAME = lavanda;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -488,7 +500,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.frienzy-app";
 				PRODUCT_NAME = lavanda;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

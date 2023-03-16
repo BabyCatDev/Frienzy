@@ -6,6 +6,8 @@ import { ScreenNames } from "../../utils/AppConstants";
 
 import NotificationsScreen from "../../screens/notifications/NotifcationsScreen";
 import PinScreen from "../../screens/pin/PinScreen";
+import UserLogin from "../../screens/login/UserLogin";
+import SplashScreen from "../../screens/splash/SplashScreen";
 
 const Stack = createStackNavigator();
 
@@ -16,6 +18,14 @@ const MainNavigator = () => {
         headerShown: false,
       }}
     >
+      <Stack.Screen
+        name={"SplashScreen"}
+        component={SplashScreen}
+      />
+      <Stack.Screen
+        name={"NotificationsScreen"}
+        component={NotificationsScreen}
+      />
       <Stack.Screen
         name={ScreenNames.MainStack.BOTTOM_TABS}
         component={BottomTabNavigator}

@@ -6,12 +6,12 @@ import RootNavigator from "./src/navigators/RootNavigator";
 import OverlayScreen from "./src/screens/overlay/OverlayScreen";
 import { initMirageJs } from "./src/network/mirage";
 import { autoLoginUser, checkFirstLaunch } from "./src/store/slices/AuthSlice";
-import { LavStatusBar } from "./src/components/lav.status_bar";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import { ToastConfig } from "./src/components/lav.toast_config";
 import { Strings } from "./src/utils/Localizations";
+import { StatusBar } from "react-native";
 
-window.server = initMirageJs(window.server);
+// window.server = initMirageJs(window.server);
 
 const App = () => {
   useEffect(() => {
@@ -29,12 +29,11 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <LavStatusBar />
+      <StatusBar barStyle="light-content" backgroundColor={"#1A1822"}/>
       <BottomSheetModalProvider>
-        <RootNavigator />
+          <RootNavigator />
       </BottomSheetModalProvider>
       <Toast config={ToastConfig} />
-
       <OverlayScreen />
     </Provider>
   );

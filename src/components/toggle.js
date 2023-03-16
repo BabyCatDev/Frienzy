@@ -8,14 +8,17 @@ import {
   View,
 } from "react-native";
 import PropTypes from "prop-types";
-import { Colors } from "../utils/AppConstants";
+import { Colors } from "../utils/Colors";
+import LinearGradient from "react-native-linear-gradient";
+import normalize from "react-native-normalize";
+import { Line } from "react-native-svg";
 
 const Toggle = (props) => {
   const animatedValue = new Animated.Value(0);
 
   const moveToggle = animatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [2, 22],
+    outputRange: [0, 20],
   });
 
   const { isOn, onColor, offColor, style, onToggle, labelStyle, label } = props;
@@ -26,7 +29,7 @@ const Toggle = (props) => {
   React.useEffect(() => {
     Animated.timing(animatedValue, {
       toValue: isOn ? 1 : 0,
-      duration: 200,
+      duration: 150,
       easing: Easing.linear,
       useNativeDriver: false,
     }).start();
@@ -38,17 +41,29 @@ const Toggle = (props) => {
 
       <TouchableOpacity onPress={onToggle}>
         <View
+          // colors={color}
           style={[styles.toggleContainer, style, { backgroundColor: color }]}
+        ></View>
+        <Animated.View
+          style={[
+            styles.toggleWheelStyle,
+            {
+              marginLeft: moveToggle,
+              position: "absolute",
+            },
+          ]}
         >
-          <Animated.View
-            style={[
-              styles.toggleWheelStyle,
-              {
-                marginLeft: moveToggle,
-              },
-            ]}
+          <LinearGradient
+            colors={Colors.mainGradient}
+            useAngle={true}
+            angle={316.53}
+            style={{
+              width: normalize(17),
+              height: normalize(17),
+              borderRadius: normalize(20),
+            }}
           />
-        </View>
+        </Animated.View>
       </TouchableOpacity>
     </View>
   );
@@ -65,8 +80,8 @@ Toggle.propTypes = {
 };
 
 Toggle.defaultProps = {
-  onColor: Colors.additional.green[100],
-  offColor: Colors.grayscale[300],
+  onColor: "green", //Colors.additional.green[100],
+  offColor: "red", //Colors.grayscale[300],
   label: "",
   onToggle: () => {},
   style: {},
@@ -80,13 +95,17 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
+    height: 28,
+    // backgroundColor: 'green',
+    // justifyContent: "center",
   },
   toggleContainer: {
     width: 48,
     height: 28,
     // marginLeft: 3,
     borderRadius: 14,
-    justifyContent: "center",
+    // justifyContent: "center",
+    // alignItems: "center",
   },
   label: {
     marginRight: 2,
@@ -94,7 +113,7 @@ const styles = StyleSheet.create({
   toggleWheelStyle: {
     width: 24,
     height: 24,
-    backgroundColor: Colors.grayscale[100],
+    // backgroundColor: Colors.grayscale[100],
     borderRadius: 16,
     // shadowColor: '#000',
     // shadowOffset: {

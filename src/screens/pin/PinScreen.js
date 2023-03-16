@@ -24,6 +24,7 @@ import { useDispatch } from "react-redux";
 import { setPin } from "../../store/slices/AuthSlice";
 import { useFocusEffect } from "@react-navigation/native";
 import { Strings } from "../../utils/Localizations";
+import Localization from "../../services/LocalizationService";
 import {
   HeaderLeft,
   HeaderStyle,

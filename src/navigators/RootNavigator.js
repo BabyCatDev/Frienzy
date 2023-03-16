@@ -23,7 +23,7 @@ const RootNavigator = () => {
       return <AuthStackNavigator />;
     }
 
-    return <SplashScreen />;
+    // return <SplashScreen />;
   };
 
   return (

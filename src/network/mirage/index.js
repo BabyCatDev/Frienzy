@@ -1,6 +1,5 @@
 import { createServer } from "miragejs";
 import AuthMockApi from "./AuthMockApi";
-
 import OrdersMockApi from "./OrdersMockApi";
 
 export const initMirageJs = (server) => {

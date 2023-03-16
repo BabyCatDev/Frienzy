@@ -51,6 +51,14 @@ const authSlice = createSlice({
   name: "authSlice",
   initialState,
   reducers: {
+    storePhone: (state, action) => {
+      return {
+        ...state,
+        user: {
+          phone: action.payload.phoneNumber,
+        },
+      };
+    },
     logout: (state, action) => {
       AsyncStorage.removeItem("token");
       return initialState;
@@ -98,6 +106,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, setPin } = authSlice.actions;
+export const { logout, setPin, storePhone } = authSlice.actions;
 
 export default authSlice.reducer;

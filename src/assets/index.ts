@@ -18,6 +18,10 @@ import ShoppingCart from "@lavanda/assets/svgs/shopping-cart.svg";
 import SignOut from "@lavanda/assets/svgs/SignOut.svg";
 import Store from "@lavanda/assets/svgs/store.svg";
 import User from "@lavanda/assets/svgs/user.svg";
+import SocialNav from "@lavanda/assets/svgs/social-nav.svg";
+import Logo from "@lavanda/assets/svgs/logo.svg"
+import ArrowBack from "@lavanda/assets/svgs/arrow-back.svg"
+import PencilButton from "@lavanda/assets/svgs/pencil-button.svg"
 
 
 export default class Assets {
@@ -33,8 +37,12 @@ export default class Assets {
       type: "bitmap",
       path: path,
     };
+  
   }
-
+  static pencilButton = Assets.getVector(PencilButton);
+  static arrowBack = Assets.getVector(ArrowBack);
+  static logo = Assets.getVector(Logo);
+  static socialNav = Assets.getVector(SocialNav);
   static alertTriangle = Assets.getVector(AlertTriangle);
   static arrowDown = Assets.getVector(ArrowDown);
   static bellNew = Assets.getVector(BellNew);

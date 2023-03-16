@@ -13,6 +13,7 @@ const mockUserLoginPayload = {
 };
 
 export default AuthMockApi = (routes) => {
+
   routes.post(LOGIN_USER_ENDPOINT, (schema, request) => {
     try {
       const {login, password} = JSON.parse(request.requestBody);
