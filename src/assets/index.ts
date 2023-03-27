@@ -22,7 +22,14 @@ import SocialNav from "@lavanda/assets/svgs/social-nav.svg";
 import Logo from "@lavanda/assets/svgs/logo.svg"
 import ArrowBack from "@lavanda/assets/svgs/arrow-back.svg"
 import PencilButton from "@lavanda/assets/svgs/pencil-button.svg"
-
+import PickerArrow from "@lavanda/assets/svgs/picker-arrow.svg"
+import UserPosition from "@lavanda/assets/svgs/user-position.svg"
+import EmrgButton from "@lavanda/assets/svgs/emrg-button.svg"
+import AddUser from "@lavanda/assets/svgs/add-user.svg"
+import UserProfile from "@lavanda/assets/svgs/user-profile.svg"
+import ContactList from "@lavanda/assets/svgs/contact-list.svg"
+import SearchIcon from "@lavanda/assets/svgs/search-icon.svg"
+import CheckSign from "@lavanda/assets/svgs/check-sign.svg"
 
 export default class Assets {
   static getVector(path: any) {
@@ -39,6 +46,14 @@ export default class Assets {
     };
   
   }
+  static checkSign = Assets.getVector(CheckSign);
+  static searchIcon = Assets.getVector(SearchIcon);
+  static contactList = Assets.getVector(ContactList);
+  static userProfile = Assets.getVector(UserProfile);
+  static addUser = Assets.getVector(AddUser);
+  static emrgButton = Assets.getVector(EmrgButton);
+  static userPosition = Assets.getVector(UserPosition);
+  static pickerArrow = Assets.getVector(PickerArrow);
   static pencilButton = Assets.getVector(PencilButton);
   static arrowBack = Assets.getVector(ArrowBack);
   static logo = Assets.getVector(Logo);

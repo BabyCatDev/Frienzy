@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { fetchUserInfoApiCall, loginUserApiCall } from "../../network";
+import AuthProvider from "../../utils/AuthProvider";
 
 export const loginUser = createAsyncThunk(
   "authSlice/loginUser",
@@ -24,12 +25,12 @@ export const checkFirstLaunch = createAsyncThunk(
 
 export const autoLoginUser = createAsyncThunk(
   "authSlice/autoLoginUser",
-  async ({}, thunkApi) => {
+  async (token, thunkApi) => {
     try {
-      const token = await AsyncStorage.getItem("token");
+      // const token = await AsyncStorage.getItem("token");
 
-      const response = await fetchUserInfoApiCall({ token });
-      return { user: response, token };
+      // const response = await fetchUserInfoApiCall({ token });
+      return { user: {}, token };
     } catch (e) {
       return thunkApi.rejectWithValue("");
     }
@@ -60,8 +61,12 @@ const authSlice = createSlice({
       };
     },
     logout: (state, action) => {
-      AsyncStorage.removeItem("token");
-      return initialState;
+      // AsyncStorage.removeItem("token");
+      return {
+        ...state,
+        token: "",
+      };
+      // state = initialState;
     },
     setPin: (state, action) => {
       state.pin = action.payload;

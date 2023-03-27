@@ -1,13 +1,15 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
-
+$RNMapboxMapsImpl = 'mapbox'
 platform :ios, '12.4'
 install! 'cocoapods', :deterministic_uuids => false
 
 production = ENV["PRODUCTION"] == "1"
-
+# use_frameworks!
 target 'lavanda' do
   config = use_native_modules!
+  use_frameworks! :linkage => :static
+  $RNFirebaseAsStaticFramework = true
 
   # Flags change depending on the env values.
   flags = get_default_flags()
@@ -21,8 +23,13 @@ target 'lavanda' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
+  # pod 'MapboxMaps', '10.11.1'
+  pre_install do |installer|
+    $RNMapboxMaps.pre_install(installer)
+  end
 
   post_install do |installer|
+    $RNMapboxMaps.post_install(installer)
     react_native_post_install(installer)
     installer.pods_project.build_configurations.each do |config|
       config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"

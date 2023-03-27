@@ -4,9 +4,9 @@ import { Colors } from "../utils/Colors";
 import { AppStyles } from "../utils/AppStyles";
 import { Text, Pressable } from "react-native";
 
-export const MainButton = ({ onPress, title }) => {
+export const MainButton = ({ onPress, title, containerStyle }) => {
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={onPress} style={{ ...containerStyle }}>
       <LinearGradient
         useAngle={true}
         angle={90.72}
@@ -19,9 +19,7 @@ export const MainButton = ({ onPress, title }) => {
           colors={Colors.mainGradient}
           style={AppStyles.buttonContainer}
         >
-          <Text
-            style={AppStyles.buttonTitle}
-          >{title}</Text>
+          <Text style={AppStyles.buttonTitle}>{title}</Text>
         </LinearGradient>
       </LinearGradient>
     </Pressable>

@@ -1,13 +1,9 @@
 // @flow
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { BottomTabNavigator } from "./bottomTabs/BottomTabNavigator";
-import { ScreenNames } from "../../utils/AppConstants";
-
-import NotificationsScreen from "../../screens/notifications/NotifcationsScreen";
-import PinScreen from "../../screens/pin/PinScreen";
-import UserLogin from "../../screens/login/UserLogin";
-import SplashScreen from "../../screens/splash/SplashScreen";
+import UserProfile from "../../screens/profile/UserProfile";
+import Map from "../../screens/mapbox/Map";
+import ContactList from "../../screens/contact-list/ContactList";
 
 const Stack = createStackNavigator();
 
@@ -19,10 +15,18 @@ const MainNavigator = () => {
       }}
     >
       <Stack.Screen
-        name={"SplashScreen"}
-        component={SplashScreen}
+        name={"Map"}
+        component={Map}
       />
       <Stack.Screen
+        name={"UserProfile"}
+        component={UserProfile}
+      />
+      <Stack.Screen
+        name={"Contacts"}
+        component={ContactList}
+      />
+      {/* <Stack.Screen
         name={"NotificationsScreen"}
         component={NotificationsScreen}
       />
@@ -37,7 +41,7 @@ const MainNavigator = () => {
       <Stack.Screen
         name={ScreenNames.MainStack.PIN_CODE}
         component={PinScreen}
-      />
+      /> */}
     </Stack.Navigator>
   );
 };

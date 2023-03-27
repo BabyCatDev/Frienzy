@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   useWindowDimensions,
   Platform,
+  StyleSheet,
   TextInput,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
@@ -15,35 +16,53 @@ import { useSelector } from "react-redux";
 import { Avatar } from "./Avatar";
 import { Header } from "./Header";
 import { ProfileRow } from "./ProfileRow";
+import AuthProvider from "../../utils/AuthProvider";
+import { useDispatch } from "react-redux";
+import { autoLoginUser, logout } from "../../store/slices/AuthSlice";
 
 const UserProfile = ({ navigation }) => {
   const { height, width } = useWindowDimensions();
   const { user } = useSelector((state) => state.auth);
   const [name, setName] = useState("Frienzy Nickname");
   const [isChange, setIsChange] = useState(false);
+  const scrollRef = React.useRef();
+  const isAndroid = Platform.OS === "android";
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    console.log(navigation);
+  }, [navigation]);
+
+  const onLogout = async () => {
+    await AuthProvider.logoutUser();
+    dispatch(logout());
+    // AuthProvider.logoutUser();
+
+    // navigation.push('RootNavigator');
+  };
   return (
     <LinearGradient colors={Colors.backgroundGradient} style={{ flex: 1 }}>
       <KeyboardAwareScrollView
-        contentContainerStyle={{ flex: 1 }}
-        extraScrollHeight={75}
-        enableOnAndroid={true}
-        enableAutomaticScroll={Platform.OS === "ios"}
-        onKeyboardWillHide={() => setIsChange(false)}
+        ref={scrollRef}
+        contentContainerStyle={{ minHeight: isChange ? "50%" : "100%" }}
+        extraScrollHeight={isAndroid ? 0 : 75}
+        onKeyboardDidShow={() => {
+          isAndroid && scrollRef.current.scrollForExtraHeightOnAndroid(25);
+        }}
+        onKeyboardWillHide={() => !isAndroid && setIsChange(false)}
+        onKeyboardDidHide={() => isAndroid && setIsChange(false)}
       >
         <View
           style={{
             ...AppStyles.loginContainer,
-            justifyContent: "flex-start",
-            paddingTop: height * 0.07,
-            // paddingBottom: height * 0.3,
+            paddingTop: height * 0.08,
           }}
         >
           {/* HEADER */}
-          <Header />
-          <View style={{ alignItems: "center", width: '100%' }}>
+          <Header navigation={navigation} title={'Profile'}/>
+          <View style={{ alignItems: "center", width: "100%" }}>
             {/* AVATAR  */}
-            <Avatar name={name}/>
+            <Avatar name={name} />
             {/* NAME */}
             {!isChange ? (
               <View>
@@ -69,23 +88,33 @@ const UserProfile = ({ navigation }) => {
                     alignSelf: "center",
                   }}
                 >
-                  {user.phone}
+                  {user.phone ?? "+1 123 456 7890"}
                 </Text>
               </View>
             ) : (
               <TextInput
-              returnKeyType="done"
+                returnKeyType="done"
                 autoFocus={true}
                 textAlign="center"
                 value={name}
                 onChangeText={(text) => setName(text)}
                 style={{
                   ...AppStyles.textInput,
+                  width: "100%",
+                  borderWidth: StyleSheet.hairlineWidth,
+                  borderColor: Colors.darkText,
+                  borderRadius: 10,
                   marginBottom: normalize(0),
                   marginTop: normalize(25),
                   paddingVertical: normalize(12.81),
-                  fontSize: normalize(18),
-                  lineHeight: normalize(24),
+                  fontSize: Platform.select({
+                    ios: normalize(18),
+                    android: normalize(21),
+                  }),
+                  lineHeight: Platform.select({
+                    ios: normalize(24),
+                    android: normalize(27),
+                  }),
                 }}
                 placeholderTextColor={Colors.darkText}
               />
@@ -100,7 +129,7 @@ const UserProfile = ({ navigation }) => {
               title={"Change nickname"}
               onPress={() => setIsChange(!isChange)}
             />
-            <ProfileRow title={"Log out"} onPress={()=> navigation.navigate('UserLogin')}/>
+            <ProfileRow title={"Log out"} onPress={() => onLogout()} />
             <ProfileRow title={"Delete account"} />
           </View>
         </View>

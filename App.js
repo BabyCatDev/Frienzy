@@ -10,13 +10,29 @@ import { Toast } from "react-native-toast-message/lib/src/Toast";
 import { ToastConfig } from "./src/components/lav.toast_config";
 import { Strings } from "./src/utils/Localizations";
 import { StatusBar } from "react-native";
+import AuthProvider from "./src/utils/AuthProvider";
 
 // window.server = initMirageJs(window.server);
 
 const App = () => {
+
+  const fetchCredentials = async () => {
+    const token = await AuthProvider.getToken();
+  
+    if (token) {
+      store.dispatch(autoLoginUser(token));
+    }
+  };
+
+
   useEffect(() => {
-    store.dispatch(checkFirstLaunch());
-    store.dispatch(autoLoginUser({}));
+    // store.dispatch(checkFirstLaunch());
+    // store.dispatch(autoLoginUser({}));
+    // store.dispatch(setAutoLoading());
+    fetchCredentials();
+    // store.dispatch(setAutoLoading());
+    // store.dispatch(checkFirstLaunch());
+    // store.dispatch(autoLoginUser({}));
   }, []);
 
   useEffect(() => {
@@ -29,9 +45,9 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <StatusBar barStyle="light-content" backgroundColor={"#1A1822"}/>
+      <StatusBar barStyle="light-content" backgroundColor={"#1A1822"} />
       <BottomSheetModalProvider>
-          <RootNavigator />
+        <RootNavigator />
       </BottomSheetModalProvider>
       <Toast config={ToastConfig} />
       <OverlayScreen />

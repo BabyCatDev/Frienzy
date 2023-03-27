@@ -23,7 +23,7 @@ const RootNavigator = () => {
       return <AuthStackNavigator />;
     }
 
-    // return <SplashScreen />;
+    return <SplashScreen />;
   };
 
   return (
@@ -33,7 +33,9 @@ const RootNavigator = () => {
       }}
       onStateChange={(_) => {
         const previousRouteName = routeNameRef.current;
-        const currentRouteName = navigationRef.getCurrentRoute()?.name;
+        const currentRouteName = navigationRef.getCurrentRoute()?.name
+        console.log(currentRouteName, 'currentRouteName')
+        console.log(previousRouteName, 'previousRouteName')
         routeNameRef.current = currentRouteName;
       }}
       ref={navigationRef}
