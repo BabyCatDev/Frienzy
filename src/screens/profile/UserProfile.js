@@ -4,9 +4,9 @@ import {
   Text,
   useWindowDimensions,
   Platform,
-  StyleSheet,
   TextInput,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import LinearGradient from "react-native-linear-gradient";
 import normalize from "react-native-normalize";
 import { Colors } from "../../utils/Colors";
@@ -18,28 +18,71 @@ import { Header } from "./Header";
 import { ProfileRow } from "./ProfileRow";
 import AuthProvider from "../../utils/AuthProvider";
 import { useDispatch } from "react-redux";
-import { autoLoginUser, logout } from "../../store/slices/AuthSlice";
+import { logout } from "../../store/slices/AuthSlice";
+import { MainButton } from "../../components/main_button";
+import FGLocationTrackingService from "../../services/FGLocationTrackingService";
+import FGLocationRetriever from "../../services/FGLocationRetriever";
 
 const UserProfile = ({ navigation }) => {
-  const { height, width } = useWindowDimensions();
-  const { user } = useSelector((state) => state.auth);
-  const [name, setName] = useState("Frienzy Nickname");
+  const { height } = useWindowDimensions();
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("+1 123 456 7890");
   const [isChange, setIsChange] = useState(false);
   const scrollRef = React.useRef();
   const isAndroid = Platform.OS === "android";
+  const { isFirstLaunch } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
+  const [locationSharing, setLocationSharing] = useState(FGLocationRetriever.getInstance().locationTrackingOn);
+
   useEffect(() => {
-    console.log(navigation);
-  }, [navigation]);
+    if (locationSharing) {
+      FGLocationRetriever.getInstance().startLocationTracking();
+    } else {
+      FGLocationRetriever.getInstance().stopLocationTracking();
+    }
+  }, [locationSharing]);
 
   const onLogout = async () => {
     await AuthProvider.logoutUser();
+    FGLocationRetriever.getInstance().reset();
     dispatch(logout());
-    // AuthProvider.logoutUser();
-
-    // navigation.push('RootNavigator');
   };
+
+  const getData = async (key) => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      if (value !== null) {
+        console.log(value, "fffff");
+        return value;
+      } else if (key === "phoneNumber") {
+        return "+1 123 456 7890";
+      } else {
+        return "Frienzy Nickname";
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const storeData = async (value) => {
+    try {
+      await AsyncStorage.setItem("nickname", value);
+      console.log("success");
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  async function fetchData() {
+    const phone = await getData("phoneNumber");
+    const name = await getData("nickname");
+    setName(name);
+    setPhone(phone);
+  }
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <LinearGradient colors={Colors.backgroundGradient} style={{ flex: 1 }}>
       <KeyboardAwareScrollView
@@ -54,12 +97,16 @@ const UserProfile = ({ navigation }) => {
       >
         <View
           style={{
-            ...AppStyles.loginContainer,
+            ...AppStyles.screenContainer,
             paddingTop: height * 0.08,
           }}
         >
           {/* HEADER */}
-          <Header navigation={navigation} title={'Profile'}/>
+          <Header
+            navigation={navigation}
+            title={"Profile"}
+            noBackButton={isFirstLaunch ? true : false}
+          />
           <View style={{ alignItems: "center", width: "100%" }}>
             {/* AVATAR  */}
             <Avatar name={name} />
@@ -68,10 +115,7 @@ const UserProfile = ({ navigation }) => {
               <View>
                 <Text
                   style={{
-                    color: "#EEF0FF",
-                    fontSize: normalize(22),
-                    lineHeight: normalize(27),
-                    fontFamily: "Poppins-SemiBold",
+                    ...AppStyles.semibold22,
                     marginTop: normalize(25),
                     alignSelf: "center",
                   }}
@@ -80,15 +124,12 @@ const UserProfile = ({ navigation }) => {
                 </Text>
                 <Text
                   style={{
-                    color: "#9496A2",
-                    fontSize: normalize(17),
-                    lineHeight: normalize(20.62),
-                    fontFamily: "Poppins-Medium",
+                    ...AppStyles.medium17,
                     marginTop: normalize(5),
                     alignSelf: "center",
                   }}
                 >
-                  {user.phone ?? "+1 123 456 7890"}
+                  {phone}
                 </Text>
               </View>
             ) : (
@@ -98,32 +139,18 @@ const UserProfile = ({ navigation }) => {
                 textAlign="center"
                 value={name}
                 onChangeText={(text) => setName(text)}
-                style={{
-                  ...AppStyles.textInput,
-                  width: "100%",
-                  borderWidth: StyleSheet.hairlineWidth,
-                  borderColor: Colors.darkText,
-                  borderRadius: 10,
-                  marginBottom: normalize(0),
-                  marginTop: normalize(25),
-                  paddingVertical: normalize(12.81),
-                  fontSize: Platform.select({
-                    ios: normalize(18),
-                    android: normalize(21),
-                  }),
-                  lineHeight: Platform.select({
-                    ios: normalize(24),
-                    android: normalize(27),
-                  }),
-                }}
+                style={AppStyles.profileInput}
                 placeholderTextColor={Colors.darkText}
+                onBlur={async () => {
+                  await storeData(name);
+                }}
               />
             )}
             {/* PHONE */}
           </View>
           <View style={{ width: "100%", marginTop: normalize(60) }}>
             {/* SHOW LOCATION */}
-            <ProfileRow title={"Show location"} toggle />
+            <ProfileRow title={"Show location"} toggle toggleOn={locationSharing} onToggle={setLocationSharing}/>
             {/* PROFILE ROW */}
             <ProfileRow
               title={"Change nickname"}
@@ -134,6 +161,19 @@ const UserProfile = ({ navigation }) => {
           </View>
         </View>
       </KeyboardAwareScrollView>
+      {isFirstLaunch && (
+        <MainButton
+          title={"CONTINUE"}
+          containerStyle={{
+            position: "absolute",
+            bottom: height * 0.06,
+            alignSelf: "center",
+          }}
+          onPress={() => {
+            navigation.push("ContactsStack");
+          }}
+        />
+      )}
     </LinearGradient>
   );
 };

@@ -30,6 +30,7 @@ import UserProfile from "@lavanda/assets/svgs/user-profile.svg"
 import ContactList from "@lavanda/assets/svgs/contact-list.svg"
 import SearchIcon from "@lavanda/assets/svgs/search-icon.svg"
 import CheckSign from "@lavanda/assets/svgs/check-sign.svg"
+import AddContact from "@lavanda/assets/svgs/add-contact.svg"
 
 export default class Assets {
   static getVector(path: any) {
@@ -46,6 +47,7 @@ export default class Assets {
     };
   
   }
+  static addContact = Assets.getVector(AddContact);
   static checkSign = Assets.getVector(CheckSign);
   static searchIcon = Assets.getVector(SearchIcon);
   static contactList = Assets.getVector(ContactList);

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState, memo } from "react";
 import { View, Text, Pressable } from "react-native";
 import { AssetImage } from "../../assets/asset_image";
 import Assets from "../../assets";
@@ -6,56 +6,41 @@ import normalize from "react-native-normalize";
 import { MemoToggle } from "../../components/toggle";
 import LinearGradient from "react-native-linear-gradient";
 import { Colors } from "../../utils/Colors";
+import { AppStyles } from "../../utils/AppStyles";
 
-export const ProfileRow = ({ navigation, title, toggle, onPress }) => {
-    const [toggleOn, setToggleOn] = useState(false);
+export const ProfileRow = memo(({ navigation, title, toggle, toggleOn, onToggle, onPress }) => {
   return (
-    <Pressable
-      onPress={onPress}
-      style={{
-        flexDirection: "row",
-        // backgroundColor: "red",
-        width: "100%",
-        justifyContent: "space-between",
-        marginBottom: normalize(25),
-      }}
-    >
-      <Text
-        style={{
-          color: "#9496A2",
-          fontSize: normalize(17),
-          lineHeight: normalize(20.62),
-          fontFamily: "Poppins-Medium",
-        }}
-      >
-        {title}
-      </Text>
-      {!toggle && <View
-        style={{
-          width: normalize(20.62),
-          height: normalize(20.62),
-          justifyContent: "center",
-        }}
-      >
-        <AssetImage
-          asset={Assets.arrowBack}
-          width={normalize(7)}
-          height={normalize(12)}
-          containerStyle={{
-            transform: [{ rotate: "180deg" }],
-          }}
-        />
-      </View>}
-      {toggle && <MemoToggle
-      onToggle={() => setToggleOn(!toggleOn)}
-        isOn={toggleOn}
-        onColor={'#9496A2'}
-        offColor={"#2C2937"}
-        style={{
-          width: normalize(34),
-          height: normalize(15.45),
-        }}
-      />}
+    <Pressable onPress={onPress} style={AppStyles.profileRowContainer}>
+      <Text style={AppStyles.medium17}>{title}</Text>
+      {!toggle && (
+        <View style={AppStyles.profileRowIcon}>
+          <AssetImage
+            asset={Assets.arrowBack}
+            width={normalize(7)}
+            height={normalize(12)}
+            containerStyle={{
+              transform: [{ rotate: "180deg" }],
+            }}
+          />
+        </View>
+      )}
+      {toggle && (
+        <Pressable
+          onPress={() => onToggle(!toggleOn)}
+          style={AppStyles.toggleContainer}
+        >
+          <MemoToggle
+            onToggle={() => onToggle(!toggleOn)}
+            isOn={toggleOn}
+            onColor={Colors.darkGray}
+            offColor={Colors.gray}
+            style={{
+              width: normalize(42),
+              height: normalize(20.62),
+            }}
+          />
+        </Pressable>
+      )}
     </Pressable>
   );
-};
+});

@@ -1,20 +1,19 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
   useWindowDimensions,
   TextInput,
   Platform,
-  StyleSheet,
   LayoutAnimation,
+  ActivityIndicator,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import LinearGradient from "react-native-linear-gradient";
 import { Colors } from "../../utils/Colors";
 import { MainButton } from "../../components/main_button";
 import { AppStyles } from "../../utils/AppStyles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { useDispatch } from "react-redux";
-import { autoLoginUser, storePhone } from "../../store/slices/AuthSlice";
 import AuthProvider from "../../utils/AuthProvider";
 import { useFocusEffect } from "@react-navigation/native";
 import normalize from "react-native-normalize";
@@ -24,13 +23,14 @@ import countries from "../../utils/country-phone-codes.json";
 
 const UserLogin = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
-  const { height, width } = useWindowDimensions();
+  const { height } = useWindowDimensions();
   const scrollRef = React.useRef();
   const [isChange, setIsChange] = useState(false);
   const [selectedPrefix, setSelectedPrefix] = useState("+1");
   const [pickerVisible, setPickerVisible] = useState(false);
   const isAndroid = Platform.OS === "android";
   const pickerRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -38,16 +38,25 @@ const UserLogin = ({ navigation }) => {
     }, [])
   );
 
-  const dispatch = useDispatch();
+  const storeData = async (value) => {
+    try {
+      await AsyncStorage.setItem("phoneNumber", value);
+      console.log("success");
+      navigation.navigate("VerifyPhone");
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const onContinue = () => {
-    dispatch(storePhone({ phoneNumber: selectedPrefix + phoneNumber }));
-    AuthProvider.startPasswordless(
-      selectedPrefix + phoneNumber,
-      () => {
-        navigation.navigate("VerifyPhone");
-      }
-    );
+    setIsLoading(true);
+    AuthProvider.startPasswordless(selectedPrefix + phoneNumber, () => {
+      setIsLoading(false);
+      storeData(selectedPrefix + phoneNumber);
+    }).catch((err) => {
+      setIsLoading(false);
+      console.log(err);
+    });
   };
 
   return (
@@ -64,36 +73,34 @@ const UserLogin = ({ navigation }) => {
         onKeyboardDidHide={() => isAndroid && setIsChange(false)}
       >
         <View
-          style={{
-            ...AppStyles.loginContainer,
-            paddingTop: height * 0.13,
-          }}
+          style={{ ...AppStyles.screenContainer, paddingTop: height * 0.13 }}
         >
-          <Text style={AppStyles.header40}>{"Let's\nRegister You!"}</Text>
-          <View
-            style={{
-              alignItems: "center",
-              width: "100%",
-              marginTop: normalize(100),
-            }}
-          >
-            <Text style={AppStyles.header20}>Enter phone number</Text>
-            <Text style={AppStyles.text15}>
-              Log in to SocialNav to proceed to use
+          <Text style={{ ...AppStyles.semibold40, alignSelf: "flex-start" }}>
+            {"Let's\nRegister You!"}
+          </Text>
+          <View style={AppStyles.loginForm}>
+            <Text
+              style={{ ...AppStyles.semibold20, marginBottom: normalize(16) }}
+            >
+              Enter phone number
+            </Text>
+            <Text
+              style={{
+                ...AppStyles.medium15,
+                marginBottom: normalize(50),
+                textAlign: "center",
+              }}
+            >
+              Log in to Frienzy to proceed to use
             </Text>
             <View
               style={{
-                flex: 1,
                 marginBottom: isAndroid
                   ? normalize(82)
                   : pickerVisible
                   ? 0
                   : normalize(82),
-                flexDirection: "row",
-                width: "100%",
-                borderWidth: StyleSheet.hairlineWidth,
-                borderColor: Colors.darkText,
-                borderRadius: 10,
+                ...AppStyles.loginInputContainer,
               }}
             >
               {!isAndroid ? (
@@ -177,7 +184,7 @@ const UserLogin = ({ navigation }) => {
                 keyboardType="phone-pad"
                 value={phoneNumber}
                 onChangeText={(text) => setPhoneNumber(text)}
-                style={AppStyles.textInput}
+                style={{ ...AppStyles.loginTextInput, ...AppStyles.medium16 }}
                 onFocus={() => {
                   setIsChange(true);
                   LayoutAnimation.configureNext(
@@ -217,13 +224,22 @@ const UserLogin = ({ navigation }) => {
                 </Picker>
               </View>
             )}
+            {isLoading ? (
+              <ActivityIndicator
+                size="large"
+                color={Colors.primary}
+                style={{ marginTop: normalize(50) }}
+              />
+            ) : (
             <MainButton
               title={"CONTINUE"}
+
               onPress={
                 () => onContinue()
                 // () => navigation.navigate("VerifyPhone")
               }
             />
+            )}
           </View>
         </View>
       </KeyboardAwareScrollView>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { NavigationContainer } from "@react-navigation/native";
 import AuthStackNavigator from "./auth/AuthStackNavigator";
@@ -14,7 +14,6 @@ export function navigate(name, params) {
 
 const RootNavigator = () => {
   const { token, autoLoginLoading } = useSelector((state) => state.auth);
-
 
   const appState = () => {
     if (token != "") {

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   View,
   Platform,
@@ -6,14 +6,13 @@ import {
   PermissionsAndroid,
   Text,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Contacts from "react-native-contacts";
 import LinearGradient from "react-native-linear-gradient";
 import { Colors } from "../../utils/Colors";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Header } from "../profile/Header";
 import { AppStyles } from "../../utils/AppStyles";
 import Assets from "../../assets";
-import { AssetImage } from "../../assets/asset_image";
 import normalize from "react-native-normalize";
 import SearchField from "./SearchField";
 import ContactItem from "./ContactItem";
@@ -25,138 +24,59 @@ import Animated, {
   interpolate,
   Extrapolation,
 } from "react-native-reanimated";
-import { ScrollView } from "react-native-gesture-handler";
+import { useDispatch, useSelector } from "react-redux";
+import { setFirstLaunch } from "../../store/slices/AuthSlice";
+import { storeSharedLocation } from "../../store/slices/ShareLocationSlice";
+import store from "../../store";
 
 const ContactList = ({ navigation }) => {
-  const mockData = [
-    {
-      recordID: "1",
-      givenName: "John",
-      familyName: "Doe",
-      phoneNumbers: [
-        {
-          label: "mobile",
-          number: "(555) 555-5555",
-        },
-      ],
-    },
-    {
-      recordID: "2",
-      givenName: "Jane",
-
-      familyName: "Doe",
-      phoneNumbers: [
-        {
-          label: "mobile",
-          number: "(555) 555-5555",
-        },
-      ],
-    },
-    {
-      recordID: "3",
-      givenName: "John",
-      familyName: "Doe",
-      phoneNumbers: [
-        {
-          label: "mobile",
-          number: "(555) 555-5555",
-        },
-      ],
-    },
-    {
-      recordID: "3",
-      givenName: "John",
-      familyName: "Doe",
-      phoneNumbers: [
-        {
-          label: "mobile",
-          number: "(555) 555-5555",
-        },
-      ],
-    },
-    {
-      recordID: "3",
-      givenName: "John",
-      familyName: "Doe",
-      phoneNumbers: [
-        {
-          label: "mobile",
-          number: "(555) 555-5555",
-        },
-      ],
-    },
-    {
-      recordID: "3",
-      givenName: "John",
-      familyName: "Doe",
-      phoneNumbers: [
-        {
-          label: "mobile",
-          number: "(555) 555-5555",
-        },
-      ],
-    },
-    {
-      recordID: "3",
-      givenName: "John",
-      familyName: "Doe",
-      phoneNumbers: [
-        {
-          label: "mobile",
-          number: "(555) 555-5555",
-        },
-      ],
-    },
-    {
-      recordID: "3",
-      givenName: "John",
-      familyName: "Doe",
-      phoneNumbers: [
-        {
-          label: "mobile",
-          number: "(555) 555-5555",
-        },
-      ],
-    },
-    {
-      recordID: "3",
-      givenName: "John",
-      familyName: "Doe",
-      phoneNumbers: [
-        {
-          label: "mobile",
-          number: "(555) 555-5555",
-        },
-      ],
-    },
-    {
-      recordID: "3",
-      givenName: "John",
-      familyName: "Doe",
-      phoneNumbers: [
-        {
-          label: "mobile",
-          number: "(555) 555-5555",
-        },
-      ],
-    },
-  ];
   const { height } = useWindowDimensions();
-  const [contacts, setContacts] = useState([]);
-  const [filteredContacts, setFilteredContacts] = useState([]);
-  const [search, setSearch] = useState("");
+  // const { shareLocations } = useSelector((state) => state.shareLocation);
+  const [contactList, setContactList] = useState([]);
+  const [selectedContactList, setSelectedContactList] = useState({});
+  let selectedContactListPreload = {};
+  const [query, setQuery] = useState("");
+
   const [isChange, setIsChange] = useState(false);
-  const isAndroid = Platform.OS === "android";
-  const scrollRef = useRef(null);
-  const AnimatedKeyboardAwareScrollView = Animated.createAnimatedComponent(
-    KeyboardAwareScrollView
-  );
+
+  const filteredItems = useMemo(() => {
+    const filtered = contactList?.filter((item) => {
+      return (
+        item.givenName.toLowerCase().includes(query.toLowerCase()) ||
+        item.familyName.toLowerCase().includes(query.toLowerCase())
+      );
+    });
+    const filteredNonSelected = filtered?.filter((item) => {
+      return selectedContactList[item.recordID] !== true;
+    });
+
+    const filteredSelected = filtered?.filter((item) => {
+      return selectedContactList[item.recordID] === true;
+    });
+    return [...filteredSelected, ...filteredNonSelected];
+  }, [query, contactList]);
+
+  const [selectAll, setSelectAll] = useState(undefined);
+  const dispatch = useDispatch();
+
   const scrollY = useSharedValue(0);
+
+  useEffect(() => {
+    console.log("useEffect");
+      AsyncStorage.getItem("selectedContactList").then(
+        (value) => {
+          if (value !== null) {
+            selectedContactListPreload = JSON.parse(value);
+            setSelectedContactList(JSON.parse(value));
+          }
+        }
+      );
+  }, []);
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
       scrollY.value = event.contentOffset.y;
-      console.log(scrollY.value, "scrollY.value");
+      //console.log(scrollY.value, "scrollY.value");
     },
   });
   const animatedStyles = useAnimatedStyle(() => {
@@ -179,20 +99,38 @@ const ContactList = ({ navigation }) => {
       ],
     };
   });
+  function SortArray(x, y) {
+    // if x is in selectedContactList, then x should be first
+    const xSelected = (selectedContactListPreload[x.recordID] == true)
+    const ySelected = (selectedContactListPreload[y.recordID] == true)
 
-  const searchContacts = (search) => {
-    if (search.length) {
-      const filteredContacts = contacts.filter(
-        (contact) =>
-          contact.givenName.toLowerCase().includes(search.toLowerCase()) ||
-          contact.familyName.toLowerCase().includes(search.toLowerCase())
-      );
-      setFilteredContacts(filteredContacts);
-    } else {
-      setFilteredContacts(contacts);
+    console.log("selectedContactList", selectedContactListPreload)
+    
+    if (xSelected && !ySelected) {
+      return -1;
+    }
+    if (!xSelected && ySelected) {
+      return 1;
+    }
+
+    return x.givenName.localeCompare(y.givenName);
+  }
+  const storeData = async (key, value) => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem(key, jsonValue);
+    } catch (e) {
+      console.log(e);
     }
   };
-
+  const getData = async (key) => {
+    try {
+      const jsonValue = await AsyncStorage.getItem(key);
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      console.log(e);
+    }
+  };
   async function getContacts() {
     if (Platform.OS === "android") {
       const andoidContactPermission = await PermissionsAndroid.request(
@@ -209,7 +147,9 @@ const ContactList = ({ navigation }) => {
         console.log("Contacts Permission granted");
         Contacts.getAll()
           .then((contacts) => {
-            setContacts(contacts);
+            setContactList(contacts);
+            storeData("contacts", contacts);
+            storeData("counter", 0);
           })
           .catch((e) => {
             console.log(e);
@@ -220,89 +160,117 @@ const ContactList = ({ navigation }) => {
     } else {
       try {
         const contacts = await Contacts?.getAll();
-        console.log(contacts, "my contacts");
-        console.log(contacts[0].phoneNumbers, "my contacts");
-        setContacts(contacts);
+          setContactList(contacts.sort(SortArray));
+        storeData("contacts", contacts);
+        storeData("counter", 0);
       } catch (error) {
         console.log(error);
       }
     }
   }
+
   useEffect(() => {
-    getContacts();
+    async function setContacts() {
+      if (contactList?.length == 0) {
+        const contacts = await getData("contacts");
+        if (contacts !== null) {
+          setContactList(contacts);
+        } else {
+          getContacts();
+        }
+        console.log(contactList, "contacts");
+      }
+    }
+    setContacts();
   }, []);
-  useEffect(() => {
-    setFilteredContacts(contacts);
-    // setFilteredContacts(mockData);
-  }, [contacts]);
-  useEffect(() => {
-    searchContacts(search);
-  }, [search]);
 
   return (
     <LinearGradient
       colors={Colors.backgroundGradient}
       style={{ flex: 1, paddingTop: height * 0.08, paddingHorizontal: 20 }}
     >
-      <AnimatedKeyboardAwareScrollView
+      {filteredItems?.length == 0 && (
+        <Text
+          style={{
+            ...AppStyles.medium22,
+            ...AppStyles.notFoundPlaceholder,
+            top: (height - 2 * normalize(33)) / 2,
+          }}
+        >
+          {"Nothing found"}
+        </Text>
+      )}
+
+      <Animated.ScrollView
         keyboardDismissMode={"on-drag"}
-        // keyboardDismissMode={'none'}
         onScroll={scrollHandler}
-        keyboardShouldPersistTaps={"always"}
-        ref={scrollRef}
-        contentContainerStyle={{ minHeight: isChange ? "50%" : "100%" }}
-        extraScrollHeight={isAndroid ? 0 : 75}
-        onKeyboardDidShow={() => {
-          isAndroid && scrollRef.current.scrollForExtraHeightOnAndroid(25);
+        scrollEventThrottle={1}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingBottom: normalize(100),
         }}
-        onKeyboardWillHide={() => !isAndroid && setIsChange(false)}
-        onKeyboardDidHide={() => isAndroid && setIsChange(false)}
+        // keyboardShouldPersistTaps={"handled"}
       >
-      {/* <Animated.ScrollView
-        onScroll={scrollHandler}
-        scrollEventThrottle={1}
-        contentContainerStyle={{ minHeight: isChange ? "50%" : "100%" }}
-        showsVerticalScrollIndicator={false}
-      > */}
-        {/* <ScrollView
-        scrollEventThrottle={1}
-        contentContainerStyle={{ minHeight: isChange ? "50%" : "100%" }}
-        showsVerticalScrollIndicator={false}
-      > */}
         <Animated.View
-          // <View
           style={{
             ...animatedStyles,
           }}
         >
           <Header
             navigation={navigation}
-            // onPressRight={() => navigation.navigate("UserProfile")}
-            rightIcon={Assets.contactList}
-            rightWidth={normalize(27)}
-            rightHeight={normalize(27)}
             title={"Contacts"}
           />
-          <SearchField
-            search={search}
-            setSearch={setSearch}
-            // scrollY={scrollY}
-          />
+          <SearchField search={query} setSearch={setQuery} />
         </Animated.View>
-        {/* </View> */}
         <View
           style={{
-            ...AppStyles.loginContainer,
-            paddingHorizontal: 0,
+            ...AppStyles.listContainer,
+            justifyContent: filteredItems.length ? "flex-start" : "center",
           }}
         >
-          {filteredContacts.map((contact, index) => {
-            return <ContactItem key={index} item={contact} index={index} />;
-          })}
+          {filteredItems.length
+            ? filteredItems.map((contact, index) => {
+                return (
+                  <ContactItem
+                    key={index}
+                    item={contact}
+                    index={index}
+                    onPress={({item, state}) => {
+                      console.log(state)
+                      selectedContactList[contact.recordID] = state;
+
+                      // vount how many trues are in selectedContactList
+                      let counter = 0;
+                      for (let key in selectedContactList) {
+                        if (selectedContactList[key] == true) {
+                          counter++;
+                        }
+                      }
+
+                      AsyncStorage.setItem("counter", JSON.stringify(counter));
+
+                      AsyncStorage.setItem(
+                        "selectedContactList",
+                        JSON.stringify(selectedContactList)
+                      );
+                            
+                          setIsChange(!isChange);
+                            //setSelectedContactList(selectedContactList);
+
+                            //contactList.sort(SortArray);
+                            
+                          
+                        
+                        
+                    }}
+                    // permit={shareLocations[`${contact.recordID}`]}
+                    check={selectedContactList[contact.recordID] == true}
+                  />
+                );
+              })
+            : null}
         </View>
-        </AnimatedKeyboardAwareScrollView>
-      {/* </Animated.ScrollView> */}
-      {/* </ScrollView> */}
+      </Animated.ScrollView>
       <MainButton
         title={"CONTINUE"}
         containerStyle={{
@@ -310,7 +278,11 @@ const ContactList = ({ navigation }) => {
           bottom: height * 0.06,
           alignSelf: "center",
         }}
-        onPress={() => console.log('continue')}
+        onPress={() => {
+          dispatch(setFirstLaunch());
+          // store.dispatch(storeSharedLocation(shareLocations));
+          navigation.push("Map");
+        }}
       />
     </LinearGradient>
   );

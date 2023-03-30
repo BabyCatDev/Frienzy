@@ -1,4 +1,4 @@
-import React,{useCallback, useState} from "react";
+import React, { useCallback, useState } from "react";
 import { View, Image, Pressable, Alert, Linking, Text } from "react-native";
 import { AssetImage } from "../../assets/asset_image";
 import Assets from "../../assets";
@@ -7,11 +7,15 @@ import { launchImageLibrary } from "react-native-image-picker";
 import Localization from "../../services/LocalizationService";
 import Toast from "react-native-toast-message";
 import { Sizes } from "../../utils/AppConstants";
+import { AppStyles } from "../../utils/AppStyles";
 
-export const Avatar = ({name}) => {
+export const Avatar = ({ name }) => {
   const [response, setResponse] = useState(null);
   const [dataImage, setDataImage] = useState([]);
-  const initials = name?.split(" ").map((n) => n[0]).join("");
+  const initials = name
+    ?.split(" ")
+    .map((n) => n[0])
+    .join("");
   const options = {
     mediaType: "photo",
     includeBase64: false,
@@ -54,9 +58,9 @@ export const Avatar = ({name}) => {
             });
           } else {
             // console.log(res)
-              setResponse(res);
-              let data = res.assets?.map((el) => el.uri + "");
-              setDataImage(data);
+            setResponse(res);
+            let data = res.assets?.map((el) => el.uri + "");
+            setDataImage(data);
           }
         });
       } else {
@@ -83,54 +87,32 @@ export const Avatar = ({name}) => {
     [response]
   );
   return (
-    <View style={{marginTop: normalize(44)}}>
-      <View
-        style={{
-          width: 161 + 6.54,
-          height: 155 + 6.54,
-          backgroundColor: "#9496A2",
-          borderRadius: 206.67,
-          borderWidth: 3.27,
-          borderColor: "#25232D",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        {response?
+    <View style={{ marginTop: normalize(44) }}>
+      <View style={AppStyles.avatarContainer}>
+        {response ? (
           <Image
-          resizeMode="cover"
-          resizeMethod="scale"
-          style={{
-            width: 161,
-            height: 155,
-            borderRadius: 206.67,
-          }}
-          source={{ uri: dataImage[0] }}
-        />
-          :
+            resizeMode="cover"
+            resizeMethod="scale"
+            style={AppStyles.avatar}
+            source={{ uri: dataImage[0] }}
+          />
+        ) : (
           <Text
             style={{
-              color: "#fff",
-              fontSize: normalize(70),
-              lineHeight: normalize(84.91),
-              fontFamily: "Poppins-Medium",
+              ...AppStyles.medium70,
               textAlign: "center",
             }}
           >
             {initials}
           </Text>
-      }
+        )}
       </View>
       <Pressable onPress={() => onButtonPress(options)}>
         <AssetImage
           asset={Assets.pencilButton}
           width={normalize(49)}
           height={normalize(48)}
-          containerStyle={{
-            position: "absolute",
-            right: 12.2,
-            bottom: -8.61,
-          }}
+          containerStyle={AppStyles.editImage}
         />
       </Pressable>
     </View>

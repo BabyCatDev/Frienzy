@@ -13,13 +13,7 @@ export const PrefixPicker = ({ onPress, containerStyle, selectedPrefix }) => {
     >
       <View style={styles.prefixContainer}>
         <Text
-          style={{
-            fontFamily: "Poppins-Medium",
-            fontSize: normalize(16),
-            lineHeight: normalize(24),
-            color: "#EEF0FF",
-            marginRight: normalize(5),
-          }}
+          style={styles.prefixTypo}
         >
           {selectedPrefix}
         </Text>
@@ -44,4 +38,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
   },
+  prefixTypo:{
+    fontFamily: "Poppins-Medium",
+    fontSize: normalize(16),
+    lineHeight: normalize(24),
+    color: "#EEF0FF",
+    marginRight: normalize(5),
+  }
 });

@@ -1,24 +1,94 @@
-// import BackgroundTimer from 'react-native-background-timer';
-// import GetLocation from 'react-native-get-location'
 // import  Permissions, { PERMISSIONS } from 'react-native-permissions';
 // import database from '@react-native-firebase/database';
 
 // import Crypto from 'react-native-quick-crypto'
 
-// import BackgroundGeolocation, {
-//     Location,
-//     Subscription
-//   } from "react-native-background-geolocation";
+import BackgroundGeolocation, {
+  Location,
+  Subscription,
+} from "react-native-background-geolocation";
 
-// export default class FGLocationTrackingService {
-//   constructor(phoneNumber, locationTrackingInterval) {
-//     this.phoneNumber = phoneNumber;
-//     this.locationTrackingInterval = locationTrackingInterval;
-//   }
+export default class FGLocationTrackingService {
+  static instance = null;
+  static getInstance() {
+    if (this.instance == null) {
+      this.instance = new FGLocationTrackingService();
+    }
+    return this.instance;
+  }
 
-//   permissionGranted = true;
+  constructor() {
+    this.permissionGranted = false;
 
-//     requestTrackingPermission() {
+    this._BGonHeartbeat = this._BGonHeartbeat.bind(this);
+  }
+
+  setOnLocationListener(listener) {
+    this.onLocationListener = listener;
+  }
+
+  init() {
+    BackgroundGeolocation.onLocation(this._BGonLocation);
+
+    BackgroundGeolocation.onHeartbeat(this._BGonHeartbeat);
+
+    BackgroundGeolocation.ready({
+      desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
+      heartbeatInterval: 60,
+      preventSuspend: true,
+      stopTimeout: 5,
+
+      debug: false,
+      logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
+      stopOnTerminate: false,
+      startOnBoot: true,
+      batchSync: false,
+      autoSync: false,
+    }).then((state) => {
+      console.log(
+        "- BackgroundGeolocation is configured and ready: ",
+        state.enabled
+      );
+    });
+  }
+
+  _BGonHeartbeat(event) {
+    console.log("[onHeartbeat]", event.location.coords);
+    if (this.onLocationListener) this.onLocationListener(event.location.coords);
+  }
+
+  _BGonLocation(event) {
+    console.log("[onLocation]", event.coords);
+  }
+
+  _onLocationPermissionGranted() {
+    this.permissionGranted = true;
+  }
+
+  _onLocationPermissionDenied() {
+    this.permissionGranted = false;
+  }
+
+  requestTrackingPermission() {
+    BackgroundGeolocation.requestPermission(
+      this._onLocationPermissionGranted,
+      this._onLocationPermissionDenied
+    );
+  }
+
+  startLocationTracking() {
+    BackgroundGeolocation.start(
+      this._onLocationPermissionGranted,
+      this._onLocationPermissionDenied
+    );
+  }
+
+  stopLocationTracking() {
+    BackgroundGeolocation.stop();
+  }
+}
+
+//   requestTrackingPermission() {
 //         Permissions.request(PERMISSIONS.IOS.LOCATION_ALWAYS).then(response => {
 //             console.log(response);
 //             if (response == "granted") {
@@ -69,7 +139,7 @@
 //         }
 
 //         this.sendDataToFirebase(undefined);
-        
+
 //         console.log("startLocationTracking: permission granted");
 
 //         const onLocation = BackgroundGeolocation.onLocation((location) => {
@@ -79,8 +149,6 @@
 //           BackgroundGeolocation.onHeartbeat((event) => {
 //             console.log('[onHeartbeat]', event.location.coords);
 //             });
-
-
 
 //           BackgroundGeolocation.ready({
 //             // Geolocation Config
@@ -105,5 +173,5 @@
 
 //           BackgroundGeolocation.start();
 //     }
-  
+
 // }

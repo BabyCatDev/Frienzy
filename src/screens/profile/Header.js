@@ -3,6 +3,7 @@ import { View, Text, Pressable, StyleSheet } from "react-native";
 import { AssetImage } from "../../assets/asset_image";
 import Assets from "../../assets";
 import normalize from "react-native-normalize";
+import { AppStyles } from "../../utils/AppStyles";
 
 export const Header = ({
   title,
@@ -14,69 +15,41 @@ export const Header = ({
   rightWidth,
   rightHeight,
   navigation,
+  noBackButton,
 }) => {
-  console.log("navigation", navigation);
   return (
     <View
       style={{
-        width: "100%",
-        flexDirection: "row",
-        // justifyContent: "center",
-        justifyContent: "space-between",
-        // alignItems: "flex-start",
-        // backgroundColor: 'green',
+        ...AppStyles.headerContainer,
         ...containerStyle,
       }}
     >
-      <Pressable
-        style={{
-          width: normalize(27),
-          height: normalize(27),
-          // justifyContent: "center",
-        }}
-        onPress={() => navigation.canGoBack() && navigation.goBack()}
-      >
-        <AssetImage
-          asset={Assets.arrowBack}
-          width={normalize(12)}
-          height={normalize(23)}
-        />
-      </Pressable>
-      <View style={{ width: "71%", flexGrow: 1 }}>
-        <Text
+      {noBackButton ? (
+        <View style={{ width: normalize(27), height: normalize(27) }} />
+      ) : (
+        <Pressable
           style={{
-            color: "#EEF0FF",
-            fontSize: normalize(22),
-            lineHeight: normalize(27),
-            fontFamily: "Poppins-SemiBold",
-            textAlign: "center",
+            width: normalize(27),
+            height: normalize(27),
           }}
+          onPress={() => navigation.canGoBack() && navigation.pop()}
         >
+          <AssetImage
+            asset={Assets.arrowBack}
+            width={normalize(12)}
+            height={normalize(23)}
+          />
+        </Pressable>
+      )}
+      <View style={{ width: "71%", flexGrow: 1 }}>
+        <Text style={{ ...AppStyles.semibold22, textAlign: "center" }}>
           {title}
         </Text>
         {friendsCounter && (
-          <Text
-            style={{
-              color: "#9496A2",
-              textAlign: "center",
-              fontSize: normalize(17),
-              lineHeight: normalize(20.62),
-              fontFamily: "Poppins-Medium",
-            }}
-          >
-            {friendsCounter}
-          </Text>
+          <Text style={{...AppStyles.medium17, textAlign: 'center'}}>{friendsCounter}</Text>
         )}
       </View>
-      <Pressable
-        style={{
-          width: normalize(27),
-          height: normalize(27),
-          // justifyContent: "center",
-          alignItems: "flex-end",
-        }}
-        onPress={onPressRight}
-      >
+      <Pressable style={AppStyles.headerRightIcon} onPress={onPressRight}>
         {rightIcon && (
           <AssetImage
             asset={rightIcon}

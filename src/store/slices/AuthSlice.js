@@ -23,6 +23,14 @@ export const checkFirstLaunch = createAsyncThunk(
   }
 );
 
+export const setFirstLaunch = createAsyncThunk(
+  "authSlice/setFirstLaunch",
+  async () => {
+    await AsyncStorage.setItem("appLaunched", "false");
+    return { isFirstLaunch: false };
+  }
+);
+
 export const autoLoginUser = createAsyncThunk(
   "authSlice/autoLoginUser",
   async (token, thunkApi) => {
@@ -52,24 +60,14 @@ const authSlice = createSlice({
   name: "authSlice",
   initialState,
   reducers: {
-    storePhone: (state, action) => {
-      return {
-        ...state,
-        user: {
-          phone: action.payload.phoneNumber,
-        },
-      };
-    },
     logout: (state, action) => {
-      // AsyncStorage.removeItem("token");
-      return {
-        ...state,
-        token: "",
-      };
-      // state = initialState;
+      return initialState;
     },
     setPin: (state, action) => {
       state.pin = action.payload;
+    },
+    setAutoLoginLoading: (state, action) => {
+      state.autoLoginLoading = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -108,9 +106,16 @@ const authSlice = createSlice({
     builder.addCase(checkFirstLaunch.fulfilled, (state, action) => {
       state.isFirstLaunch = action.payload.isFirstLaunch;
     });
+    builder.addCase(setFirstLaunch.fulfilled, (state, action) => {
+      state.isFirstLaunch = action.payload.isFirstLaunch;
+    });
   },
 });
 
-export const { logout, setPin, storePhone } = authSlice.actions;
+export const {
+  logout,
+  setPin,
+  setAutoLoginLoading,
+} = authSlice.actions;
 
 export default authSlice.reducer;

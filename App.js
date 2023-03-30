@@ -11,28 +11,30 @@ import { ToastConfig } from "./src/components/lav.toast_config";
 import { Strings } from "./src/utils/Localizations";
 import { StatusBar } from "react-native";
 import AuthProvider from "./src/utils/AuthProvider";
+import { setAutoLoginLoading } from "./src/store/slices/AuthSlice";
+import FGLocationTrackingService from "./src/services/FGLocationTrackingService";
+import FGLocationRetriever from "./src/services/FGLocationRetriever";
 
 // window.server = initMirageJs(window.server);
 
 const App = () => {
 
   const fetchCredentials = async () => {
+    store.dispatch(setAutoLoginLoading(true));
     const token = await AuthProvider.getToken();
   
     if (token) {
       store.dispatch(autoLoginUser(token));
+    } else {
+      store.dispatch(setAutoLoginLoading(false));
     }
   };
 
 
   useEffect(() => {
-    // store.dispatch(checkFirstLaunch());
-    // store.dispatch(autoLoginUser({}));
-    // store.dispatch(setAutoLoading());
+    store.dispatch(checkFirstLaunch());
     fetchCredentials();
-    // store.dispatch(setAutoLoading());
-    // store.dispatch(checkFirstLaunch());
-    // store.dispatch(autoLoginUser({}));
+    FGLocationRetriever.getInstance().init();
   }, []);
 
   useEffect(() => {

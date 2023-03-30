@@ -18,7 +18,7 @@ const Toggle = (props) => {
 
   const moveToggle = animatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 20],
+    outputRange: [0, 25],
   });
 
   const { isOn, onColor, offColor, style, onToggle, labelStyle, label } = props;
@@ -58,8 +58,8 @@ const Toggle = (props) => {
             useAngle={true}
             angle={316.53}
             style={{
-              width: normalize(17),
-              height: normalize(17),
+              width: normalize(22),
+              height: normalize(22),
               borderRadius: normalize(20),
             }}
           />

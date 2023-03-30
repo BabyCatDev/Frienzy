@@ -25,8 +25,10 @@
 		6C2350A38F8A43D8AFCCB561 /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0A8B1820D4B1455E9002A24B /* Roboto-Black.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A1A01C4EFCF643469E0C842A /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C4A1CC8E56DF4355BAE66AAD /* Roboto-Regular.ttf */; };
+		B75145F429D5CC1500FEEE94 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B75145F329D5CC1500FEEE94 /* GoogleService-Info.plist */; };
 		BEB212DC7D0C4CA39A3366BF /* Poppins-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D5A3760DDE394209B019C494 /* Poppins-SemiBold.ttf */; };
 		CD73D7DB314E440384D58255 /* Roboto-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C69C21CF2A2848D59FE84635 /* Roboto-MediumItalic.ttf */; };
+		DB0BCB6729D3146B0097DBFC /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0BCB6629D3146B0097DBFC /* RNBackgroundFetch+AppDelegate.m */; };
 		EE423D0D097EA7ED425D9E30 /* Pods_lavanda.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D3C274C758C88A01D4C90E5 /* Pods_lavanda.framework */; };
 		F4DFD22C1F47463DA8519F4A /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6585FC6BA9FD4CDEA547065F /* Roboto-LightItalic.ttf */; };
 		FECE72288E074F25B3DF86F1 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8C59BE29A0D410F99EFFDF6 /* Roboto-Medium.ttf */; };
@@ -54,10 +56,12 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = lavanda/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		81B864CA870440BC9D1DF9CA /* Roboto-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Italic.ttf"; path = "../assets/fonts/Roboto/Roboto-Italic.ttf"; sourceTree = "<group>"; };
 		83756452D9E5697BC70B2664 /* Pods-lavanda.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lavanda.debug.xcconfig"; path = "Target Support Files/Pods-lavanda/Pods-lavanda.debug.xcconfig"; sourceTree = "<group>"; };
+		B75145F329D5CC1500FEEE94 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "lavanda/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C4A1CC8E56DF4355BAE66AAD /* Roboto-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Regular.ttf"; path = "../assets/fonts/Roboto/Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		C69C21CF2A2848D59FE84635 /* Roboto-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-MediumItalic.ttf"; path = "../assets/fonts/Roboto/Roboto-MediumItalic.ttf"; sourceTree = "<group>"; };
 		C8C59BE29A0D410F99EFFDF6 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Medium.ttf"; path = "../assets/fonts/Roboto/Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		D5A3760DDE394209B019C494 /* Poppins-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBold.ttf"; path = "../assets/fonts/Poppins/Poppins-SemiBold.ttf"; sourceTree = "<group>"; };
+		DB0BCB6629D3146B0097DBFC /* RNBackgroundFetch+AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "RNBackgroundFetch+AppDelegate.m"; path = "../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/RNBackgroundFetch+AppDelegate.m"; sourceTree = "<group>"; };
 		E4A71AEAC06D4D7CA71C45B2 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Thin.ttf"; path = "../assets/fonts/Roboto/Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
@@ -105,6 +109,8 @@
 		13B07FAE1A68108700A75B9A /* lavanda */ = {
 			isa = PBXGroup;
 			children = (
+				B75145F329D5CC1500FEEE94 /* GoogleService-Info.plist */,
+				DB0BCB6629D3146B0097DBFC /* RNBackgroundFetch+AppDelegate.m */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
@@ -243,6 +249,7 @@
 				LastUpgradeCheck = 1130;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = S94WAU9AT4;
 						LastSwiftMigration = 1120;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
@@ -286,6 +293,7 @@
 				F4DFD22C1F47463DA8519F4A /* Roboto-LightItalic.ttf in Resources */,
 				FECE72288E074F25B3DF86F1 /* Roboto-Medium.ttf in Resources */,
 				CD73D7DB314E440384D58255 /* Roboto-MediumItalic.ttf in Resources */,
+				B75145F429D5CC1500FEEE94 /* GoogleService-Info.plist in Resources */,
 				A1A01C4EFCF643469E0C842A /* Roboto-Regular.ttf in Resources */,
 				4F626369452B4CF1A664212C /* Roboto-Thin.ttf in Resources */,
 				25B563E92BA3415EB59A85EE /* Roboto-ThinItalic.ttf in Resources */,
@@ -460,6 +468,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB0BCB6729D3146B0097DBFC /* RNBackgroundFetch+AppDelegate.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
@@ -484,7 +493,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = S94WAU9AT4;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = lavanda/Info.plist;
@@ -514,7 +523,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = S94WAU9AT4;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = lavanda/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
