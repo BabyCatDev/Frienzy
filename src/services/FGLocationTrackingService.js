@@ -43,7 +43,7 @@ export default class FGLocationTrackingService {
       stopOnTerminate: false,
       startOnBoot: true,
       batchSync: false,
-      autoSync: false,
+      autoSync: true,
     }).then((state) => {
       console.log(
         "- BackgroundGeolocation is configured and ready: ",
