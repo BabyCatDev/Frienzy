@@ -6,22 +6,11 @@ import Assets from "../../assets";
 import { AssetImage } from "../../assets/asset_image";
 import normalize from "react-native-normalize";
 import LinearGradient from "react-native-linear-gradient";
-import { addShareLocation } from "../../store/slices/ShareLocationSlice";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useDispatch, useSelector } from "react-redux";
 import FGLocationRetriever from "../../services/FGLocationRetriever";
+import { storeObject, getObject, getBool } from "../../utils/AsyncStore";
+import { getMobileNumber } from "../../utils/helper";
 
 const ContactItem = ({ item, onPress, index, check }) => {
-  // const { shareLocation } = useSelector((state) => state.shareLocation);
-  // const dispatch = useDispatch();
-  const getMobileNumber = (item) => {
-    if (item?.phoneNumbers.length == 1) {
-      return item?.phoneNumbers[0]?.number;
-    } else {
-      const mobile = item?.phoneNumbers.find((b) => b.label === "mobile");
-      return mobile?.number ?? item?.phoneNumbers[0]?.number;
-    }
-  };
 
   return (
     <Pressable

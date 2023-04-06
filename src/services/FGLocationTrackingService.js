@@ -43,7 +43,7 @@ export default class FGLocationTrackingService {
       stopOnTerminate: false,
       startOnBoot: true,
       batchSync: false,
-      autoSync: true,
+      autoSync: false,
     }).then((state) => {
       console.log(
         "- BackgroundGeolocation is configured and ready: ",
@@ -54,11 +54,19 @@ export default class FGLocationTrackingService {
 
   _BGonHeartbeat(event) {
     console.log("[onHeartbeat]", event.location.coords);
-    if (this.onLocationListener) this.onLocationListener(event.location.coords);
+    const _onLocationListener = this.onLocationListener;
+    BackgroundGeolocation.getCurrentPosition({
+      samples: 1,
+      persist: true
+    }).then((location) => {
+      if (_onLocationListener) _onLocationListener(location.coords);
+    });
+    //
   }
 
   _BGonLocation(event) {
     console.log("[onLocation]", event.coords);
+    //if (this.onLocationListener) this.onLocationListener(event.coords);
   }
 
   _onLocationPermissionGranted() {

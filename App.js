@@ -18,23 +18,25 @@ import FGLocationRetriever from "./src/services/FGLocationRetriever";
 // window.server = initMirageJs(window.server);
 
 const App = () => {
-
   const fetchCredentials = async () => {
-    store.dispatch(setAutoLoginLoading(true));
+    // store.dispatch(setAutoLoginLoading(true));
     const token = await AuthProvider.getToken();
-  
+
     if (token) {
       store.dispatch(autoLoginUser(token));
-    } else {
+    } 
+    else {
       store.dispatch(setAutoLoginLoading(false));
     }
   };
 
-
   useEffect(() => {
-    store.dispatch(checkFirstLaunch());
-    fetchCredentials();
-    FGLocationRetriever.getInstance().init();
+    async function appStart() {
+      await store.dispatch(checkFirstLaunch());
+      fetchCredentials();
+      FGLocationRetriever.getInstance().init();
+    }
+    appStart();
   }, []);
 
   useEffect(() => {

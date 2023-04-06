@@ -1,10 +1,13 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import {
   View,
+  RefreshControl,
   Platform,
   useWindowDimensions,
   PermissionsAndroid,
   Text,
+  Modal,
+  TouchableOpacity,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Contacts from "react-native-contacts";
@@ -12,7 +15,6 @@ import LinearGradient from "react-native-linear-gradient";
 import { Colors } from "../../utils/Colors";
 import { Header } from "../profile/Header";
 import { AppStyles } from "../../utils/AppStyles";
-import Assets from "../../assets";
 import normalize from "react-native-normalize";
 import SearchField from "./SearchField";
 import ContactItem from "./ContactItem";
@@ -24,20 +26,30 @@ import Animated, {
   interpolate,
   Extrapolation,
 } from "react-native-reanimated";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setFirstLaunch } from "../../store/slices/AuthSlice";
-import { storeSharedLocation } from "../../store/slices/ShareLocationSlice";
-import store from "../../store";
+import { getContacts } from "../../utils/helper";
+import { onContactPress } from "../../utils/helper";
+import { setSelectedContacts } from "../../utils/helper";
 
 const ContactList = ({ navigation }) => {
   const { height } = useWindowDimensions();
-  // const { shareLocations } = useSelector((state) => state.shareLocation);
   const [contactList, setContactList] = useState([]);
   const [selectedContactList, setSelectedContactList] = useState({});
+  const [showModal, setShowModal] = useState(false);
+  const [selectedContact, setSelectedContact] = useState({});
   let selectedContactListPreload = {};
   const [query, setQuery] = useState("");
-
+  const [refreshing, setRefreshing] = useState(false);
   const [isChange, setIsChange] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    getContacts(setContactList, SortArray);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 500);
+  }, []);
 
   const filteredItems = useMemo(() => {
     const filtered = contactList?.filter((item) => {
@@ -56,27 +68,26 @@ const ContactList = ({ navigation }) => {
     return [...filteredSelected, ...filteredNonSelected];
   }, [query, contactList]);
 
-  const [selectAll, setSelectAll] = useState(undefined);
   const dispatch = useDispatch();
 
   const scrollY = useSharedValue(0);
 
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  }
+
+  const handleShareLocation = (contact) => {
+    toggleModal();
+  }
+
+
   useEffect(() => {
-    console.log("useEffect");
-      AsyncStorage.getItem("selectedContactList").then(
-        (value) => {
-          if (value !== null) {
-            selectedContactListPreload = JSON.parse(value);
-            setSelectedContactList(JSON.parse(value));
-          }
-        }
-      );
+    setSelectedContacts(selectedContactListPreload, setSelectedContactList);
   }, []);
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
       scrollY.value = event.contentOffset.y;
-      //console.log(scrollY.value, "scrollY.value");
     },
   });
   const animatedStyles = useAnimatedStyle(() => {
@@ -89,7 +100,6 @@ const ContactList = ({ navigation }) => {
       [0, -50],
       Extrapolation.CLAMP
     );
-
     return {
       opacity: opacity,
       transform: [
@@ -99,20 +109,18 @@ const ContactList = ({ navigation }) => {
       ],
     };
   });
+
   function SortArray(x, y) {
     // if x is in selectedContactList, then x should be first
-    const xSelected = (selectedContactListPreload[x.recordID] == true)
-    const ySelected = (selectedContactListPreload[y.recordID] == true)
+    const xSelected = selectedContactListPreload[x.recordID] == true;
+    const ySelected = selectedContactListPreload[y.recordID] == true;
 
-    console.log("selectedContactList", selectedContactListPreload)
-    
     if (xSelected && !ySelected) {
       return -1;
     }
     if (!xSelected && ySelected) {
       return 1;
     }
-
     return x.givenName.localeCompare(y.givenName);
   }
   const storeData = async (key, value) => {
@@ -131,6 +139,28 @@ const ContactList = ({ navigation }) => {
       console.log(e);
     }
   };
+
+  const sharePressed = () => {
+    //console.log("sharePressed");
+    // add selectedContact to selectedContactList
+    setSelectedContactList((prevState) => {
+      const newState = { ...prevState, [selectedContact.recordID]: true }
+      AsyncStorage.setItem("selectedContactList", JSON.stringify(newState), () => {
+        // update the counter after the state is updated
+        let counter = 0;
+        for (let key in newState) {
+          if (newState[key] == true) {
+            counter++;
+          }
+        }
+        AsyncStorage.setItem("counter", JSON.stringify(counter));
+      });
+      return newState;
+    });
+    setIsChange(!isChange);
+  };
+        
+      
   async function getContacts() {
     if (Platform.OS === "android") {
       const andoidContactPermission = await PermissionsAndroid.request(
@@ -170,18 +200,7 @@ const ContactList = ({ navigation }) => {
   }
 
   useEffect(() => {
-    async function setContacts() {
-      if (contactList?.length == 0) {
-        const contacts = await getData("contacts");
-        if (contacts !== null) {
-          setContactList(contacts);
-        } else {
-          getContacts();
-        }
-        console.log(contactList, "contacts");
-      }
-    }
-    setContacts();
+    getContacts(setContactList, SortArray);
   }, []);
 
   return (
@@ -202,6 +221,15 @@ const ContactList = ({ navigation }) => {
       )}
 
       <Animated.ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={"#FFAE7C"}
+            enabled={true}
+            colors={["white", "blue", "red"]}
+          />
+        }
         keyboardDismissMode={"on-drag"}
         onScroll={scrollHandler}
         scrollEventThrottle={1}
@@ -216,10 +244,7 @@ const ContactList = ({ navigation }) => {
             ...animatedStyles,
           }}
         >
-          <Header
-            navigation={navigation}
-            title={"Contacts"}
-          />
+          <Header navigation={navigation} title={"Contacts"} />
           <SearchField search={query} setSearch={setQuery} />
         </Animated.View>
         <View
@@ -235,33 +260,19 @@ const ContactList = ({ navigation }) => {
                     key={index}
                     item={contact}
                     index={index}
-                    onPress={({item, state}) => {
-                      console.log(state)
-                      selectedContactList[contact.recordID] = state;
-
-                      // vount how many trues are in selectedContactList
-                      let counter = 0;
-                      for (let key in selectedContactList) {
-                        if (selectedContactList[key] == true) {
-                          counter++;
-                        }
+                    onPress={({item}) => {
+                      if (selectedContactList[item.recordID] == true) {
+                        setSelectedContactList(prevState => ({...prevState, [item.recordID]: false}));
+                        AsyncStorage.setItem(
+                          "selectedContactList",
+                          JSON.stringify({...selectedContactList, [item.recordID]: false})
+                        );
+                        let counter = Object.values({...selectedContactList, [item.recordID]: false}).filter(value => value).length;
+                        AsyncStorage.setItem("counter", JSON.stringify(counter)); 
+                        return;
                       }
-
-                      AsyncStorage.setItem("counter", JSON.stringify(counter));
-
-                      AsyncStorage.setItem(
-                        "selectedContactList",
-                        JSON.stringify(selectedContactList)
-                      );
-                            
-                          setIsChange(!isChange);
-                            //setSelectedContactList(selectedContactList);
-
-                            //contactList.sort(SortArray);
-                            
-                          
-                        
-                        
+                      setShowModal(true);
+                      setSelectedContact(item);
                     }}
                     // permit={shareLocations[`${contact.recordID}`]}
                     check={selectedContactList[contact.recordID] == true}
@@ -271,6 +282,31 @@ const ContactList = ({ navigation }) => {
             : null}
         </View>
       </Animated.ScrollView>
+      <Modal animationType="fade" transparent={true} visible={showModal}>
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+          <View style={{ backgroundColor: "white", padding: 20 }}>
+            <Text style={{ fontSize: 18, marginBottom: 20 }}>
+              You are about to share your location with {`${selectedContact.givenName} ${selectedContact.familyName}`}. Would you like to proceed?
+            </Text>
+            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+              <TouchableOpacity style={{ backgroundColor: "red", padding: 10 }} onPress={toggleModal}>
+                <Text style={{ color: "white" }}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ backgroundColor: "green", padding: 10 }}
+                onPress={() => {
+                  toggleModal();
+                  sharePressed();
+                  // dispatch(setFirstLaunch());
+                  // navigation.push("Map");
+                }}
+              >
+                <Text style={{ color: "white" }}>Share</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
       <MainButton
         title={"CONTINUE"}
         containerStyle={{
@@ -280,7 +316,6 @@ const ContactList = ({ navigation }) => {
         }}
         onPress={() => {
           dispatch(setFirstLaunch());
-          // store.dispatch(storeSharedLocation(shareLocations));
           navigation.push("Map");
         }}
       />

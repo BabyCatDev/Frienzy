@@ -20,6 +20,7 @@ import { useEffect } from "react";
 import store from "../../store";
 import { autoLoginUser } from "../../store/slices/AuthSlice";
 import FGLocationRetriever from "../../services/FGLocationRetriever";
+import { getValue } from "../../utils/AsyncStore";
 
 const VerifyPhone = ({ navigation }) => {
   const [code, setCode] = useState("");
@@ -31,24 +32,24 @@ const VerifyPhone = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
 
 
-  const getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('phoneNumber')
-      if(value !== null) {
-        console.log(value)
-        return value;
-      }
-    } catch(e) {
-      console.log(e)
-    }
-  }
+  // const getData = async () => {
+  //   try {
+  //     const value = await AsyncStorage.getItem('phoneNumber')
+  //     if(value !== null) {
+  //       console.log(value)
+  //       return value;
+  //     }
+  //   } catch(e) {
+  //     console.log(e)
+  //   }
+  // }
 
   const onContinue = async () => {
     setIsLoading(true);
     let phone = null;
     let token = null;
     try {
-      phone = await getData();
+      phone = await getValue('phoneNumber');
       await AuthProvider.loginUser(phone, code);
       token = await AuthProvider.getToken();
     } catch (error) {
