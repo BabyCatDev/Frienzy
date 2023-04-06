@@ -15,6 +15,7 @@ import LinearGradient from "react-native-linear-gradient";
 import { Colors } from "../../utils/Colors";
 import { Header } from "../profile/Header";
 import { AppStyles } from "../../utils/AppStyles";
+import Assets from "../../assets";
 import normalize from "react-native-normalize";
 import SearchField from "./SearchField";
 import ContactItem from "./ContactItem";

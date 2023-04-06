@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { useState, memo } from "react";
 import { View, Text, Pressable } from "react-native";
 import { AssetImage } from "../../assets/asset_image";
 import Assets from "../../assets";

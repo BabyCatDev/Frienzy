@@ -6,6 +6,7 @@ import {
   Platform,
   TextInput,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import LinearGradient from "react-native-linear-gradient";
 import normalize from "react-native-normalize";
 import { Colors } from "../../utils/Colors";

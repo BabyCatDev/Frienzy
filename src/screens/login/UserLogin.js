@@ -8,6 +8,7 @@ import {
   LayoutAnimation,
   ActivityIndicator,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import LinearGradient from "react-native-linear-gradient";
 import { Colors } from "../../utils/Colors";
 import { MainButton } from "../../components/main_button";
