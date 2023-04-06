@@ -23,6 +23,7 @@ export default class FGLocationRetriever {
     this.allowedKeysToTrackMe = [];
     this._onTick = this._onTick.bind(this);
     this._onUserLocationChange = this._onUserLocationChange.bind(this);
+    this._BGonLocation = this._onUserLocationChange.bind(this)
     this.intervalHandler = null;
     this.initialized = false;
   }
@@ -43,7 +44,6 @@ export default class FGLocationRetriever {
     }
 
     this._loadDataLocaly();
-
     this.initialized = true;
   }
 
