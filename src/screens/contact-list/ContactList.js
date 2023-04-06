@@ -75,12 +75,11 @@ const ContactList = ({ navigation }) => {
 
   const toggleModal = () => {
     setShowModal(!showModal);
-  }
+  };
 
   const handleShareLocation = (contact) => {
     toggleModal();
-  }
-
+  };
 
   useEffect(() => {
     setSelectedContacts(selectedContactListPreload, setSelectedContactList);
@@ -145,23 +144,26 @@ const ContactList = ({ navigation }) => {
     //console.log("sharePressed");
     // add selectedContact to selectedContactList
     setSelectedContactList((prevState) => {
-      const newState = { ...prevState, [selectedContact.recordID]: true }
-      AsyncStorage.setItem("selectedContactList", JSON.stringify(newState), () => {
-        // update the counter after the state is updated
-        let counter = 0;
-        for (let key in newState) {
-          if (newState[key] == true) {
-            counter++;
+      const newState = { ...prevState, [selectedContact.recordID]: true };
+      AsyncStorage.setItem(
+        "selectedContactList",
+        JSON.stringify(newState),
+        () => {
+          // update the counter after the state is updated
+          let counter = 0;
+          for (let key in newState) {
+            if (newState[key] == true) {
+              counter++;
+            }
           }
+          AsyncStorage.setItem("counter", JSON.stringify(counter));
         }
-        AsyncStorage.setItem("counter", JSON.stringify(counter));
-      });
+      );
       return newState;
     });
     setIsChange(!isChange);
   };
-        
-      
+
   async function getContacts() {
     if (Platform.OS === "android") {
       const andoidContactPermission = await PermissionsAndroid.request(
@@ -180,7 +182,6 @@ const ContactList = ({ navigation }) => {
           .then((contacts) => {
             setContactList(contacts);
             storeData("contacts", contacts);
-            storeData("counter", 0);
           })
           .catch((e) => {
             console.log(e);
@@ -191,9 +192,8 @@ const ContactList = ({ navigation }) => {
     } else {
       try {
         const contacts = await Contacts?.getAll();
-          setContactList(contacts.sort(SortArray));
+        setContactList(contacts.sort(SortArray));
         storeData("contacts", contacts);
-        storeData("counter", 0);
       } catch (error) {
         console.log(error);
       }
@@ -261,15 +261,27 @@ const ContactList = ({ navigation }) => {
                     key={index}
                     item={contact}
                     index={index}
-                    onPress={({item}) => {
+                    onPress={({ item }) => {
                       if (selectedContactList[item.recordID] == true) {
-                        setSelectedContactList(prevState => ({...prevState, [item.recordID]: false}));
+                        setSelectedContactList((prevState) => ({
+                          ...prevState,
+                          [item.recordID]: false,
+                        }));
                         AsyncStorage.setItem(
                           "selectedContactList",
-                          JSON.stringify({...selectedContactList, [item.recordID]: false})
+                          JSON.stringify({
+                            ...selectedContactList,
+                            [item.recordID]: false,
+                          })
                         );
-                        let counter = Object.values({...selectedContactList, [item.recordID]: false}).filter(value => value).length;
-                        AsyncStorage.setItem("counter", JSON.stringify(counter)); 
+                        let counter = Object.values({
+                          ...selectedContactList,
+                          [item.recordID]: false,
+                        }).filter((value) => value).length;
+                        AsyncStorage.setItem(
+                          "counter",
+                          JSON.stringify(counter)
+                        );
                         return;
                       }
                       setShowModal(true);
@@ -284,13 +296,22 @@ const ContactList = ({ navigation }) => {
         </View>
       </Animated.ScrollView>
       <Modal animationType="fade" transparent={true} visible={showModal}>
-        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
           <View style={{ backgroundColor: "white", padding: 20 }}>
             <Text style={{ fontSize: 18, marginBottom: 20 }}>
-              You are about to share your location with {`${selectedContact.givenName} ${selectedContact.familyName}`}. Would you like to proceed?
+              You are about to share your location with{" "}
+              {`${selectedContact.givenName} ${selectedContact.familyName}`}.
+              Would you like to proceed?
             </Text>
-            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-              <TouchableOpacity style={{ backgroundColor: "red", padding: 10 }} onPress={toggleModal}>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <TouchableOpacity
+                style={{ backgroundColor: "red", padding: 10 }}
+                onPress={toggleModal}
+              >
                 <Text style={{ color: "white" }}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity

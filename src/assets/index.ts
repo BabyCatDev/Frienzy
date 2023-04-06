@@ -81,8 +81,8 @@ export default class Assets {
   static store = Assets.getVector(Store);
   static user = Assets.getVector(User);
 
- 
-
+  static userPoint = Assets.getBitmap(require("../../assets/imgs/user.png"));
+  static userMarker = Assets.getBitmap(require("../../assets/imgs/userMarker.png"));
   static splash = Assets.getBitmap(require("../../assets/imgs/splash.png"));
 
 }
