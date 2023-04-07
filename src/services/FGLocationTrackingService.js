@@ -21,6 +21,7 @@ export default class FGLocationTrackingService {
     this.permissionGranted = false;
 
     this._BGonHeartbeat = this._BGonHeartbeat.bind(this);
+    this.BGonLocation = this._BGonLocation.bind(this);
   }
 
   setOnLocationListener(listener) {
@@ -28,7 +29,7 @@ export default class FGLocationTrackingService {
   }
 
   init() {
-    BackgroundGeolocation.onLocation(this._BGonLocation);
+    BackgroundGeolocation.onLocation(this._BGonLocation.bind(this));
 
     BackgroundGeolocation.onHeartbeat(this._BGonHeartbeat);
 
@@ -60,7 +61,8 @@ export default class FGLocationTrackingService {
 
   _BGonLocation(event) {
     console.log("[onLocation]", event.coords);
-    //if (this.onLocationListener) this.onLocationListener(event.coords);
+    if (this.onLocationListener) this.onLocationListener(event.coords);
+
   }
 
   _onLocationPermissionGranted() {
