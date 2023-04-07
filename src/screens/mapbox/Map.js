@@ -48,6 +48,7 @@ const Map = ({ navigation }) => {
   const [users, setUsers] = useState([]);
   const [visible, setVisible] = useState(false);
   const renderUsers = filterUsers(users);
+  const [userToPush, setUserToPush] = useState("");
   async function getContacts() {
     const selectedContactList = await getObject("selectedContactList");
     const contacts = await getObject("contacts");
@@ -92,9 +93,14 @@ const Map = ({ navigation }) => {
       .join("");
   };
 
-  const FriendMarker = memo(({ contact }) => {
+  const FriendMarker = memo(({ contact, setUserToPush, setVisible }) => {
     return (
-      <View>
+      <TouchableOpacity
+        onPress={() => {
+          setVisible(true);
+          setUserToPush(contact.phone);
+        }}
+      >
         <AssetImage
           asset={Assets.userMarker}
           width={normalize(51)}
@@ -133,7 +139,7 @@ const Map = ({ navigation }) => {
             />
           )}
         </View>
-      </View>
+      </TouchableOpacity>
     );
   });
 
@@ -206,7 +212,7 @@ const Map = ({ navigation }) => {
         });
       }
     }
-    console.log("renderUsers", renderUsers);
+    // console.log("renderUsers", renderUsers);
     return renderUsers;
   }
 
@@ -294,7 +300,7 @@ const Map = ({ navigation }) => {
         >
           <Mapbox.Camera
             followZoomLevel={5}
-            zoomLevel={1}
+            zoomLevel={15}
             centerCoordinate={location}
             // Coachella
             // here
@@ -341,7 +347,7 @@ const Map = ({ navigation }) => {
               key={user?.phone}
               id={user?.phone}
             >
-              <FriendMarker contact={user} />
+              <FriendMarker contact={user} setUserToPush={setUserToPush} setVisible={setVisible}/>
             </Mapbox.MarkerView>
           ))}
           {/* <Mapbox.UserLocation showsUserHeadingIndicator={true} /> */}
@@ -378,10 +384,6 @@ const Map = ({ navigation }) => {
           justifyContent: "center",
           alignItems: "center",
         }}
-        onPress={() => {
-          // filterUsers();
-          setVisible(true);
-        }}
       >
         <AssetImage
           asset={Assets.emrgButton}
@@ -400,7 +402,7 @@ const Map = ({ navigation }) => {
           />
         )}
       </TouchableOpacity>
-      {visible && <OverlayScreen setVisible={setVisible} />}
+      {visible && <OverlayScreen setVisible={setVisible} userToPush={userToPush}/>}
     </View>
   );
 };

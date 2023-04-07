@@ -2,7 +2,8 @@ import database from "@react-native-firebase/database";
 
 import moment from "moment";
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import OneSignal from "react-native-onesignal";
 
 import FGLocationTrackingService from "./FGLocationTrackingService";
 import { sha1 } from "react-native-sha1";
@@ -23,7 +24,6 @@ export default class FGLocationRetriever {
     this.allowedKeysToTrackMe = [];
     this._onTick = this._onTick.bind(this);
     this._onUserLocationChange = this._onUserLocationChange.bind(this);
-    this._BGonLocation = this._onUserLocationChange.bind(this)
     this.intervalHandler = null;
     this.initialized = false;
   }
@@ -44,6 +44,7 @@ export default class FGLocationRetriever {
     }
 
     this._loadDataLocaly();
+
     this.initialized = true;
   }
 
@@ -82,7 +83,39 @@ export default class FGLocationRetriever {
 
   async setUserPhone(phone) {
     this.userKey = await this._getUserKey(phone);
+    OneSignal.sendTag("phone", this.userKey);
     await this._saveDataLocaly();
+  }
+
+  async sendNotiffication(phone, title, message) {
+    const key = await this._getUserKey(phone);
+    let headers = {
+      "Content-Type": "application/json; charset=utf-8",
+      Authorization: "Basic MmQ5MTM5ZjMtYjEzMC00MjJkLWE1NGYtMzMyYjBiZTcyZmMw",
+    };
+    let endpoint = "https://onesignal.com/api/v1/notifications";
+    let params = {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify({
+        app_id: "146aaecb-a485-4ccd-82b7-5f154569d9c8",
+        headings: { en: title },
+        contents: { en: message },
+        filters: [
+          {
+            field: "tag",
+            key: "phone",
+            relation: "=",
+            value: key,
+          },
+        ],
+      }),
+    };
+    fetch(endpoint, params)
+      .then((res) => {
+        console.log("sucess NotiButton");
+      })
+      .catch((error) => console.log("error" + error));
   }
 
   _onUserLocationChange(location) {
@@ -93,7 +126,7 @@ export default class FGLocationRetriever {
           lat: location.latitude,
           long: location.longitude,
           date: moment().format("YYYY-MM-DD HH:mm:ss"),
-        })
+        });
     } catch (error) {
       console.log(error);
     }
@@ -136,12 +169,12 @@ export default class FGLocationRetriever {
           (permissions.val().includes(this.userKey) || "*" in permissions)
         ) {
           const ref = database().ref(`locations/${key}`);
-          const user = await ref.once("value");
-          console.log(this.keyToPhone[key])
+          const user = await ref.once(`value`);
+          console.log(this.keyToPhone[key]);
           if (user.exists() && this.keyToPhone[key]) {
             const userModel = user.val();
             userModel["phone"] = this.keyToPhone[key];
-            locations = [...locations, userModel]
+            locations = [...locations, userModel];
           }
         }
       })
@@ -165,7 +198,9 @@ export default class FGLocationRetriever {
   }
 
   setPhonesToTrack(phones) {
-    this.keysToTrack = Promise.all(phones.map(async (phone) => await this._getUserKey(phone)));
+    this.keysToTrack = Promise.all(
+      phones.map(async (phone) => await this._getUserKey(phone))
+    );
 
     this._saveDataLocaly();
   }
@@ -234,7 +269,7 @@ export default class FGLocationRetriever {
       this.allowedKeysToTrackMe = this.allowedKeysToTrackMe.filter(
         (k) => k != key
       );
-      
+
       let ref = database().ref(`permissions/${this.userKey}`);
       const hashes = this.allowedKeysToTrackMe;
 
@@ -249,13 +284,13 @@ export default class FGLocationRetriever {
       return "*";
     }
 
-    const numeric_string = phone.replace(/\D/g,'');
+    const numeric_string = phone.replace(/\D/g, "");
 
     console.log(phone);
     console.log(numeric_string);
 
     const key = await sha1(numeric_string.substring(numeric_string.length - 7));
-    console.log(key)
+    console.log(key);
     this.keyToPhone[key] = phone;
     return key;
   }

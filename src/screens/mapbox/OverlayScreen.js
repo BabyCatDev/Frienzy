@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -11,8 +11,19 @@ import { BlurView } from "@react-native-community/blur";
 import LinearGradient from "react-native-linear-gradient";
 import { AppStyles } from "../../utils/AppStyles";
 import normalize from "react-native-normalize";
+import FGLocationRetriever from "../../services/FGLocationRetriever";
+import { getValue } from "../../utils/AsyncStore";
 
-const OverlayScreen = ({ setVisible }) => {
+const OverlayScreen = ({ setVisible, userToPush }) => {
+  const [name, setName] = useState("");
+  useEffect(() => {
+    const getName = async () => {
+      const name = await getValue("nickname");
+      console.log(name);
+      setName(name);
+    };
+    getName();
+  }, []);
   return (
     <View
       style={{
@@ -50,7 +61,13 @@ const OverlayScreen = ({ setVisible }) => {
           Click to send the message
         </Text>
         <TouchableOpacity
-          onPress={() => setVisible(false)}
+          onPress={() => {
+            FGLocationRetriever.getInstance().sendNotiffication(
+              userToPush, name,
+              "Come to me.\nI'm standing still."
+            );
+            setVisible(false);
+          }}
           style={{
             backgroundColor: "#221F2D",
             paddingHorizontal: normalize(15),
@@ -72,7 +89,14 @@ const OverlayScreen = ({ setVisible }) => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => setVisible(false)}
+          onPress={() => {
+            console.log(userToPush);
+            FGLocationRetriever.getInstance().sendNotiffication(
+              userToPush, name,
+              "I'm coming to you.\nStay where you are."
+            );
+            setVisible(false);
+          }}
           style={{
             backgroundColor: "#221F2D",
             paddingHorizontal: normalize(15),

@@ -141,7 +141,7 @@ const UserProfile = ({ navigation }) => {
               onPress={() => setIsChange(!isChange)}
             />
             <ProfileRow title={"Log out"} onPress={() => onLogout()} />
-            <ProfileRow title={"Delete account"} />
+            <ProfileRow title={"Delete account"} onPress={() => onLogout()} />
           </View>
         </View>
       </KeyboardAwareScrollView>
