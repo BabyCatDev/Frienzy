@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { View, Image, Pressable, Alert, Linking, Text } from "react-native";
 import { AssetImage } from "../../assets/asset_image";
 import Assets from "../../assets";
@@ -8,14 +8,33 @@ import Localization from "../../services/LocalizationService";
 import Toast from "react-native-toast-message";
 import { Sizes } from "../../utils/AppConstants";
 import { AppStyles } from "../../utils/AppStyles";
+import { storeObject, getObject } from "../../utils/AsyncStore";
 
 export const Avatar = ({ name }) => {
   const [response, setResponse] = useState(null);
   const [dataImage, setDataImage] = useState([]);
-  const initials = name
-    ?.split(" ")
-    .map((n) => n[0])
-    .join("");
+
+  async function getAvatar() {
+    const image = await getObject("image");
+    console.log(image);
+    if (image) {
+      setDataImage(image);
+      // setResponse(image)
+    }
+  }
+
+  useEffect(() => {
+    getAvatar();
+  }, []);
+
+  const getInitials = (name) => {
+    const fullName = name;
+    return fullName
+      ?.split(" ")
+      .map((n) => n[0])
+      .join("");
+  };
+
   const options = {
     mediaType: "photo",
     includeBase64: false,
@@ -60,7 +79,7 @@ export const Avatar = ({ name }) => {
             // console.log(res)
             setResponse(res);
             let data = res.assets?.map((el) => el.uri + "");
-            setDataImage(data);
+            storeObject("image", data).then(() => setDataImage(data));
           }
         });
       } else {
@@ -89,7 +108,7 @@ export const Avatar = ({ name }) => {
   return (
     <View style={{ marginTop: normalize(44) }}>
       <View style={AppStyles.avatarContainer}>
-        {response ? (
+        {dataImage.length ? (
           <Image
             resizeMode="cover"
             resizeMethod="scale"
@@ -101,9 +120,10 @@ export const Avatar = ({ name }) => {
             style={{
               ...AppStyles.medium70,
               textAlign: "center",
+
             }}
           >
-            {initials}
+            {getInitials(name)}
           </Text>
         )}
       </View>

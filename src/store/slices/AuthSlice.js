@@ -19,7 +19,18 @@ export const checkFirstLaunch = createAsyncThunk(
   "authSlice/checkFirstLaunch",
   async () => {
     const value = await AsyncStorage.getItem("appLaunched");
-    return { isFirstLaunch: value === null };
+    if (value === null) {
+      const token = await AuthProvider.getToken();
+      if (token != "" && token != undefined) {
+        await AuthProvider.logoutUser();
+      }
+    }
+    return {
+      isFirstLaunch: value === null,
+      token: "",
+      firstScreenRender: value === null,
+      // autoLoginLoading: true
+    };
   }
 );
 
@@ -30,6 +41,14 @@ export const setFirstLaunch = createAsyncThunk(
     return { isFirstLaunch: false };
   }
 );
+
+// export const setFirstScreenRender = createAsyncThunk(
+//   "authSlice/setFirstScreenRender",
+//   async () => {
+//     await AsyncStorage.setItem("appLaunched", "false");
+//     return { isFirstLaunch: false };
+//   }
+// );
 
 export const autoLoginUser = createAsyncThunk(
   "authSlice/autoLoginUser",
@@ -51,8 +70,9 @@ const initialState = {
   isLoading: false,
   pin: "",
   isFirstLaunch: false,
+  firstScreenRender: false,
   error: "",
-  autoLoginLoading: false,
+  autoLoginLoading: true,
   address: "Мастерская “Ленина,14”",
 };
 
@@ -61,7 +81,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logout: (state, action) => {
-      return initialState;
+      return {...initialState, autoLoginLoading: false};
     },
     setPin: (state, action) => {
       state.pin = action.payload;
@@ -69,6 +89,9 @@ const authSlice = createSlice({
     setAutoLoginLoading: (state, action) => {
       state.autoLoginLoading = action.payload;
     },
+    setFirstScreenRender: (state) => {
+      state.firstScreenRender = false;
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(loginUser.fulfilled, (state, action) => {
@@ -112,10 +135,6 @@ const authSlice = createSlice({
   },
 });
 
-export const {
-  logout,
-  setPin,
-  setAutoLoginLoading,
-} = authSlice.actions;
+export const { logout, setPin, setAutoLoginLoading } = authSlice.actions;
 
 export default authSlice.reducer;

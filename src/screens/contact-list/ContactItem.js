@@ -6,27 +6,22 @@ import Assets from "../../assets";
 import { AssetImage } from "../../assets/asset_image";
 import normalize from "react-native-normalize";
 import LinearGradient from "react-native-linear-gradient";
-import { addShareLocation } from "../../store/slices/ShareLocationSlice";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useDispatch, useSelector } from "react-redux";
 import FGLocationRetriever from "../../services/FGLocationRetriever";
+import { storeObject, getObject, getBool } from "../../utils/AsyncStore";
+import { getMobileNumber } from "../../utils/helper";
 
 const ContactItem = ({ item, onPress, index, check }) => {
-  // const { shareLocation } = useSelector((state) => state.shareLocation);
-  // const dispatch = useDispatch();
-  const getMobileNumber = (item) => {
-    if (item?.phoneNumbers.length == 1) {
-      return item?.phoneNumbers[0]?.number;
-    } else {
-      const mobile = item?.phoneNumbers.find((b) => b.label === "mobile");
-      return mobile?.number ?? item?.phoneNumbers[0]?.number;
-    }
+  const getInitials = (name, surname) => {
+    const fullName = name + " " + surname;
+    return fullName
+      ?.split(" ")
+      .map((n) => n[0])
+      .join("");
   };
-
   return (
     <Pressable
       onPress={async () => {
-        onPress({item: item, state: !check});
+        onPress({ item: item, state: !check });
         if (!check) {
           FGLocationRetriever.getInstance().addPhoneToTrack(
             getMobileNumber(item)
@@ -60,12 +55,12 @@ const ContactItem = ({ item, onPress, index, check }) => {
             />
           ) : (
             <Text style={AppStyles.semibold25}>
-              {item.givenName[0] + item.familyName[0]}
+              {getInitials(item.givenName, item.familyName)}
             </Text>
           )}
         </View>
         <View>
-          <Text style={{...AppStyles.semibold17, maxWidth: 300}}>
+          <Text style={{ ...AppStyles.semibold17, maxWidth: 300 }}>
             {item?.givenName + " " + item?.familyName}
           </Text>
           <Text style={AppStyles.medium13}>{getMobileNumber(item)}</Text>

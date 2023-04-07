@@ -20,12 +20,12 @@ import AuthProvider from "../../utils/AuthProvider";
 import { useDispatch } from "react-redux";
 import { logout } from "../../store/slices/AuthSlice";
 import { MainButton } from "../../components/main_button";
-import FGLocationTrackingService from "../../services/FGLocationTrackingService";
 import FGLocationRetriever from "../../services/FGLocationRetriever";
+import { getValue, storeValue } from "../../utils/AsyncStore";
 
 const UserProfile = ({ navigation }) => {
   const { height } = useWindowDimensions();
-  const [name, setName] = useState("");
+  const [name, setName] = useState("Frienzy Nickname");
   const [phone, setPhone] = useState("+1 123 456 7890");
   const [isChange, setIsChange] = useState(false);
   const scrollRef = React.useRef();
@@ -33,7 +33,9 @@ const UserProfile = ({ navigation }) => {
   const { isFirstLaunch } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-  const [locationSharing, setLocationSharing] = useState(FGLocationRetriever.getInstance().locationTrackingOn);
+  const [locationSharing, setLocationSharing] = useState(
+    FGLocationRetriever.getInstance().locationTrackingOn
+  );
 
   useEffect(() => {
     if (locationSharing) {
@@ -49,35 +51,12 @@ const UserProfile = ({ navigation }) => {
     dispatch(logout());
   };
 
-  const getData = async (key) => {
-    try {
-      const value = await AsyncStorage.getItem(key);
-      if (value !== null) {
-        console.log(value, "fffff");
-        return value;
-      } else if (key === "phoneNumber") {
-        return "+1 123 456 7890";
-      } else {
-        return "Frienzy Nickname";
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const storeData = async (value) => {
-    try {
-      await AsyncStorage.setItem("nickname", value);
-      console.log("success");
-    } catch (e) {
-      console.log(e);
-    }
-  };
   async function fetchData() {
-    const phone = await getData("phoneNumber");
-    const name = await getData("nickname");
-    setName(name);
-    setPhone(phone);
+    const phone = await getValue("phoneNumber");
+    const name = await getValue("nickname");
+    console.log(name)
+    setName((prev) => name? name: prev);
+    setPhone((prev) => phone? phone: prev);;
   }
   useEffect(() => {
     fetchData();
@@ -142,7 +121,7 @@ const UserProfile = ({ navigation }) => {
                 style={AppStyles.profileInput}
                 placeholderTextColor={Colors.darkText}
                 onBlur={async () => {
-                  await storeData(name);
+                  await storeValue('nickname', name);
                 }}
               />
             )}
@@ -150,7 +129,12 @@ const UserProfile = ({ navigation }) => {
           </View>
           <View style={{ width: "100%", marginTop: normalize(60) }}>
             {/* SHOW LOCATION */}
-            <ProfileRow title={"Show location"} toggle toggleOn={locationSharing} onToggle={setLocationSharing}/>
+            <ProfileRow
+              title={"Show location"}
+              toggle
+              toggleOn={locationSharing}
+              onToggle={setLocationSharing}
+            />
             {/* PROFILE ROW */}
             <ProfileRow
               title={"Change nickname"}

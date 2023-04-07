@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { Children, memo, useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
   useWindowDimensions,
   Pressable,
+  Image,
   Text,
+  TouchableOpacity,
+  Platform,
 } from "react-native";
 import Mapbox from "@rnmapbox/maps";
+import { shapeSource } from "@rnmapbox/maps";
 import { Header } from "../profile/Header";
 import { AssetImage } from "../../assets/asset_image";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -20,82 +24,216 @@ import GetLocation, {
   LocationError,
   LocationErrorCode,
 } from "react-native-get-location";
+import { getObject } from "../../utils/AsyncStore";
 import FGLocationRetriever from "../../services/FGLocationRetriever";
 import { useFocusEffect } from "@react-navigation/native";
+import coachellaOverlayData from "../../assets/coachella.json";
+import { getMobileNumber } from "../../utils/helper";
+import OverlayScreen from "./OverlayScreen";
 
+//this is my personal access token, you can use your own, I think it's tied to my secret token which is hardcoded to my environment
 Mapbox.setAccessToken(
-  "pk.eyJ1IjoiYmFuYXJ1bXMiLCJhIjoiY2xlc2MxdGdrMGlicjNwbjFheWd1YzNwZSJ9.fnUNAsXBtfkFa1ceAVe_Pg"
+  "pk.eyJ1Ijoic29jaWFsbmF2IiwiYSI6ImNsZXB2N2g4aTBhOWQzenE2ZTcxdmxlOGoifQ.HL3LG1DJoVRYTZGH9nsOmA"
 );
 const Map = ({ navigation }) => {
-  const { height, width } = useWindowDimensions();
+  const { height } = useWindowDimensions();
   const [loading, setLoading] = useState(false);
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState([
+    -116.23774063311555, 33.68024422721021,
+  ]);
   const [error, setError] = useState(null);
   const [counter, setCounter] = useState();
-  const { allowedContacts } = useSelector((state) => state.auth);
   const [contacts, setContacts] = useState([]);
-
+  const [selectedContacts, setSelectedContacts] = useState({});
   const [users, setUsers] = useState([]);
+  const [visible, setVisible] = useState(false);
+  const renderUsers = filterUsers(users);
+  async function getContacts() {
+    const selectedContactList = await getObject("selectedContactList");
+    const contacts = await getObject("contacts");
+    setSelectedContacts(selectedContactList);
+    setContacts(contacts);
+  }
+
+  useEffect(() => {
+    getContacts();
+  }, []);
+
+  // useEffect(() => {
+  //   filterUsers(users);
+  // }, [users]);
+
+  const UserMarker = () => (
+    <LinearGradient
+      colors={["#FF857933", "#FFA56033"]}
+      useAngle={true}
+      angle={225}
+      style={{
+        width: normalize(86),
+        height: normalize(86),
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: normalize(43),
+      }}
+    >
+      <AssetImage
+        asset={Assets.userPoint}
+        width={normalize(29)}
+        height={normalize(29)}
+      />
+    </LinearGradient>
+  );
+
+  const getInitials = (name, surname) => {
+    const fullName = name + " " + surname;
+    return fullName
+      ?.split(" ")
+      .map((n) => n[0])
+      .join("");
+  };
+
+  const FriendMarker = memo(({ contact }) => {
+    return (
+      <View>
+        <AssetImage
+          asset={Assets.userMarker}
+          width={normalize(51)}
+          height={normalize(56)}
+        />
+        <View
+          style={{
+            width: normalize(51),
+            height: normalize(51),
+            position: "absolute",
+            borderRadius: normalize(26),
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {contact.thumbnailPath !== null ? (
+            <Image
+              source={{ uri: contact.thumbnailPath }}
+              style={{ width: normalize(42), height: normalize(42) }}
+            />
+          ) : (
+            <View
+              style={{
+                width: normalize(42),
+                height: normalize(42),
+                borderRadius: normalize(21),
+                backgroundColor: Colors.darkGray,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              children={
+                <Text style={{ color: Colors.white, fontSize: normalize(18) }}>
+                  {getInitials(contact.givenName, contact.familyName)}
+                </Text>
+              }
+            />
+          )}
+        </View>
+      </View>
+    );
+  });
+
+  const onStagePress = (stage) => {
+    setSelectedStage(stage.id);
+  };
+
+  const renderStages = () => {
+    return stages.map((stage) => {
+      const isSelected = selectedStage === stage.id;
+      const fillColor = isSelected ? "#00FF00" : "#0000FF";
+
+      return (
+        <Mapbox.ShapeSource
+          key={stage.id}
+          id={stage.id}
+          shape={{
+            type: "Point",
+            coordinates: stage.coordinates,
+          }}
+        >
+          <Mapbox.CircleLayer
+            id={`${stage.id}-circle`}
+            style={{
+              circleColor: fillColor,
+              circleRadius: 10,
+            }}
+          />
+          <Mapbox.SymbolLayer
+            id={`${stage.id}-label`}
+            style={{
+              textField: stage.stageName,
+              textSize: 12,
+              textOffset: [0, 1],
+              textAnchor: "top",
+            }}
+          />
+        </Mapbox.ShapeSource>
+      );
+    });
+  };
 
   const onUsersLocationUpdate = (locations) => {
-    setUsers(locations.map((location) => {
+    const users = locations.map((location) => {
+      // console.log(location.phone, [location.long, location.lat])
       return {
         phone: location.phone,
         coordinates: [location.long, location.lat],
         date: location.date,
-      }
-    }));
-  }
-  const getContacts = async (key) => {
-    try {
-      const jsonValue = await AsyncStorage.getItem(key);
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (e) {
-      console.log(e);
-    }
+      };
+    });
+
+    setUsers(users);
   };
+
+  function filterUsers(users) {
+    const renderUsers = [];
+    for (elem in contacts) {
+      const phone = getMobileNumber(contacts[elem]);
+      const user = users.find((user) => user.phone == phone);
+      if (user !== undefined) {
+        renderUsers.push({
+          phone: user.phone,
+          coordinates: user.coordinates,
+          givenName: contacts[elem].givenName,
+          familyName: contacts[elem].familyName,
+          thumbnailPath: contacts[elem].hasThumbnail
+            ? contacts[elem].thumbnailPath
+            : null,
+        });
+      }
+    }
+    console.log("renderUsers", renderUsers);
+    return renderUsers;
+  }
+
   useFocusEffect(
     React.useCallback(() => {
-      FGLocationRetriever.getInstance().setOnPhonesLocationsListener(onUsersLocationUpdate);
+      FGLocationRetriever.getInstance().setOnPhonesLocationsListener(
+        onUsersLocationUpdate
+      );
 
       FGLocationRetriever.getInstance().startListeningToLocationUpdates();
 
       async function getCounter() {
-        const counter = await getData("counter");
-        setCounter(counter);
+        const counter = await getObject("counter");
+        setCounter(counter == null ? 0 : counter);
       }
       getCounter();
-      
-      // returned function will be called on component unmount 
+
+      // returned function will be called on component unmount
       return () => {
         FGLocationRetriever.getInstance().stopListeningToLocationUpdates();
-      }
+      };
     }, [])
   );
 
-  useEffect(() => {
-    requestLocation();
-  }, []);
-
-  const getData = async (key) => {
-    try {
-      const value = await AsyncStorage.getItem(key);
-      if (value !== null) {
-        console.log(value)
-        return JSON.parse(value);
-        
-      } else {
-        return false;
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-
   const requestLocation = () => {
     setLoading(true);
-    setLocation(null);
+    setLocation([1, 1]);
     setError(null);
 
     GetLocation.getCurrentPosition({
@@ -109,7 +247,7 @@ const Map = ({ navigation }) => {
     })
       .then((newLocation) => {
         setLoading(false);
-        setLocation(newLocation);
+        setLocation([newLocation.longitude, newLocation.latitude]);
       })
       .catch((ex) => {
         if (ex instanceof LocationError) {
@@ -119,23 +257,10 @@ const Map = ({ navigation }) => {
         } else {
           console.warn(ex);
         }
+        setLocation((prev) => prev);
         setLoading(false);
-        setLocation(null);
       });
   };
-  useEffect(() => {
-    console.log("user location: ", location);
-  }, [location]);
-
-  useEffect(() => {
-    async function getCounter() {
-      const counter = await getData("counter");
-      const contacts = await getContacts("contacts");
-      setContacts(contacts);
-      setCounter(counter);
-    }
-    getCounter();
-  }, []);
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -144,7 +269,6 @@ const Map = ({ navigation }) => {
           height: height * 0.14,
           width: "100%",
           paddingTop: height * 0.075,
-          backgroundColor: "red",
           paddingHorizontal: 20,
         }}
         colors={Colors.backgroundGradient}
@@ -155,7 +279,7 @@ const Map = ({ navigation }) => {
           rightWidth={23}
           rightHeight={23}
           title={"Coachella"}
-          friendsCounter={`${counter} friends`}
+          friendsCounter={`${counter ? counter : "0"} friends`}
           navigation={navigation}
           noBackButton
         />
@@ -163,114 +287,120 @@ const Map = ({ navigation }) => {
       <View style={{ height: height * 0.86, width: "100%" }}>
         <Mapbox.MapView
           style={{ ...StyleSheet.absoluteFillObject }}
-          // styleURL={"mapbox://styles/mapbox/satellite-v9"}
+          //  styleURL={"mapbox://styles/mapbox/satellite-v9"}
+          // onPress={(feature) =>
+          //   console.log("Coords:", feature.geometry.coordinates)
+          // }
         >
           <Mapbox.Camera
             followZoomLevel={5}
-            // zoomLevel={15}
-            zoomLevel={18}
-            centerCoordinate={location ? [location.longitude, location.latitude] : null}
-            // [-116.23935536523643, 33.68370272168475] Coachella here
+            zoomLevel={1}
+            centerCoordinate={location}
+            // Coachella
+            // here
             animationDuration={1000}
           />
-          {users.map((user) => (<Mapbox.PointAnnotation
-            coordinate={user.coordinates}
-            id={user.phone}
-            key={user.phone}
-            
+          <Mapbox.ShapeSource
+            id="coachellaOverlay"
+            shape={coachellaOverlayData}
           >
-            <View
+            <Mapbox.FillLayer
+              id="coachellaOverlayFill"
+              style={{ fillColor: "#ff6600", fillOpacity: 0.5 }}
+            />
+            <Mapbox.LineLayer
+              id="coachellaOverlayLine"
+              style={{ lineColor: "#ff6600", lineWidth: 2 }}
+            />
+            <Mapbox.SymbolLayer
+              id="coachellaOverlaySymbol"
               style={{
-                height: 30,
-                width: 30,
-                backgroundColor: "blue",
-                borderRadius: 50,
-                borderColor: "#fff",
-                borderWidth: 3,
+                textField: ["get", "stageName"],
+                textSize: 8,
+                textOffset: [0, 1],
+                textJustify: "center",
+                textAnchor: "center",
+                textFont: ["Open Sans Bold"],
+                textPadding: 5,
+                textAllowOverlap: true,
+                textIgnorePlacement: true,
               }}
             />
-          </Mapbox.PointAnnotation>))}
-          <Mapbox.PointAnnotation
-            coordinate={[-116.23935536523643, 33.68370272168475]}
-            id={"1"}
-          >
-            <View
-              style={{
-                height: 30,
-                width: 30,
-                backgroundColor: "red",
-                borderRadius: 50,
-                borderColor: "#fff",
-                borderWidth: 3,
-              }}
-            />
-          </Mapbox.PointAnnotation>
-          {/* <Mapbox.MarkerView
-            id={"marker"}
-            coordinate={[-116.23935536523643, 33.68370272168475]}
-          > */}
-          {/* <View> */}
-          {/* <View
-                style={{
-                  alignItems: "center",
-                  width: 60,
-                  backgroundColor: "transparent",
-                  height: 70,
-                }}
-              > */}
-          {/* <AssetImage
-              asset={Assets.splash}
-              width={24}
-              height={24}
-              containerStyle={{ backgroundColor: "red" }}
-            /> */}
-          {/* </View> */}
-          {/* </View> */}
-          {/* </Mapbox.MarkerView> */}
+          </Mapbox.ShapeSource>
 
-          <Mapbox.UserLocation
-          // children={() =>
-          //   <View
-          //     style={{
-          //       height: 30,
-          //       width: 30,
-          //       backgroundColor: "red",
-          //       borderRadius: 50,
-          //       borderColor: "#fff",
-          //       borderWidth: 3,
-          //     }}
-          //   ></View>
-          // }
-          />
+          {location[0] !== -116.23774063311555 &&
+            location[1] !== 33.68024422721021 && (
+              <Mapbox.MarkerView coordinate={location}>
+                <UserMarker />
+              </Mapbox.MarkerView>
+            )}
+
+          {renderUsers?.map((user, index) => (
+            <Mapbox.MarkerView
+              coordinate={user?.coordinates}
+              key={user?.phone}
+              id={user?.phone}
+            >
+              <FriendMarker contact={user} />
+            </Mapbox.MarkerView>
+          ))}
+          {/* <Mapbox.UserLocation showsUserHeadingIndicator={true} /> */}
         </Mapbox.MapView>
-        <Pressable
-          style={{ position: "absolute", left: 10, bottom: 58 }}
-          onPress={() => navigation.push("ContactsStack")}
-        >
-          <AssetImage
-            asset={Assets.addUser}
-            width={normalize(90)}
-            height={normalize(91)}
-          />
-        </Pressable>
-        <Pressable
-          style={{ position: "absolute", right: 10, bottom: 144.56 }}
-          onPress={requestLocation}
-        >
-          <AssetImage
-            asset={Assets.userPosition}
-            width={normalize(90)}
-            height={normalize(91)}
-          />
-        </Pressable>
-        <Pressable style={{ position: "absolute", right: 10, bottom: 58 }}>
-          <AssetImage
-            asset={Assets.emrgButton}
-            width={normalize(90)}
-            height={normalize(91)}
-          />
-        </Pressable>
       </View>
+      <TouchableOpacity
+        style={{ position: "absolute", left: 10, bottom: 58 }}
+        onPress={() => navigation.push("ContactsStack")}
+      >
+        <AssetImage
+          asset={Assets.addUser}
+          width={normalize(90)}
+          height={normalize(91)}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{ position: "absolute", right: 10, bottom: 144.56 }}
+        onPress={requestLocation}
+      >
+        <AssetImage
+          asset={Assets.userPosition}
+          width={normalize(90)}
+          height={normalize(91)}
+        />
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={{
+          position: "absolute",
+          right: 10,
+          bottom: 58,
+          // zIndex: 1,
+          // backgroundColor: "red",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        onPress={() => {
+          // filterUsers();
+          setVisible(true);
+        }}
+      >
+        <AssetImage
+          asset={Assets.emrgButton}
+          // asset={Assets.userPosition}
+          width={normalize(90)}
+          height={normalize(91)}
+        />
+        {Platform.OS === "android" && (
+          <AssetImage
+            asset={Assets.whiteBell}
+            stroke={"black"}
+            containerStyle={{ position: "absolute" }}
+            // asset={Assets.userPosition}
+            width={normalize(32)}
+            height={normalize(32)}
+          />
+        )}
+      </TouchableOpacity>
+      {visible && <OverlayScreen setVisible={setVisible} />}
     </View>
   );
 };

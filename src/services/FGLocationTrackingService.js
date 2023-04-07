@@ -56,11 +56,13 @@ export default class FGLocationTrackingService {
   _BGonHeartbeat(event) {
     console.log("[onHeartbeat]", event.location.coords);
     if (this.onLocationListener) this.onLocationListener(event.location.coords);
+    //
   }
 
   _BGonLocation(event) {
     console.log("[onLocation]", event.coords);
     if (this.onLocationListener) this.onLocationListener(event.coords);
+
   }
 
   _onLocationPermissionGranted() {

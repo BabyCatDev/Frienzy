@@ -5,16 +5,19 @@ import AuthStackNavigator from "./auth/AuthStackNavigator";
 import MainNavigator from "./main/MainStackNavigator";
 import { navigationRef, routeNameRef } from "./Refs";
 import SplashScreen from "../screens/splash/SplashScreen";
-
-
+import AuthProvider from "../utils/AuthProvider";
+import { useDispatch } from "react-redux";
+import { logout, setFirstLaunch } from "../store/slices/AuthSlice";
 
 export function navigate(name, params) {
   navigationRef.current?.navigate(name, params);
 }
 
 const RootNavigator = () => {
-  const { token, autoLoginLoading } = useSelector((state) => state.auth);
-
+  const { token, autoLoginLoading } = useSelector(
+    (state) => state.auth
+  );
+    // console.log(token, autoLoginLoading, isFirstLaunch)
   const appState = () => {
     if (token != "") {
       return <MainNavigator />;
@@ -32,9 +35,9 @@ const RootNavigator = () => {
       }}
       onStateChange={(_) => {
         const previousRouteName = routeNameRef.current;
-        const currentRouteName = navigationRef.getCurrentRoute()?.name
-        console.log(currentRouteName, 'currentRouteName')
-        console.log(previousRouteName, 'previousRouteName')
+        const currentRouteName = navigationRef.getCurrentRoute()?.name;
+        console.log(currentRouteName, "currentRouteName");
+        console.log(previousRouteName, "previousRouteName");
         routeNameRef.current = currentRouteName;
       }}
       ref={navigationRef}

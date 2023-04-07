@@ -20,6 +20,7 @@ import normalize from "react-native-normalize";
 import { PrefixPicker } from "./PrefixPicker";
 import { Picker } from "@react-native-picker/picker";
 import countries from "../../utils/country-phone-codes.json";
+import { storeValue } from "../../utils/AsyncStore";
 
 const UserLogin = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -38,21 +39,12 @@ const UserLogin = ({ navigation }) => {
     }, [])
   );
 
-  const storeData = async (value) => {
-    try {
-      await AsyncStorage.setItem("phoneNumber", value);
-      console.log("success");
-      navigation.navigate("VerifyPhone");
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   const onContinue = () => {
     setIsLoading(true);
     AuthProvider.startPasswordless(selectedPrefix + phoneNumber, () => {
       setIsLoading(false);
-      storeData(selectedPrefix + phoneNumber);
+      storeValue('phoneNumber', selectedPrefix + phoneNumber);
+      navigation.navigate('VerifyPhone')
     }).catch((err) => {
       setIsLoading(false);
       console.log(err);
@@ -224,22 +216,14 @@ const UserLogin = ({ navigation }) => {
                 </Picker>
               </View>
             )}
-            {isLoading ? (
-              <ActivityIndicator
-                size="large"
-                color={Colors.primary}
-                style={{ marginTop: normalize(50) }}
-              />
-            ) : (
             <MainButton
               title={"CONTINUE"}
-
+              isLoading={isLoading}
               onPress={
                 () => onContinue()
                 // () => navigation.navigate("VerifyPhone")
               }
             />
-            )}
           </View>
         </View>
       </KeyboardAwareScrollView>
