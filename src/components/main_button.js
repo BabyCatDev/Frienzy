@@ -2,11 +2,16 @@ import React from "react";
 import LinearGradient from "react-native-linear-gradient";
 import { Colors } from "../utils/Colors";
 import { AppStyles } from "../utils/AppStyles";
-import { Text, Pressable } from "react-native";
+import {
+  Text,
+  Pressable,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 
-export const MainButton = ({ onPress, title, containerStyle }) => {
+export const MainButton = ({ onPress, title, containerStyle, isLoading }) => {
   return (
-    <Pressable onPress={onPress} style={{ ...containerStyle }}>
+    <TouchableOpacity onPress={onPress} style={{ ...containerStyle }}>
       <LinearGradient
         useAngle={true}
         angle={90.72}
@@ -19,9 +24,13 @@ export const MainButton = ({ onPress, title, containerStyle }) => {
           colors={Colors.mainGradient}
           style={AppStyles.buttonContainer}
         >
-          <Text style={AppStyles.buttonTitle}>{title}</Text>
+          {!isLoading ? (
+            <Text style={AppStyles.buttonTitle}>{title}</Text>
+          ) : (
+            <ActivityIndicator color={"#1A1822"}/>
+          )}
         </LinearGradient>
       </LinearGradient>
-    </Pressable>
+    </TouchableOpacity>
   );
 };

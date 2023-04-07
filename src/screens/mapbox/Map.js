@@ -7,6 +7,7 @@ import {
   Image,
   Text,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import Mapbox from "@rnmapbox/maps";
 import { shapeSource } from "@rnmapbox/maps";
@@ -38,7 +39,7 @@ const Map = ({ navigation }) => {
   const { height } = useWindowDimensions();
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState([
-    -116.23935536523643, 33.68370272168475,
+    -116.23774063311555, 33.68024422721021,
   ]);
   const [error, setError] = useState(null);
   const [counter, setCounter] = useState();
@@ -46,7 +47,7 @@ const Map = ({ navigation }) => {
   const [selectedContacts, setSelectedContacts] = useState({});
   const [users, setUsers] = useState([]);
   const [visible, setVisible] = useState(false);
-
+  const renderUsers = filterUsers(users);
   async function getContacts() {
     const selectedContactList = await getObject("selectedContactList");
     const contacts = await getObject("contacts");
@@ -58,9 +59,9 @@ const Map = ({ navigation }) => {
     getContacts();
   }, []);
 
-  useEffect(() => {
-    filterUsers();
-  }, [onUsersLocationUpdate]);
+  // useEffect(() => {
+  //   filterUsers(users);
+  // }, [users]);
 
   const UserMarker = () => (
     <LinearGradient
@@ -91,48 +92,50 @@ const Map = ({ navigation }) => {
       .join("");
   };
 
-  const FriendMarker = memo(({ contact }) => (
-    <View>
-      <AssetImage
-        asset={Assets.userMarker}
-        width={normalize(51)}
-        height={normalize(56)}
-      />
-      <View
-        style={{
-          width: normalize(51),
-          height: normalize(51),
-          position: "absolute",
-          borderRadius: normalize(26),
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        {contact.thumbnailPath !== null ? (
-          <Image
-            source={{ uri: contact.thumbnailPath }}
-            style={{ width: normalize(42), height: normalize(42) }}
-          />
-        ) : (
-          <View
-            style={{
-              width: normalize(42),
-              height: normalize(42),
-              borderRadius: normalize(21),
-              backgroundColor: Colors.darkGray,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            children={
-              <Text style={{ color: Colors.white, fontSize: normalize(18) }}>
-                {getInitials(contact.givenName, contact.familyName)}
-              </Text>
-            }
-          />
-        )}
+  const FriendMarker = memo(({ contact }) => {
+    return (
+      <View>
+        <AssetImage
+          asset={Assets.userMarker}
+          width={normalize(51)}
+          height={normalize(56)}
+        />
+        <View
+          style={{
+            width: normalize(51),
+            height: normalize(51),
+            position: "absolute",
+            borderRadius: normalize(26),
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {contact.thumbnailPath !== null ? (
+            <Image
+              source={{ uri: contact.thumbnailPath }}
+              style={{ width: normalize(42), height: normalize(42) }}
+            />
+          ) : (
+            <View
+              style={{
+                width: normalize(42),
+                height: normalize(42),
+                borderRadius: normalize(21),
+                backgroundColor: Colors.darkGray,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              children={
+                <Text style={{ color: Colors.white, fontSize: normalize(18) }}>
+                  {getInitials(contact.givenName, contact.familyName)}
+                </Text>
+              }
+            />
+          )}
+        </View>
       </View>
-    </View>
-  ));
+    );
+  });
 
   const onStagePress = (stage) => {
     setSelectedStage(stage.id);
@@ -175,34 +178,37 @@ const Map = ({ navigation }) => {
 
   const onUsersLocationUpdate = (locations) => {
     const users = locations.map((location) => {
+      // console.log(location.phone, [location.long, location.lat])
       return {
         phone: location.phone,
         coordinates: [location.long, location.lat],
         date: location.date,
       };
     });
-    const renderUsers = filterUsers(users);
-    setUsers(renderUsers);
+
+    setUsers(users);
   };
 
-  const filterUsers = (users) => {
-    const renderUsers = contacts.filter((contact) => {
-      const phone = getMobileNumber(contact);
-      console.log(phone);
-      const user = users?.find?.((user) => user.phone == phone);
+  function filterUsers(users) {
+    const renderUsers = [];
+    for (elem in contacts) {
+      const phone = getMobileNumber(contacts[elem]);
+      const user = users.find((user) => user.phone == phone);
       if (user !== undefined) {
-        return {
+        renderUsers.push({
           phone: user.phone,
           coordinates: user.coordinates,
-          givenName: contact.givenName,
-          familyName: contact.familyName,
-          thumbnailPath: contact.hasThumbnail ? contact.thumbnailPath : null,
-        };
+          givenName: contacts[elem].givenName,
+          familyName: contacts[elem].familyName,
+          thumbnailPath: contacts[elem].hasThumbnail
+            ? contacts[elem].thumbnailPath
+            : null,
+        });
       }
-    });
-    console.log(renderUsers);
+    }
+    console.log("renderUsers", renderUsers);
     return renderUsers;
-  };
+  }
 
   useFocusEffect(
     React.useCallback(() => {
@@ -227,6 +233,7 @@ const Map = ({ navigation }) => {
 
   const requestLocation = () => {
     setLoading(true);
+    setLocation([1, 1]);
     setError(null);
 
     GetLocation.getCurrentPosition({
@@ -250,12 +257,10 @@ const Map = ({ navigation }) => {
         } else {
           console.warn(ex);
         }
+        setLocation((prev) => prev);
         setLoading(false);
       });
   };
-  useEffect(() => {
-    console.log("user location: ", location);
-  }, [location]);
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -283,10 +288,13 @@ const Map = ({ navigation }) => {
         <Mapbox.MapView
           style={{ ...StyleSheet.absoluteFillObject }}
           //  styleURL={"mapbox://styles/mapbox/satellite-v9"}
+          // onPress={(feature) =>
+          //   console.log("Coords:", feature.geometry.coordinates)
+          // }
         >
           <Mapbox.Camera
             followZoomLevel={5}
-            zoomLevel={15}
+            zoomLevel={1}
             centerCoordinate={location}
             // Coachella
             // here
@@ -319,14 +327,15 @@ const Map = ({ navigation }) => {
               }}
             />
           </Mapbox.ShapeSource>
-          {location[0] !== -116.23935536523643 &&
-            location[1] !== 33.68370272168475 && (
+
+          {location[0] !== -116.23774063311555 &&
+            location[1] !== 33.68024422721021 && (
               <Mapbox.MarkerView coordinate={location}>
                 <UserMarker />
               </Mapbox.MarkerView>
             )}
 
-          {users?.map((user, index) => (
+          {renderUsers?.map((user, index) => (
             <Mapbox.MarkerView
               coordinate={user?.coordinates}
               key={user?.phone}
@@ -338,7 +347,7 @@ const Map = ({ navigation }) => {
           {/* <Mapbox.UserLocation showsUserHeadingIndicator={true} /> */}
         </Mapbox.MapView>
       </View>
-      <Pressable
+      <TouchableOpacity
         style={{ position: "absolute", left: 10, bottom: 58 }}
         onPress={() => navigation.push("ContactsStack")}
       >
@@ -347,8 +356,8 @@ const Map = ({ navigation }) => {
           width={normalize(90)}
           height={normalize(91)}
         />
-      </Pressable>
-      <Pressable
+      </TouchableOpacity>
+      <TouchableOpacity
         style={{ position: "absolute", right: 10, bottom: 144.56 }}
         onPress={requestLocation}
       >
@@ -357,7 +366,7 @@ const Map = ({ navigation }) => {
           width={normalize(90)}
           height={normalize(91)}
         />
-      </Pressable>
+      </TouchableOpacity>
 
       <TouchableOpacity
         style={{
@@ -366,11 +375,12 @@ const Map = ({ navigation }) => {
           bottom: 58,
           // zIndex: 1,
           // backgroundColor: "red",
+          justifyContent: "center",
+          alignItems: "center",
         }}
-        onPressIn={() => {
+        onPress={() => {
           // filterUsers();
           setVisible(true);
-          console.log("dddfd");
         }}
       >
         <AssetImage
@@ -379,6 +389,16 @@ const Map = ({ navigation }) => {
           width={normalize(90)}
           height={normalize(91)}
         />
+        {Platform.OS === "android" && (
+          <AssetImage
+            asset={Assets.whiteBell}
+            stroke={"black"}
+            containerStyle={{ position: "absolute" }}
+            // asset={Assets.userPosition}
+            width={normalize(32)}
+            height={normalize(32)}
+          />
+        )}
       </TouchableOpacity>
       {visible && <OverlayScreen setVisible={setVisible} />}
     </View>

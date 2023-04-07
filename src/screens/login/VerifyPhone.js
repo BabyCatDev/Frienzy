@@ -31,7 +31,6 @@ const VerifyPhone = ({ navigation }) => {
   const [isChange, setIsChange] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-
   // const getData = async () => {
   //   try {
   //     const value = await AsyncStorage.getItem('phoneNumber')
@@ -49,17 +48,17 @@ const VerifyPhone = ({ navigation }) => {
     let phone = null;
     let token = null;
     try {
-      phone = await getValue('phoneNumber');
+      phone = await getValue("phoneNumber");
       await AuthProvider.loginUser(phone, code);
       token = await AuthProvider.getToken();
     } catch (error) {
       console.log(error);
       setIsLoading(false);
-      return
+      return;
     }
     if (token) {
       FGLocationRetriever.getInstance().setUserPhone(phone);
-      store.dispatch(autoLoginUser(token))
+      store.dispatch(autoLoginUser(token));
     }
     setIsLoading(false);
   };
@@ -123,20 +122,14 @@ const VerifyPhone = ({ navigation }) => {
                 Resend code
               </Text>
             </Pressable>
-            {isLoading ? (
-              <ActivityIndicator
-                size="large"
-                color={Colors.primary}
-                style={{ marginTop: normalize(20) }}
-              />
-            ) : (
             <MainButton
+              isLoading={isLoading}
               title={"CONTINUE"}
               onPress={
                 // () => navigation.navigate("UserProfile")
                 () => onContinue()
               }
-            />)}
+            />
           </View>
         </View>
       </KeyboardAwareScrollView>

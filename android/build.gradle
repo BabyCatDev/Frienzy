@@ -6,10 +6,10 @@ buildscript {
     ext {
         buildToolsVersion = "31.0.0"
         minSdkVersion = 21
-        compileSdkVersion = 31
+        compileSdkVersion = 33
         appCompatVersion = "1.4.2"
         googlePlayServicesLocationVersion = "20.0.0"
-        targetSdkVersion = 31
+        targetSdkVersion = 33
         if (System.properties['os.arch'] == "aarch64") {
             // For M1 Users we need to use the NDK 24 which added support for aarch64
             ndkVersion = "24.0.8215888"

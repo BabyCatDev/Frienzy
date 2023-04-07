@@ -5,6 +5,7 @@ import {
   Text,
   Platform,
   TouchableWithoutFeedback,
+  TouchableOpacity,
 } from "react-native";
 import { BlurView } from "@react-native-community/blur";
 import LinearGradient from "react-native-linear-gradient";
@@ -48,7 +49,8 @@ const OverlayScreen = ({ setVisible }) => {
         >
           Click to send the message
         </Text>
-        <View
+        <TouchableOpacity
+          onPress={() => setVisible(false)}
           style={{
             backgroundColor: "#221F2D",
             paddingHorizontal: normalize(15),
@@ -68,8 +70,9 @@ const OverlayScreen = ({ setVisible }) => {
           >
             {"Come to me.\nI'm standing still."}
           </Text>
-        </View>
-        <View
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setVisible(false)}
           style={{
             backgroundColor: "#221F2D",
             paddingHorizontal: normalize(15),
@@ -88,7 +91,7 @@ const OverlayScreen = ({ setVisible }) => {
           >
             {"I'm coming to you.\nStay where you are."}
           </Text>
-        </View>
+        </TouchableOpacity>
       </LinearGradient>
     </View>
   );

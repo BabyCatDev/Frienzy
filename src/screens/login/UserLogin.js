@@ -216,22 +216,14 @@ const UserLogin = ({ navigation }) => {
                 </Picker>
               </View>
             )}
-            {isLoading ? (
-              <ActivityIndicator
-                size="large"
-                color={Colors.primary}
-                style={{ marginTop: normalize(50) }}
-              />
-            ) : (
             <MainButton
               title={"CONTINUE"}
-
+              isLoading={isLoading}
               onPress={
                 () => onContinue()
                 // () => navigation.navigate("VerifyPhone")
               }
             />
-            )}
           </View>
         </View>
       </KeyboardAwareScrollView>
