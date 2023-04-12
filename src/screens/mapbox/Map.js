@@ -364,7 +364,7 @@ const Map = ({ navigation }) => {
         />
       </TouchableOpacity>
       <TouchableOpacity
-        style={{ position: "absolute", right: 10, bottom: 144.56 }}
+        style={{ position: "absolute", right: 10, bottom: 58 }}
         onPress={requestLocation}
       >
         <AssetImage
@@ -374,7 +374,7 @@ const Map = ({ navigation }) => {
         />
       </TouchableOpacity>
 
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={{
           position: "absolute",
           right: 10,
@@ -401,7 +401,7 @@ const Map = ({ navigation }) => {
             height={normalize(32)}
           />
         )}
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       {visible && <OverlayScreen setVisible={setVisible} userToPush={userToPush}/>}
     </View>
   );
