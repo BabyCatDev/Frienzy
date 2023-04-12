@@ -1,0 +1,49 @@
+require_relative '../node_modules/react-native/scripts/react_native_pods'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+$RNMapboxMapsImpl = 'mapbox'
+platform :ios, '12.4'
+install! 'cocoapods', :deterministic_uuids => false
+
+production = ENV["PRODUCTION"] == "1"
+# use_frameworks!
+target 'lavanda' do
+  config = use_native_modules!
+  use_frameworks! :linkage => :static
+  $RNFirebaseAsStaticFramework = true
+
+  # Flags change depending on the env values.
+  flags = get_default_flags()
+
+  use_react_native!(
+    :path => config[:reactNativePath],
+    # to enable hermes on iOS, change `false` to `true` and then install pods
+    :production => production,
+    :hermes_enabled => true,
+    :fabric_enabled => flags[:fabric_enabled],
+    # An absolute path to your application root.
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
+  )
+  # pod 'MapboxMaps', '10.11.1'
+  pre_install do |installer|
+    $RNMapboxMaps.pre_install(installer)
+  end
+
+  post_install do |installer|
+    $RNMapboxMaps.post_install(installer)
+    react_native_post_install(installer)
+    installer.pods_project.build_configurations.each do |config|
+      config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
+    end
+     installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.4'
+      end
+    end
+    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+  end
+end
+
+target 'OneSignalNotificationServiceExtension' do
+  use_frameworks! :linkage => :static
+  pod 'OneSignalXCFramework', '>= 3.0', '< 4.0'
+end

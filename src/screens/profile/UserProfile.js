@@ -1,0 +1,198 @@
+import React, { useState, useEffect, useMemo } from "react";
+import {
+  View,
+  Text,
+  useWindowDimensions,
+  Platform,
+  TextInput,
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import LinearGradient from "react-native-linear-gradient";
+import normalize from "react-native-normalize";
+import { Colors } from "../../utils/Colors";
+import { AppStyles } from "../../utils/AppStyles";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useSelector } from "react-redux";
+import { Avatar } from "./Avatar";
+import { Header } from "./Header";
+import { ProfileRow } from "./ProfileRow";
+import AuthProvider from "../../utils/AuthProvider";
+import { useDispatch } from "react-redux";
+import { logout } from "../../store/slices/AuthSlice";
+import { MainButton } from "../../components/main_button";
+import FGLocationRetriever from "../../services/FGLocationRetriever";
+import { getValue, storeValue } from "../../utils/AsyncStore";
+import QrOverlay from "./QrOverlay";
+
+const UserProfile = ({ navigation }) => {
+  const { height } = useWindowDimensions();
+  const [name, setName] = useState("Frienzy Nickname");
+  const [phone, setPhone] = useState("+1 123 456 7890");
+  const [isChange, setIsChange] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const scrollRef = React.useRef();
+  const isAndroid = Platform.OS === "android";
+  const { isFirstLaunch } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  const firstName = useMemo(() => {
+    const nameArr = name.split(" ");
+    if (nameArr.length > 1) {
+      return nameArr[0];
+    } else {
+      return name;
+    }
+  });
+
+  const lastName = useMemo(() => {
+    const nameArr = name.split(" ");
+    if (nameArr.length > 1) {
+      return nameArr[1];
+    } else {
+      return "";
+    }
+  });
+
+  const [locationSharing, setLocationSharing] = useState(
+    FGLocationRetriever.getInstance().locationTrackingOn
+  );
+
+  useEffect(() => {
+    if (locationSharing) {
+      FGLocationRetriever.getInstance().startLocationTracking();
+    } else {
+      FGLocationRetriever.getInstance().stopLocationTracking();
+    }
+  }, [locationSharing]);
+
+  const onLogout = async () => {
+    await AuthProvider.logoutUser();
+    FGLocationRetriever.getInstance().reset();
+    dispatch(logout());
+  };
+
+  async function fetchData() {
+    const phone = await getValue("phoneNumber");
+    const name = await getValue("nickname");
+    console.log(name);
+    setName((prev) => (name ? name : prev));
+    setPhone((prev) => (phone ? phone : prev));
+  }
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  return (
+    <LinearGradient colors={Colors.backgroundGradient} style={{ flex: 1 }}>
+      <KeyboardAwareScrollView
+        ref={scrollRef}
+        contentContainerStyle={{ minHeight: isChange ? "50%" : "100%" }}
+        extraScrollHeight={isAndroid ? 0 : 75}
+        onKeyboardDidShow={() => {
+          isAndroid && scrollRef.current.scrollForExtraHeightOnAndroid(25);
+        }}
+        onKeyboardWillHide={() => !isAndroid && setIsChange(false)}
+        onKeyboardDidHide={() => isAndroid && setIsChange(false)}
+      >
+        <View
+          style={{
+            ...AppStyles.screenContainer,
+            paddingTop: height * 0.08,
+          }}
+        >
+          {/* HEADER */}
+          <Header
+            navigation={navigation}
+            title={"Profile"}
+            noBackButton={isFirstLaunch ? true : false}
+          />
+          <View style={{ alignItems: "center", width: "100%" }}>
+            {/* AVATAR  */}
+            <Avatar name={name} />
+            {/* NAME */}
+            {!isChange ? (
+              <View>
+                <Text
+                  style={{
+                    ...AppStyles.semibold22,
+                    marginTop: normalize(25),
+                    alignSelf: "center",
+                  }}
+                >
+                  {name}
+                </Text>
+                <Text
+                  style={{
+                    ...AppStyles.medium17,
+                    marginTop: normalize(5),
+                    alignSelf: "center",
+                  }}
+                >
+                  {phone}
+                </Text>
+              </View>
+            ) : (
+              <TextInput
+                returnKeyType="done"
+                autoFocus={true}
+                textAlign="center"
+                value={name}
+                onChangeText={(text) => setName(text)}
+                style={AppStyles.profileInput}
+                placeholderTextColor={Colors.darkText}
+                onBlur={async () => {
+                  await storeValue("nickname", name);
+                }}
+              />
+            )}
+            {/* PHONE */}
+          </View>
+          <View style={{ width: "100%", marginTop: normalize(60) }}>
+            {/* SHOW LOCATION */}
+            <ProfileRow
+              title={"Show location"}
+              toggle
+              toggleOn={locationSharing}
+              onToggle={setLocationSharing}
+            />
+            {/* PROFILE ROW */}
+            <ProfileRow
+              title={"Change nickname"}
+              onPress={() => setIsChange(!isChange)}
+            />
+            <ProfileRow
+              title={"My QR code"}
+              onPress={() => setVisible(true)}
+              qrCode
+            />
+            <ProfileRow title={"Log out"} onPress={() => onLogout()} />
+            <ProfileRow title={"Delete account"} onPress={() => onLogout()} />
+          </View>
+        </View>
+      </KeyboardAwareScrollView>
+      {isFirstLaunch && (
+        <MainButton
+          title={"CONTINUE"}
+          containerStyle={{
+            position: "absolute",
+            bottom: height * 0.06,
+            alignSelf: "center",
+          }}
+          onPress={() => {
+            navigation.push("ContactsStack");
+          }}
+        />
+      )}
+      {visible && (
+        <QrOverlay
+          setVisible={setVisible}
+          phoneNumber={phone}
+          firstName={firstName}
+          lastName={lastName}
+        />
+      )}
+    </LinearGradient>
+  );
+};
+
+export default UserProfile;

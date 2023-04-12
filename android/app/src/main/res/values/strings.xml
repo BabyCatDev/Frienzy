@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Frienzy</string>
+    <string name="mapbox_access_token">pk.eyJ1IjoiYmFuYXJ1bXMiLCJhIjoiY2xlc2MxdGdrMGlicjNwbjFheWd1YzNwZSJ9.fnUNAsXBtfkFa1ceAVe_Pg</string>
+</resources>
