@@ -1196,6 +1196,11 @@
   resolved "https://registry.yarnpkg.com/@react-native-firebase/database/-/database-17.3.2.tgz#fbd18e963291ff9bff71c316991a8a4c0fcbdfcd"
   integrity sha512-9z14PZ4bxBNBIPzZP8W3jXRo0xTG+AMlZPiWW2AlGbRqSlkngyEeUW+FXgw33NWouJZvxkbBEd0GynpgOHS5pg==
 
+"@react-native-firebase/storage@17.3.2":
+  version "17.3.2"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/storage/-/storage-17.3.2.tgz#f5d75c9ce2fc05da437fecb0900de4314c5cf9a1"
+  integrity sha512-Pojwd5SuM8lvJBDfVV9ylyTOb8bwildhdAetLgyIdvyVwE9QqzpZoOebb283ceJ0h6OdznHiR66JJStcyclUwg==
+
 "@react-native-masked-view/masked-view@^0.2.8":
   version "0.2.8"
   resolved "https://registry.yarnpkg.com/@react-native-masked-view/masked-view/-/masked-view-0.2.8.tgz#34405a4361882dae7c81b1b771fe9f5fbd545a97"

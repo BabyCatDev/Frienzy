@@ -8,20 +8,28 @@ import { Colors } from "../../utils/Colors";
 import { AppStyles } from "../../utils/AppStyles";
 
 export const ProfileRow = memo(
-  ({ navigation, title, toggle, toggleOn, onToggle, onPress }) => {
+  ({ navigation, title, toggle, toggleOn, onToggle, onPress, qrCode }) => {
     return (
       <Pressable onPress={onPress} style={AppStyles.profileRowContainer}>
         <Text style={AppStyles.medium17}>{title}</Text>
         {!toggle && (
           <View style={AppStyles.profileRowIcon}>
-            <AssetImage
-              asset={Assets.arrowBack}
-              width={normalize(7)}
-              height={normalize(12)}
-              containerStyle={{
-                transform: [{ rotate: "180deg" }],
-              }}
-            />
+            {!qrCode ? (
+              <AssetImage
+                asset={Assets.arrowBack}
+                width={normalize(7)}
+                height={normalize(12)}
+                containerStyle={{
+                  transform: [{ rotate: "180deg" }],
+                }}
+              />
+            ) : (
+              <AssetImage
+                asset={Assets.qrCode}
+                width={normalize(20.62)}
+                height={normalize(20.62)}
+              />
+            )}
           </View>
         )}
         {toggle && (

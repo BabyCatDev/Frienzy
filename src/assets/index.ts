@@ -32,6 +32,9 @@ import SearchIcon from "@lavanda/assets/svgs/search-icon.svg"
 import CheckSign from "@lavanda/assets/svgs/check-sign.svg"
 import AddContact from "@lavanda/assets/svgs/add-contact.svg"
 import WhiteBell from "@lavanda/assets/svgs/white-bell.svg"
+import QrCode from "@lavanda/assets/svgs/qr-code.svg"
+import RoundCorner from "@lavanda/assets/svgs/round-corner.svg"
+import XClose from "@lavanda/assets/svgs/x-close.svg"
 
 export default class Assets {
   static getVector(path: any) {
@@ -48,6 +51,9 @@ export default class Assets {
     };
   
   }
+  static xClose = Assets.getVector(XClose);
+  static roundCorner = Assets.getVector(RoundCorner);
+  static qrCode = Assets.getVector(QrCode);
   static whiteBell = Assets.getVector(WhiteBell);
   static addContact = Assets.getVector(AddContact);
   static checkSign = Assets.getVector(CheckSign);

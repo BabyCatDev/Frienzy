@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   View,
   Text,
@@ -22,16 +22,36 @@ import { logout } from "../../store/slices/AuthSlice";
 import { MainButton } from "../../components/main_button";
 import FGLocationRetriever from "../../services/FGLocationRetriever";
 import { getValue, storeValue } from "../../utils/AsyncStore";
+import QrOverlay from "./QrOverlay";
 
 const UserProfile = ({ navigation }) => {
   const { height } = useWindowDimensions();
   const [name, setName] = useState("Frienzy Nickname");
   const [phone, setPhone] = useState("+1 123 456 7890");
   const [isChange, setIsChange] = useState(false);
+  const [visible, setVisible] = useState(false);
   const scrollRef = React.useRef();
   const isAndroid = Platform.OS === "android";
   const { isFirstLaunch } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+
+  const firstName = useMemo(() => {
+    const nameArr = name.split(" ");
+    if (nameArr.length > 1) {
+      return nameArr[0];
+    } else {
+      return name;
+    }
+  });
+
+  const lastName = useMemo(() => {
+    const nameArr = name.split(" ");
+    if (nameArr.length > 1) {
+      return nameArr[1];
+    } else {
+      return "";
+    }
+  });
 
   const [locationSharing, setLocationSharing] = useState(
     FGLocationRetriever.getInstance().locationTrackingOn
@@ -54,9 +74,9 @@ const UserProfile = ({ navigation }) => {
   async function fetchData() {
     const phone = await getValue("phoneNumber");
     const name = await getValue("nickname");
-    console.log(name)
-    setName((prev) => name? name: prev);
-    setPhone((prev) => phone? phone: prev);;
+    console.log(name);
+    setName((prev) => (name ? name : prev));
+    setPhone((prev) => (phone ? phone : prev));
   }
   useEffect(() => {
     fetchData();
@@ -121,7 +141,7 @@ const UserProfile = ({ navigation }) => {
                 style={AppStyles.profileInput}
                 placeholderTextColor={Colors.darkText}
                 onBlur={async () => {
-                  await storeValue('nickname', name);
+                  await storeValue("nickname", name);
                 }}
               />
             )}
@@ -140,6 +160,11 @@ const UserProfile = ({ navigation }) => {
               title={"Change nickname"}
               onPress={() => setIsChange(!isChange)}
             />
+            <ProfileRow
+              title={"My QR code"}
+              onPress={() => setVisible(true)}
+              qrCode
+            />
             <ProfileRow title={"Log out"} onPress={() => onLogout()} />
             <ProfileRow title={"Delete account"} onPress={() => onLogout()} />
           </View>
@@ -156,6 +181,14 @@ const UserProfile = ({ navigation }) => {
           onPress={() => {
             navigation.push("ContactsStack");
           }}
+        />
+      )}
+      {visible && (
+        <QrOverlay
+          setVisible={setVisible}
+          phoneNumber={phone}
+          firstName={firstName}
+          lastName={lastName}
         />
       )}
     </LinearGradient>

@@ -9,10 +9,15 @@ import Toast from "react-native-toast-message";
 import { Sizes } from "../../utils/AppConstants";
 import { AppStyles } from "../../utils/AppStyles";
 import { storeObject, getObject } from "../../utils/AsyncStore";
+import storage from "@react-native-firebase/storage";
 
 export const Avatar = ({ name }) => {
   const [response, setResponse] = useState(null);
   const [dataImage, setDataImage] = useState([]);
+  const filename = dataImage?.[0]?.substring(
+    dataImage?.[0]?.lastIndexOf("/") + 1
+  );
+  const reference = storage().ref(`UsersPhotos/${filename}`);
 
   async function getAvatar() {
     const image = await getObject("image");
@@ -21,6 +26,7 @@ export const Avatar = ({ name }) => {
       setDataImage(image);
       // setResponse(image)
     }
+    // return image;
   }
 
   useEffect(() => {
@@ -76,10 +82,12 @@ export const Avatar = ({ name }) => {
               },
             });
           } else {
-            // console.log(res)
+            console.log(res);
             setResponse(res);
-            let data = res.assets?.map((el) => el.uri + "");
-            storeObject("image", data).then(() => setDataImage(data));
+            let data = res.assets?.map((el) => el.uri);
+            storeObject("image", data).then(() => {
+              setDataImage(data);
+            });
           }
         });
       } else {
@@ -120,7 +128,6 @@ export const Avatar = ({ name }) => {
             style={{
               ...AppStyles.medium70,
               textAlign: "center",
-
             }}
           >
             {getInitials(name)}
@@ -135,6 +142,27 @@ export const Avatar = ({ name }) => {
           containerStyle={AppStyles.editImage}
         />
       </Pressable>
+      {/* <Pressable
+        onPress={async () => {
+          try {
+            const pathToFile =
+              Platform.OS === "ios"
+                ? dataImage?.[0]?.replace("file://", "")
+                : dataImage?.[0];
+            console.log(pathToFile);
+            await reference.putFile(dataImage?.[0]);
+          } catch (e) {
+            console.log(e);
+          }
+        }}
+      >
+        <AssetImage
+          asset={Assets.pencilButton}
+          width={normalize(49)}
+          height={normalize(48)}
+          containerStyle={{ position: "absolute", top: 0 }}
+        />
+      </Pressable> */}
     </View>
   );
 };

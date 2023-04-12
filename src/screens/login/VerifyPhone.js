@@ -31,26 +31,15 @@ const VerifyPhone = ({ navigation }) => {
   const [isChange, setIsChange] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // const getData = async () => {
-  //   try {
-  //     const value = await AsyncStorage.getItem('phoneNumber')
-  //     if(value !== null) {
-  //       console.log(value)
-  //       return value;
-  //     }
-  //   } catch(e) {
-  //     console.log(e)
-  //   }
-  // }
-
   const onContinue = async () => {
     setIsLoading(true);
     let phone = null;
     let token = null;
     try {
       phone = await getValue("phoneNumber");
+      console.log("phone", phone)
       await AuthProvider.loginUser(phone, code);
-      token = await AuthProvider.getToken();
+      token = await AuthProvider.getToken(phone, code);
     } catch (error) {
       console.log(error);
       setIsLoading(false);
