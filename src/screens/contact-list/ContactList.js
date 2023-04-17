@@ -27,6 +27,7 @@ import Animated, {
   interpolate,
   Extrapolation,
 } from "react-native-reanimated";
+import FGLocationRetriever from "../../services/FGLocationRetriever";
 import { useDispatch } from "react-redux";
 import { setFirstLaunch } from "../../store/slices/AuthSlice";
 import { getContacts } from "../../utils/helper";

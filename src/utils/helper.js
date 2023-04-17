@@ -1,6 +1,9 @@
 import { Platform, PermissionsAndroid } from "react-native";
 import { storeObject, getObject } from "./AsyncStore";
 import Contacts from "react-native-contacts";
+import { getImgXtension, findImageInCache, cacheImage } from "./CacheImage";
+import RNFS from 'react-native-fs';
+
 
 export const getMobileNumber = (item) => {
   if (item?.phoneNumbers.length == 1) {
@@ -73,5 +76,29 @@ export async function setSelectedContacts(
   if (value !== null) {
     selectedContactListPreload = value;
     setSelectedContactList(value);
+  }
+}
+
+export async function loadImg(uri, cacheKey) {
+  let imgXt = getImgXtension(uri);
+  if (!imgXt || !imgXt.length) {
+    console.error(`Couldn't load Image:`, cacheKey);
+    // setUri(require('../../assets/imgs/emrgUserMarker.png'))
+    return;
+  }
+  const cacheFileUri = `${RNFS.CachesDirectoryPath}/${cacheKey}.${imgXt[0]}`;
+  let imgXistsInCache = await findImageInCache(cacheFileUri);
+  if (imgXistsInCache.exists) {
+    console.log("already cached: ", cacheFileUri);
+    // setUri(getPlatformURI(cacheFileUri));
+  } else {
+    let cached = await cacheImage(uri, cacheFileUri, () => {});
+    if (cached.cached) {
+      console.log("cached new image:", uri);
+      // setUri(getPlatformURI(cacheFileUri));
+    } else {
+      console.error(`Couldn't load Image:`, cacheKey);
+      // setUri(require('../../assets/imgs/emrgUserMarker.png'))
+    }
   }
 }

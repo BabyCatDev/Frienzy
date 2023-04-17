@@ -35,6 +35,7 @@ import WhiteBell from "@lavanda/assets/svgs/white-bell.svg"
 import QrCode from "@lavanda/assets/svgs/qr-code.svg"
 import RoundCorner from "@lavanda/assets/svgs/round-corner.svg"
 import XClose from "@lavanda/assets/svgs/x-close.svg"
+import EmrgDisabled from "@lavanda/assets/svgs/emrg-disabled.svg"
 
 export default class Assets {
   static getVector(path: any) {
@@ -51,6 +52,7 @@ export default class Assets {
     };
   
   }
+  static emrgDisabled = Assets.getVector(EmrgDisabled);
   static xClose = Assets.getVector(XClose);
   static roundCorner = Assets.getVector(RoundCorner);
   static qrCode = Assets.getVector(QrCode);
@@ -91,6 +93,7 @@ export default class Assets {
 
   static userPoint = Assets.getBitmap(require("../../assets/imgs/user.png"));
   static userMarker = Assets.getBitmap(require("../../assets/imgs/userMarker.png"));
+  static emrgUserMarker = Assets.getBitmap(require("../../assets/imgs/emrgUserMarker.png"));
   static splash = Assets.getBitmap(require("../../assets/imgs/splash.png"));
 
 }

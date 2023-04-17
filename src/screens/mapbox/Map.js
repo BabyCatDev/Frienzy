@@ -1,4 +1,4 @@
-import React, { Children, memo, useEffect, useState } from "react";
+import React, { useMemo, memo, useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -30,6 +30,9 @@ import { useFocusEffect } from "@react-navigation/native";
 import coachellaOverlayData from "../../assets/coachella.json";
 import { getMobileNumber } from "../../utils/helper";
 import OverlayScreen from "./OverlayScreen";
+import FBSaver from "../../services/FBSaver";
+import AlarmOverlay from "./AlarmOverlay";
+import CacheImage from "../../utils/CacheImage";
 
 //this is my personal access token, you can use your own, I think it's tied to my secret token which is hardcoded to my environment
 Mapbox.setAccessToken(
@@ -42,8 +45,10 @@ const Map = ({ navigation }) => {
     -116.23774063311555, 33.68024422721021,
   ]);
   const [error, setError] = useState(null);
+  const [alarmDisabled, setAlarmDisabled] = useState(false);
   const [counter, setCounter] = useState();
   const [contacts, setContacts] = useState([]);
+  const [alarm, setAlarm] = useState(false);
   const [selectedContacts, setSelectedContacts] = useState({});
   const [users, setUsers] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -55,14 +60,19 @@ const Map = ({ navigation }) => {
     setSelectedContacts(selectedContactList);
     setContacts(contacts);
   }
+  async function getAlarm() {
+    const alarm = await getObject("alarm");
+    setAlarmDisabled(alarm);
+  }
 
   useEffect(() => {
     getContacts();
+    getAlarm();
   }, []);
 
   // useEffect(() => {
-  //   filterUsers(users);
-  // }, [users]);
+  //   FGLocationRetriever.getInstance().cashFriendsImages();
+  // }, []);
 
   const UserMarker = () => (
     <LinearGradient
@@ -94,6 +104,9 @@ const Map = ({ navigation }) => {
   };
 
   const FriendMarker = memo(({ contact, setUserToPush, setVisible }) => {
+   
+    console.log(contact.profile_pic)
+    console.log(contact, "CONTACT");
     return (
       <TouchableOpacity
         onPress={() => {
@@ -102,7 +115,7 @@ const Map = ({ navigation }) => {
         }}
       >
         <AssetImage
-          asset={Assets.userMarker}
+          asset={contact.alarm ? Assets.emrgUserMarker : Assets.userMarker}
           width={normalize(51)}
           height={normalize(56)}
         />
@@ -116,10 +129,17 @@ const Map = ({ navigation }) => {
             alignItems: "center",
           }}
         >
-          {contact.thumbnailPath !== null ? (
-            <Image
-              source={{ uri: contact.thumbnailPath }}
-              style={{ width: normalize(42), height: normalize(42) }}
+          {contact.profile_pic ? (       
+            <CacheImage
+              source={{
+                uri: contact.profile_pic,
+              }}
+              cacheKey={contact.key}
+              style={{
+                width: normalize(42),
+                height: normalize(42),
+                borderRadius: 21,
+              }}
             />
           ) : (
             <View
@@ -189,6 +209,9 @@ const Map = ({ navigation }) => {
         phone: location.phone,
         coordinates: [location.long, location.lat],
         date: location.date,
+        alarm: location.alarm,
+        profile_pic: location.profile_pic,
+        key: location.key
       };
     });
 
@@ -202,19 +225,34 @@ const Map = ({ navigation }) => {
       const user = users.find((user) => user.phone == phone);
       if (user !== undefined) {
         renderUsers.push({
+          alarm: user.alarm,
           phone: user.phone,
           coordinates: user.coordinates,
           givenName: contacts[elem].givenName,
           familyName: contacts[elem].familyName,
-          thumbnailPath: contacts[elem].hasThumbnail
-            ? contacts[elem].thumbnailPath
-            : null,
+          profile_pic: user.profile_pic,
+          key: user.key
         });
       }
     }
     // console.log("renderUsers", renderUsers);
     return renderUsers;
   }
+
+  // useEffect(() => {
+  //   async function getImages() {
+  //     const usersWithImg = [];
+  //     await Promise.all(
+  //       renderUsers.map(async (user) => {
+  //         const key = await FBSaver.getInstance()._getUserKey(user.phone);
+  //         const friendData = await FBSaver.getInstance().getFriendData(key);
+  //         if (friendData != null) {
+  //           [...usersWithImg, { ...user, image: friendData.profile_pic }]
+  //       })
+  //     );
+  //   }
+  //   getImages();
+  // }, [users]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -300,7 +338,7 @@ const Map = ({ navigation }) => {
         >
           <Mapbox.Camera
             followZoomLevel={5}
-            zoomLevel={15}
+            zoomLevel={1}
             centerCoordinate={location}
             // Coachella
             // here
@@ -341,13 +379,31 @@ const Map = ({ navigation }) => {
               </Mapbox.MarkerView>
             )}
 
+          {/* <Mapbox.MarkerView coordinate={location}>
+            <FriendMarker
+              contact={{
+                phone: "+18005553535",
+                coordinates: [-116.23774063311555, 33.68024422721021],
+                givenName: "Jay",
+                familyName: "Z",
+                thumbnailPath: null,
+              }}
+              setUserToPush={setUserToPush}
+              setVisible={setVisible}
+            />
+          </Mapbox.MarkerView> */}
+
           {renderUsers?.map((user, index) => (
             <Mapbox.MarkerView
               coordinate={user?.coordinates}
               key={user?.phone}
               id={user?.phone}
             >
-              <FriendMarker contact={user} setUserToPush={setUserToPush} setVisible={setVisible}/>
+              <FriendMarker
+                contact={user}
+                setUserToPush={setUserToPush}
+                setVisible={setVisible}
+              />
             </Mapbox.MarkerView>
           ))}
           {/* <Mapbox.UserLocation showsUserHeadingIndicator={true} /> */}
@@ -364,7 +420,7 @@ const Map = ({ navigation }) => {
         />
       </TouchableOpacity>
       <TouchableOpacity
-        style={{ position: "absolute", right: 10, bottom: 58 }}
+        style={{ position: "absolute", right: 10, bottom: 144.56 }}
         onPress={requestLocation}
       >
         <AssetImage
@@ -374,7 +430,9 @@ const Map = ({ navigation }) => {
         />
       </TouchableOpacity>
 
-      {/* <TouchableOpacity
+      <TouchableOpacity
+        onPress={() => setAlarm(true)}
+        disabled={alarmDisabled}
         style={{
           position: "absolute",
           right: 10,
@@ -386,8 +444,7 @@ const Map = ({ navigation }) => {
         }}
       >
         <AssetImage
-          asset={Assets.emrgButton}
-          // asset={Assets.userPosition}
+          asset={alarmDisabled ? Assets.emrgDisabled : Assets.emrgButton}
           width={normalize(90)}
           height={normalize(91)}
         />
@@ -401,8 +458,17 @@ const Map = ({ navigation }) => {
             height={normalize(32)}
           />
         )}
-      </TouchableOpacity> */}
-      {visible && <OverlayScreen setVisible={setVisible} userToPush={userToPush}/>}
+      </TouchableOpacity>
+      {visible && (
+        <OverlayScreen setVisible={setVisible} userToPush={userToPush} />
+      )}
+      {alarm && (
+        <AlarmOverlay
+          setVisible={setAlarm}
+          usersToPush={users}
+          setAlarmDisabled={setAlarmDisabled}
+        />
+      )}
     </View>
   );
 };

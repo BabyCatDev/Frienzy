@@ -7,7 +7,6 @@ import { AssetImage } from "../../assets/asset_image";
 import normalize from "react-native-normalize";
 import LinearGradient from "react-native-linear-gradient";
 import FGLocationRetriever from "../../services/FGLocationRetriever";
-import { storeObject, getObject, getBool } from "../../utils/AsyncStore";
 import { getMobileNumber } from "../../utils/helper";
 
 const ContactItem = ({ item, onPress, index, check }) => {

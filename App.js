@@ -15,6 +15,7 @@ import { setAutoLoginLoading } from "./src/store/slices/AuthSlice";
 import FGLocationTrackingService from "./src/services/FGLocationTrackingService";
 import FGLocationRetriever from "./src/services/FGLocationRetriever";
 import OneSignal from 'react-native-onesignal';
+import FBSaver from "./src/services/FBSaver";
 // OneSignal Initialization
 OneSignal.setAppId('146aaecb-a485-4ccd-82b7-5f154569d9c8');
 
@@ -46,7 +47,10 @@ OneSignal.setNotificationOpenedHandler(notification => {
 const App = () => {
   const fetchCredentials = async () => {
     // store.dispatch(setAutoLoginLoading(true));
-    const token = await AuthProvider.getToken();
+    const key = FBSaver.getInstance().userKey;
+    const phone = FBSaver.getInstance().keyToPhone[key];
+    console.log("phone", phone)
+    const token = await AuthProvider.getToken(phone, '111111');
 
     if (token) {
       store.dispatch(autoLoginUser(token));
@@ -58,6 +62,7 @@ const App = () => {
 
   useEffect(() => {
     async function appStart() {
+      FBSaver.getInstance().init();
       await store.dispatch(checkFirstLaunch());
       fetchCredentials();
       FGLocationRetriever.getInstance().init();

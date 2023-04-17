@@ -5,6 +5,7 @@ import {
   useWindowDimensions,
   Platform,
   TextInput,
+  TouchableOpacity,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LinearGradient from "react-native-linear-gradient";
@@ -21,32 +22,35 @@ import { useDispatch } from "react-redux";
 import { logout } from "../../store/slices/AuthSlice";
 import { MainButton } from "../../components/main_button";
 import FGLocationRetriever from "../../services/FGLocationRetriever";
-import { getValue, storeValue } from "../../utils/AsyncStore";
 import QrOverlay from "./QrOverlay";
+import FBSaver from "../../services/FBSaver";
+import { removeValue } from "../../utils/AsyncStore";
+import DeleteAccountOverlay from "./DeleteAccountOverlay";
 
 const UserProfile = ({ navigation }) => {
   const { height } = useWindowDimensions();
-  const [name, setName] = useState("Frienzy Nickname");
-  const [phone, setPhone] = useState("+1 123 456 7890");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [isChange, setIsChange] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [confirm, setConfirm] = useState(false);
   const scrollRef = React.useRef();
   const isAndroid = Platform.OS === "android";
   const { isFirstLaunch } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const firstName = useMemo(() => {
-    const nameArr = name.split(" ");
-    if (nameArr.length > 1) {
+    const nameArr = name?.username?.split(" ");
+    if (nameArr?.length > 1) {
       return nameArr[0];
     } else {
-      return name;
+      return name?.username;
     }
   });
 
   const lastName = useMemo(() => {
-    const nameArr = name.split(" ");
-    if (nameArr.length > 1) {
+    const nameArr = name?.username?.split(" ");
+    if (nameArr?.length > 1) {
       return nameArr[1];
     } else {
       return "";
@@ -66,20 +70,44 @@ const UserProfile = ({ navigation }) => {
   }, [locationSharing]);
 
   const onLogout = async () => {
-    await AuthProvider.logoutUser();
-    FGLocationRetriever.getInstance().reset();
-    dispatch(logout());
+    try {
+      await AuthProvider.logoutUser();
+      FGLocationRetriever.getInstance().reset();
+      dispatch(logout());
+    } catch (e) {
+      console.log(e);
+    }
   };
 
+  const onDeleteAccount = async () => {
+    try {
+      await AuthProvider.logoutUser();
+      FGLocationRetriever.getInstance().reset();
+      await FBSaver.getInstance().reset();
+      await removeValue("image");
+      await removeValue("alarm");
+      await removeValue("contacts");
+      await removeValue("counter");
+      await removeValue("selectedContactList");
+      await removeValue("phoneNumber");
+      dispatch(logout());
+    } catch (e) {
+      console.log(e);
+    }
+  };
   async function fetchData() {
-    const phone = await getValue("phoneNumber");
-    const name = await getValue("nickname");
-    console.log(name);
-    setName((prev) => (name ? name : prev));
-    setPhone((prev) => (phone ? phone : prev));
+    const key = FBSaver.getInstance().userKey;
+    const phone = FBSaver.getInstance().keyToPhone[key];
+    const user = await FBSaver.getInstance().getUserData();
+    setName(user ? user : { username: "Frienzy Nickname", profile_pic: "" });
+    setPhone(phone ? phone : "+12345678901");
   }
   useEffect(() => {
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    console.log(FBSaver.getInstance().profilePicture, 'profile picture')
   }, []);
 
   return (
@@ -108,7 +136,7 @@ const UserProfile = ({ navigation }) => {
           />
           <View style={{ alignItems: "center", width: "100%" }}>
             {/* AVATAR  */}
-            <Avatar name={name} />
+            <Avatar username={name?.username} profilePic={name?.profile_pic} />
             {/* NAME */}
             {!isChange ? (
               <View>
@@ -119,7 +147,7 @@ const UserProfile = ({ navigation }) => {
                     alignSelf: "center",
                   }}
                 >
-                  {name}
+                  {name?.username}
                 </Text>
                 <Text
                   style={{
@@ -136,12 +164,12 @@ const UserProfile = ({ navigation }) => {
                 returnKeyType="done"
                 autoFocus={true}
                 textAlign="center"
-                value={name}
-                onChangeText={(text) => setName(text)}
+                value={name?.username}
+                onChangeText={(text) => setName({ ...name, username: text })}
                 style={AppStyles.profileInput}
                 placeholderTextColor={Colors.darkText}
                 onBlur={async () => {
-                  await storeValue("nickname", name);
+                  await FBSaver.getInstance().saveUsername(name?.username);
                 }}
               />
             )}
@@ -166,7 +194,10 @@ const UserProfile = ({ navigation }) => {
               qrCode
             />
             <ProfileRow title={"Log out"} onPress={() => onLogout()} />
-            <ProfileRow title={"Delete account"} onPress={() => onLogout()} />
+            <ProfileRow
+              title={"Delete account"}
+              onPress={() => setConfirm(true)}
+            />
           </View>
         </View>
       </KeyboardAwareScrollView>
@@ -178,7 +209,11 @@ const UserProfile = ({ navigation }) => {
             bottom: height * 0.06,
             alignSelf: "center",
           }}
-          onPress={() => {
+          onPress={async () => {
+            await FBSaver.getInstance().saveUsername(
+              name?.username,
+              isFirstLaunch
+            );
             navigation.push("ContactsStack");
           }}
         />
@@ -190,6 +225,9 @@ const UserProfile = ({ navigation }) => {
           firstName={firstName}
           lastName={lastName}
         />
+      )}
+      {confirm && (
+        <DeleteAccountOverlay setVisible={setConfirm} onDeleteAccount={onDeleteAccount} />
       )}
     </LinearGradient>
   );

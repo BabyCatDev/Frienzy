@@ -1,5 +1,14 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { View, Image, Pressable, Alert, Linking, Text } from "react-native";
+import {
+  View,
+  Image,
+  Pressable,
+  Alert,
+  Linking,
+  Text,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import { AssetImage } from "../../assets/asset_image";
 import Assets from "../../assets";
 import normalize from "react-native-normalize";
@@ -10,14 +19,13 @@ import { Sizes } from "../../utils/AppConstants";
 import { AppStyles } from "../../utils/AppStyles";
 import { storeObject, getObject } from "../../utils/AsyncStore";
 import storage from "@react-native-firebase/storage";
+import FBSaver from "../../services/FBSaver";
 
-export const Avatar = ({ name }) => {
+export const Avatar = ({ username, profilePic }) => {
   const [response, setResponse] = useState(null);
   const [dataImage, setDataImage] = useState([]);
-  const filename = dataImage?.[0]?.substring(
-    dataImage?.[0]?.lastIndexOf("/") + 1
-  );
-  const reference = storage().ref(`UsersPhotos/${filename}`);
+  console.log(username, "avatar name");
+  console.log(profilePic, "avatar name");
 
   async function getAvatar() {
     const image = await getObject("image");
@@ -30,6 +38,7 @@ export const Avatar = ({ name }) => {
   }
 
   useEffect(() => {
+    // setDataImage([profilePic]);
     getAvatar();
   }, []);
 
@@ -50,7 +59,7 @@ export const Avatar = ({ name }) => {
   const onButtonPress = useCallback(
     (options) => {
       if (response?.errorCode !== "permission") {
-        launchImageLibrary(options, (res) => {
+        launchImageLibrary(options, async (res) => {
           if (res.didCancel) {
             console.log("User cancelled the process");
           } else if (res.errorCode === "permission") {
@@ -85,9 +94,11 @@ export const Avatar = ({ name }) => {
             console.log(res);
             setResponse(res);
             let data = res.assets?.map((el) => el.uri);
-            storeObject("image", data).then(() => {
+            storeObject("image", data).then(async() => {
               setDataImage(data);
+              await FBSaver.getInstance().saveProfilePic(data?.[0], Platform.OS);
             });
+            
           }
         });
       } else {
@@ -116,12 +127,12 @@ export const Avatar = ({ name }) => {
   return (
     <View style={{ marginTop: normalize(44) }}>
       <View style={AppStyles.avatarContainer}>
-        {dataImage.length ? (
+        {dataImage?.[0] || profilePic ? (
           <Image
             resizeMode="cover"
             resizeMethod="scale"
             style={AppStyles.avatar}
-            source={{ uri: dataImage[0] }}
+            source={{ uri: dataImage?.[0] ?? profilePic.replace('.googleapis.com:443/', '.googleapis.com/') }}
           />
         ) : (
           <Text
@@ -130,7 +141,7 @@ export const Avatar = ({ name }) => {
               textAlign: "center",
             }}
           >
-            {getInitials(name)}
+            {getInitials(username)}
           </Text>
         )}
       </View>

@@ -6,9 +6,7 @@ import {
   TextInput,
   Platform,
   LayoutAnimation,
-  ActivityIndicator,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import LinearGradient from "react-native-linear-gradient";
 import { Colors } from "../../utils/Colors";
 import { MainButton } from "../../components/main_button";
@@ -21,6 +19,7 @@ import { PrefixPicker } from "./PrefixPicker";
 import { Picker } from "@react-native-picker/picker";
 import countries from "../../utils/country-phone-codes.json";
 import { storeValue } from "../../utils/AsyncStore";
+import FBSaver from "../../services/FBSaver";
 
 const UserLogin = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -39,25 +38,20 @@ const UserLogin = ({ navigation }) => {
     }, [])
   );
 
-  const onContinue = () => {
-    // setIsLoading(true);
-    // AuthProvider.startPasswordless(selectedPrefix + phoneNumber, () => {
-    //   setIsLoading(false);
-    //   storeValue('phoneNumber', selectedPrefix + phoneNumber);
-    //   navigation.navigate('VerifyPhone')
-    // }).catch((err) => {
-    //   setIsLoading(false);
-    //   console.log(err);
-    // });
+  const onContinue = async () => {
     if (selectedPrefix + phoneNumber === "+18005553535") {
+      setIsLoading(true);
       console.log("admin");
       storeValue("phoneNumber", selectedPrefix + phoneNumber);
+      await FBSaver.getInstance().setUserPhone(selectedPrefix + phoneNumber);
+      setIsLoading(false);
       navigation.navigate("VerifyPhone");
     } else {
       setIsLoading(true);
-      AuthProvider.startPasswordless(selectedPrefix + phoneNumber, () => {
+      AuthProvider.startPasswordless(selectedPrefix + phoneNumber, async () => {
         setIsLoading(false);
         storeValue("phoneNumber", selectedPrefix + phoneNumber);
+        await FBSaver.getInstance().setUserPhone(selectedPrefix + phoneNumber);
         navigation.navigate("VerifyPhone");
       }).catch((err) => {
         setIsLoading(false);

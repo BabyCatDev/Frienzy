@@ -4,7 +4,7 @@ import moment from "moment";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import OneSignal from "react-native-onesignal";
-
+import { loadImg } from "../utils/helper";
 import FGLocationTrackingService from "./FGLocationTrackingService";
 import { sha1 } from "react-native-sha1";
 
@@ -172,8 +172,14 @@ export default class FGLocationRetriever {
           const user = await ref.once(`value`);
           console.log(this.keyToPhone[key]);
           if (user.exists() && this.keyToPhone[key]) {
+            const ref = database().ref(`users/${key}`);
+            const userData = await ref.once(`value`);
+            console.log(userData?.val()?.alarm);
             const userModel = user.val();
             userModel["phone"] = this.keyToPhone[key];
+            userModel["alarm"] = userData?.val()?.alarm;
+            userModel["profile_pic"] = userData?.val()?.profile_pic;
+            userModel["key"] = key;
             locations = [...locations, userModel];
           }
         }

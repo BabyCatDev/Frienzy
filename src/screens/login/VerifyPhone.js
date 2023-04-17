@@ -5,9 +5,7 @@ import {
   useWindowDimensions,
   TextInput,
   Pressable,
-  ActivityIndicator,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import LinearGradient from "react-native-linear-gradient";
 import normalize from "react-native-normalize";
 import { Colors } from "../../utils/Colors";
@@ -16,11 +14,11 @@ import { AppStyles } from "../../utils/AppStyles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useSelector } from "react-redux";
 import AuthProvider from "../../utils/AuthProvider";
-import { useEffect } from "react";
 import store from "../../store";
 import { autoLoginUser } from "../../store/slices/AuthSlice";
 import FGLocationRetriever from "../../services/FGLocationRetriever";
 import { getValue } from "../../utils/AsyncStore";
+import FBSaver from "../../services/FBSaver";
 
 const VerifyPhone = ({ navigation }) => {
   const [code, setCode] = useState("");
@@ -37,9 +35,10 @@ const VerifyPhone = ({ navigation }) => {
     let token = null;
     try {
       phone = await getValue("phoneNumber");
-      console.log("phone", phone)
+      console.log("phone", phone);
       await AuthProvider.loginUser(phone, code);
       token = await AuthProvider.getToken(phone, code);
+      await FBSaver.getInstance().createUser();
     } catch (error) {
       console.log(error);
       setIsLoading(false);

@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { fetchUserInfoApiCall, loginUserApiCall } from "../../network";
 import AuthProvider from "../../utils/AuthProvider";
+import FBSaver from "../../services/FBSaver";
 
 export const loginUser = createAsyncThunk(
   "authSlice/loginUser",
@@ -19,8 +20,11 @@ export const checkFirstLaunch = createAsyncThunk(
   "authSlice/checkFirstLaunch",
   async () => {
     const value = await AsyncStorage.getItem("appLaunched");
+    const key = FBSaver.getInstance().userKey;
+    const phone = FBSaver.getInstance().keyToPhone[key];
+    console.log("phone", phone);
     if (value === null) {
-      const token = await AuthProvider.getToken();
+      const token = await AuthProvider.getToken(phone, '111111');
       if (token != "" && token != undefined) {
         await AuthProvider.logoutUser();
       }
