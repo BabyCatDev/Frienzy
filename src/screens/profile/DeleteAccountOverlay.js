@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -60,12 +60,6 @@ const DeleteAccountOverlay = ({ setVisible, onDeleteAccount }) => {
         </Text>
         <View
           style={{
-            // backgroundColor: "red",
-            // width: "100%",
-            // height: width - 44 - 76,
-            // borderRadius: 20,
-            // marginTop: 20,
-            // padding: 33,
             flexDirection: "row",
           }}
         >
@@ -103,7 +97,6 @@ const DeleteAccountOverlay = ({ setVisible, onDeleteAccount }) => {
           <TouchableOpacity
             onPress={() => setVisible(false)}
             style={{
-              // backgroundColor: "red",
               flex: 1,
               alignItems: "center",
               justifyContent: "center",
@@ -141,11 +134,6 @@ const DeleteAccountOverlay = ({ setVisible, onDeleteAccount }) => {
             asset={Assets.xClose}
             width={normalize(20)}
             height={normalize(20)}
-            // containerStyle={{
-            //   position: "absolute",
-            //   top: normalize(13),
-            //   right: normalize(13),
-            // }}
           />
         </TouchableOpacity>
         {isLoading && (

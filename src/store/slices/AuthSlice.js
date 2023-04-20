@@ -22,7 +22,6 @@ export const checkFirstLaunch = createAsyncThunk(
     const value = await AsyncStorage.getItem("appLaunched");
     const key = FBSaver.getInstance().userKey;
     const phone = FBSaver.getInstance().keyToPhone[key];
-    console.log("phone", phone);
     if (value === null) {
       const token = await AuthProvider.getToken(phone, '111111');
       if (token != "" && token != undefined) {

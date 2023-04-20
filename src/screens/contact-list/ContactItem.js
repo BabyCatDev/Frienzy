@@ -1,4 +1,4 @@
-import React, { useState, memo, useEffect } from "react";
+import React from "react";
 import { View, Text, Image, Pressable } from "react-native";
 import { Colors } from "../../utils/Colors";
 import { AppStyles } from "../../utils/AppStyles";
@@ -19,16 +19,9 @@ const ContactItem = ({ item, onPress, index, check }) => {
   };
   return (
     <Pressable
-      onPress={async () => {
+      onPress={() => {
         onPress({ item: item, state: !check });
-        if (!check) {
-          FGLocationRetriever.getInstance().addPhoneToTrack(
-            getMobileNumber(item)
-          );
-          FGLocationRetriever.getInstance().allowPhoneToTrackMe(
-            getMobileNumber(item)
-          );
-        } else {
+        if (check) {
           FGLocationRetriever.getInstance().removePhoneToTrack(
             getMobileNumber(item)
           );

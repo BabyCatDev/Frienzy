@@ -2,24 +2,23 @@ import React, { useEffect, useState, useMemo, useCallback } from "react";
 import {
   View,
   RefreshControl,
-  Platform,
   useWindowDimensions,
-  PermissionsAndroid,
   Text,
   Modal,
   TouchableOpacity,
 } from "react-native";
+import { getMobileNumber } from "../../utils/helper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Contacts from "react-native-contacts";
 import LinearGradient from "react-native-linear-gradient";
 import { Colors } from "../../utils/Colors";
 import { Header } from "../profile/Header";
 import { AppStyles } from "../../utils/AppStyles";
-import Assets from "../../assets";
 import normalize from "react-native-normalize";
 import SearchField from "./SearchField";
 import ContactItem from "./ContactItem";
 import { MainButton } from "../../components/main_button";
+
+import FGLocationRetriever from "../../services/FGLocationRetriever";
 import Animated, {
   useSharedValue,
   useAnimatedScrollHandler,
@@ -27,12 +26,9 @@ import Animated, {
   interpolate,
   Extrapolation,
 } from "react-native-reanimated";
-import FGLocationRetriever from "../../services/FGLocationRetriever";
 import { useDispatch } from "react-redux";
 import { setFirstLaunch } from "../../store/slices/AuthSlice";
 import { getContacts } from "../../utils/helper";
-import { onContactPress } from "../../utils/helper";
-import { setSelectedContacts } from "../../utils/helper";
 
 const ContactList = ({ navigation }) => {
   const { height } = useWindowDimensions();
@@ -47,7 +43,12 @@ const ContactList = ({ navigation }) => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    getContacts(setContactList, SortArray);
+    getContacts(
+      setContactList,
+      SortArray,
+      selectedContactListPreload,
+      setSelectedContactList
+    );
     setTimeout(() => {
       setRefreshing(false);
     }, 500);
@@ -77,14 +78,6 @@ const ContactList = ({ navigation }) => {
   const toggleModal = () => {
     setShowModal(!showModal);
   };
-
-  const handleShareLocation = (contact) => {
-    toggleModal();
-  };
-
-  useEffect(() => {
-    setSelectedContacts(selectedContactListPreload, setSelectedContactList);
-  }, []);
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -132,17 +125,10 @@ const ContactList = ({ navigation }) => {
       console.log(e);
     }
   };
-  const getData = async (key) => {
-    try {
-      const jsonValue = await AsyncStorage.getItem(key);
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
-  const sharePressed = () => {
-    //console.log("sharePressed");
+  console.log("contactList", selectedContactList);
+
+  const sharePressed = () => { s
     // add selectedContact to selectedContactList
     setSelectedContactList((prevState) => {
       const newState = { ...prevState, [selectedContact.recordID]: true };
@@ -165,44 +151,16 @@ const ContactList = ({ navigation }) => {
     setIsChange(!isChange);
   };
 
-  async function getContacts() {
-    if (Platform.OS === "android") {
-      const andoidContactPermission = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
-        {
-          title: "Contacts Permission",
-          message: "This app would like to view your contacts.",
-          buttonNeutral: "Ask Me Later",
-          buttonNegative: "Cancel",
-          buttonPositive: "OK",
-        }
-      );
-      if (andoidContactPermission === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log("Contacts Permission granted");
-        Contacts.getAll()
-          .then((contacts) => {
-            setContactList(contacts);
-            storeData("contacts", contacts);
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-      } else {
-        console.log("Contacts permission denied");
-      }
-    } else {
-      try {
-        const contacts = await Contacts?.getAll();
-        setContactList(contacts.sort(SortArray));
-        storeData("contacts", contacts);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  }
-
   useEffect(() => {
-    getContacts(setContactList, SortArray);
+    async function onStart() {
+      await getContacts(
+        setContactList,
+        SortArray,
+        selectedContactListPreload,
+        setSelectedContactList
+      );
+    }
+    onStart();
   }, []);
 
   return (
@@ -239,7 +197,6 @@ const ContactList = ({ navigation }) => {
         contentContainerStyle={{
           paddingBottom: normalize(100),
         }}
-        // keyboardShouldPersistTaps={"handled"}
       >
         <Animated.View
           style={{
@@ -285,10 +242,9 @@ const ContactList = ({ navigation }) => {
                         );
                         return;
                       }
-                      setShowModal(true);
                       setSelectedContact(item);
+                      setShowModal(true);
                     }}
-                    // permit={shareLocations[`${contact.recordID}`]}
                     check={selectedContactList[contact.recordID] == true}
                   />
                 );
@@ -318,10 +274,16 @@ const ContactList = ({ navigation }) => {
               <TouchableOpacity
                 style={{ backgroundColor: "green", padding: 10 }}
                 onPress={() => {
+                  if (!selectedContactList[selectedContact.recordID] == true) {
+                    FGLocationRetriever.getInstance().addPhoneToTrack(
+                      getMobileNumber(selectedContact)
+                    );
+                    FGLocationRetriever.getInstance().allowPhoneToTrackMe(
+                      getMobileNumber(selectedContact)
+                    );
+                  }
                   toggleModal();
                   sharePressed();
-                  // dispatch(setFirstLaunch());
-                  // navigation.push("Map");
                 }}
               >
                 <Text style={{ color: "white" }}>Share</Text>

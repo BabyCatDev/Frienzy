@@ -4,7 +4,7 @@ import {
   Text,
   useWindowDimensions,
   TextInput,
-  Pressable,
+  TouchableOpacity,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import normalize from "react-native-normalize";
@@ -35,7 +35,6 @@ const VerifyPhone = ({ navigation }) => {
     let token = null;
     try {
       phone = await getValue("phoneNumber");
-      console.log("phone", phone);
       await AuthProvider.loginUser(phone, code);
       token = await AuthProvider.getToken(phone, code);
       await FBSaver.getInstance().createUser();
@@ -58,6 +57,7 @@ const VerifyPhone = ({ navigation }) => {
     <LinearGradient colors={Colors.backgroundGradient} style={{ flex: 1 }}>
       <KeyboardAwareScrollView
         ref={scrollRef}
+        keyboardShouldPersistTaps={'handled'}
         contentContainerStyle={{ minHeight: isChange ? "80%" : "100%" }}
         extraScrollHeight={isAndroid ? 0 : 75}
         onKeyboardDidShow={() => {
@@ -99,24 +99,21 @@ const VerifyPhone = ({ navigation }) => {
                 setIsChange(true);
               }}
             />
-            <Pressable
-              style={{ alignSelf: "flex-end" }}
-              disabled
+            <TouchableOpacity
+              style={{ alignSelf: "flex-end", marginBottom: normalize(40) }}
+              // disabled
               onPress={() => onResend()}
             >
               <Text
-                style={{ ...AppStyles.medium16, marginBottom: normalize(40) }}
+                style={AppStyles.medium16}
               >
                 Resend code
               </Text>
-            </Pressable>
+            </TouchableOpacity>
             <MainButton
               isLoading={isLoading}
               title={"CONTINUE"}
-              onPress={
-                // () => navigation.navigate("UserProfile")
-                () => onContinue()
-              }
+              onPress={() => onContinue()}
             />
           </View>
         </View>

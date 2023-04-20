@@ -65,16 +65,13 @@ export default class FBSaver {
       const pathToFile =
         platform === "ios" ? path?.replace("file://", "") : path;
       const res = await reference.putFile(pathToFile);
-      console.log(res);
       const url = await storage()
         .ref(`UsersPhotos/${filename}`)
         .getDownloadURL();
-      console.log(url);
       database().ref(`users/${this.userKey}`).update({
         profile_pic: url,
       });
       this.profilePicture = filename;
-      // return url;
     } catch (e) {
       console.log(e);
     }
@@ -163,11 +160,9 @@ export default class FBSaver {
 
     const numeric_string = phone.replace(/\D/g, "");
 
-    console.log(phone);
     console.log(numeric_string);
 
     const key = await sha1(numeric_string.substring(numeric_string.length - 7));
-    console.log(key);
     this.keyToPhone[key] = phone;
     return key;
   }

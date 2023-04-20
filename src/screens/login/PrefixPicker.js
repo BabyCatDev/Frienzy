@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { AssetImage } from "../../assets/asset_image";
 import Assets from "../../assets";
 import normalize from "react-native-normalize";
-import { Colors } from "../../utils/Colors";
 
 export const PrefixPicker = ({ onPress, containerStyle, selectedPrefix }) => {
   return (
@@ -12,16 +11,11 @@ export const PrefixPicker = ({ onPress, containerStyle, selectedPrefix }) => {
       onPress={onPress}
     >
       <View style={styles.prefixContainer}>
-        <Text
-          style={styles.prefixTypo}
-        >
-          {selectedPrefix}
-        </Text>
+        <Text style={styles.prefixTypo}>{selectedPrefix}</Text>
         <AssetImage
           asset={Assets.pickerArrow}
           width={normalize(6)}
           height={normalize(6)}
-
         />
       </View>
     </TouchableOpacity>
@@ -38,11 +32,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
   },
-  prefixTypo:{
+  prefixTypo: {
     fontFamily: "Poppins-Medium",
     fontSize: normalize(16),
     lineHeight: normalize(24),
     color: "#EEF0FF",
     marginRight: normalize(5),
-  }
+  },
 });

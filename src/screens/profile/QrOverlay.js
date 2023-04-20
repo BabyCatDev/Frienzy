@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   View,
   StyleSheet,
@@ -11,24 +11,12 @@ import {
 } from "react-native";
 import { BlurView } from "@react-native-community/blur";
 import LinearGradient from "react-native-linear-gradient";
-import { AppStyles } from "../../utils/AppStyles";
 import normalize from "react-native-normalize";
-import FGLocationRetriever from "../../services/FGLocationRetriever";
-import { getValue } from "../../utils/AsyncStore";
 import { AssetImage } from "../../assets/asset_image";
 import Assets from "../../assets";
 
 const QrOverlay = ({ setVisible, phoneNumber, firstName, lastName }) => {
   const { width } = useWindowDimensions();
-  //   const [name, setName] = useState("");
-  //   useEffect(() => {
-  //     const getName = async () => {
-  //       const name = await getValue("nickname");
-  //       console.log(name);
-  //       setName(name);
-  //     };
-  //     getName();
-  //   }, []);
 
   return (
     <View
@@ -70,7 +58,6 @@ const QrOverlay = ({ setVisible, phoneNumber, firstName, lastName }) => {
         </Text>
         <View
           style={{
-            // backgroundColor: "red",
             width: "100%",
             height: width - 44 - 76,
             borderRadius: 20,
@@ -140,11 +127,6 @@ const QrOverlay = ({ setVisible, phoneNumber, firstName, lastName }) => {
             asset={Assets.xClose}
             width={normalize(20)}
             height={normalize(20)}
-            // containerStyle={{
-            //   position: "absolute",
-            //   top: normalize(13),
-            //   right: normalize(13),
-            // }}
           />
         </TouchableOpacity>
       </LinearGradient>

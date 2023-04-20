@@ -2,8 +2,8 @@ import { Platform, PermissionsAndroid } from "react-native";
 import { storeObject, getObject } from "./AsyncStore";
 import Contacts from "react-native-contacts";
 import { getImgXtension, findImageInCache, cacheImage } from "./CacheImage";
-import RNFS from 'react-native-fs';
-
+import RNFS from "react-native-fs";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const getMobileNumber = (item) => {
   if (item?.phoneNumbers.length == 1) {
@@ -14,7 +14,12 @@ export const getMobileNumber = (item) => {
   }
 };
 
-export async function getContacts(setContacts, SortArray) {
+export async function getContacts(
+  setContacts,
+  SortArray,
+  selectedContactListPreload,
+  setSelectedContactList
+) {
   if (Platform.OS === "android") {
     const andoidContactPermission = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
@@ -29,8 +34,13 @@ export async function getContacts(setContacts, SortArray) {
     if (andoidContactPermission === PermissionsAndroid.RESULTS.GRANTED) {
       console.log("Contacts Permission granted");
       Contacts.getAll()
-        .then((contacts) => {
-          setContacts(contacts);
+        .then(async (contacts) => {
+          await setSelectedContacts(
+            selectedContactListPreload,
+            setSelectedContactList,
+            contacts
+          );
+          setContacts(contacts.sort(SortArray));
           storeObject("contacts", contacts);
         })
         .catch((e) => {
@@ -42,6 +52,11 @@ export async function getContacts(setContacts, SortArray) {
   } else {
     try {
       const contacts = await Contacts?.getAll();
+      await setSelectedContacts(
+        selectedContactListPreload,
+        setSelectedContactList,
+        contacts
+      );
       setContacts(contacts.sort(SortArray));
       storeObject("contacts", contacts);
     } catch (error) {
@@ -70,12 +85,25 @@ export const onContactPress = (
 
 export async function setSelectedContacts(
   selectedContactListPreload,
-  setSelectedContactList
+  setSelectedContactList,
+  contacts
 ) {
   const value = await getObject("selectedContactList");
+  // const contacts = await getObject("contacts");
   if (value !== null) {
-    selectedContactListPreload = value;
-    setSelectedContactList(value);
+    let selected = {};
+    let counter = 0;
+    for (let i = 0; i < contacts.length; i++) {
+      if (value[contacts[i].recordID] !== undefined) {
+        selected[contacts[i].recordID] = value[contacts[i].recordID];
+      }
+      if (value[contacts[i].recordID] == true) {
+        counter++;
+      }
+    }
+    storeObject("counter", counter);
+    selectedContactListPreload = selected;
+    setSelectedContactList(selected);
   }
 }
 

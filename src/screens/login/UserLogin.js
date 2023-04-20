@@ -41,7 +41,6 @@ const UserLogin = ({ navigation }) => {
   const onContinue = async () => {
     if (selectedPrefix + phoneNumber === "+18005553535") {
       setIsLoading(true);
-      console.log("admin");
       storeValue("phoneNumber", selectedPrefix + phoneNumber);
       await FBSaver.getInstance().setUserPhone(selectedPrefix + phoneNumber);
       setIsLoading(false);
@@ -64,7 +63,7 @@ const UserLogin = ({ navigation }) => {
     <LinearGradient colors={Colors.backgroundGradient} style={{ flex: 1 }}>
       <KeyboardAwareScrollView
         ref={scrollRef}
-        // keyboardShouldPersistTaps={'never'}
+        keyboardShouldPersistTaps={'handled'}
         contentContainerStyle={{ minHeight: isChange ? "80%" : "100%" }}
         extraScrollHeight={isAndroid ? 0 : 75}
         onKeyboardDidShow={() => {
@@ -228,10 +227,7 @@ const UserLogin = ({ navigation }) => {
             <MainButton
               title={"CONTINUE"}
               isLoading={isLoading}
-              onPress={
-                () => onContinue()
-                // () => navigation.navigate("VerifyPhone")
-              }
+              onPress={() => onContinue()}
             />
           </View>
         </View>

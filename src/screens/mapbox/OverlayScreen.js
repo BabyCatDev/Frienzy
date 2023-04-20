@@ -12,17 +12,17 @@ import LinearGradient from "react-native-linear-gradient";
 import { AppStyles } from "../../utils/AppStyles";
 import normalize from "react-native-normalize";
 import FGLocationRetriever from "../../services/FGLocationRetriever";
-import { getValue } from "../../utils/AsyncStore";
+import FBSaver from "../../services/FBSaver";
 
 const OverlayScreen = ({ setVisible, userToPush }) => {
   const [name, setName] = useState("");
+
   useEffect(() => {
-    const getName = async () => {
-      const name = await getValue("nickname");
-      console.log(name);
-      setName(name);
-    };
-    getName();
+    async function fetchData() {
+      const user = await FBSaver.getInstance().getUserData();
+      setName(user.username);
+    }
+    fetchData();
   }, []);
   return (
     <View
@@ -63,7 +63,8 @@ const OverlayScreen = ({ setVisible, userToPush }) => {
         <TouchableOpacity
           onPress={() => {
             FGLocationRetriever.getInstance().sendNotiffication(
-              userToPush, name,
+              userToPush,
+              name,
               "Come to me.\nI'm standing still."
             );
             setVisible(false);
@@ -90,9 +91,9 @@ const OverlayScreen = ({ setVisible, userToPush }) => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            console.log(userToPush);
             FGLocationRetriever.getInstance().sendNotiffication(
-              userToPush, name,
+              userToPush,
+              name,
               "I'm coming to you.\nStay where you are."
             );
             setVisible(false);

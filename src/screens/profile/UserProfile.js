@@ -5,9 +5,7 @@ import {
   useWindowDimensions,
   Platform,
   TextInput,
-  TouchableOpacity,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import LinearGradient from "react-native-linear-gradient";
 import normalize from "react-native-normalize";
 import { Colors } from "../../utils/Colors";
@@ -106,10 +104,6 @@ const UserProfile = ({ navigation }) => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    console.log(FBSaver.getInstance().profilePicture, 'profile picture')
-  }, []);
-
   return (
     <LinearGradient colors={Colors.backgroundGradient} style={{ flex: 1 }}>
       <KeyboardAwareScrollView
@@ -193,20 +187,19 @@ const UserProfile = ({ navigation }) => {
               onPress={() => setVisible(true)}
               qrCode
             />
-            <ProfileRow title={"Log out"} onPress={() => onLogout()} />
+            <ProfileRow title={"Log out"} onPress={async() => await onLogout()} />
             <ProfileRow
               title={"Delete account"}
               onPress={() => setConfirm(true)}
             />
           </View>
         </View>
-      </KeyboardAwareScrollView>
-      {isFirstLaunch && (
+        {isFirstLaunch && (
         <MainButton
           title={"CONTINUE"}
           containerStyle={{
-            position: "absolute",
-            bottom: height * 0.06,
+            // position: "absolute",
+            paddingBottom: height * 0.06,
             alignSelf: "center",
           }}
           onPress={async () => {
@@ -218,6 +211,7 @@ const UserProfile = ({ navigation }) => {
           }}
         />
       )}
+      </KeyboardAwareScrollView>
       {visible && (
         <QrOverlay
           setVisible={setVisible}

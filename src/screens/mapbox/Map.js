@@ -1,10 +1,8 @@
-import React, { useMemo, memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
   useWindowDimensions,
-  Pressable,
-  Image,
   Text,
   TouchableOpacity,
   Platform,
@@ -13,12 +11,10 @@ import Mapbox from "@rnmapbox/maps";
 import { shapeSource } from "@rnmapbox/maps";
 import { Header } from "../profile/Header";
 import { AssetImage } from "../../assets/asset_image";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Assets from "../../assets";
 import normalize from "react-native-normalize";
 import LinearGradient from "react-native-linear-gradient";
 import { Colors } from "../../utils/Colors";
-import { useSelector } from "react-redux";
 import GetLocation, {
   Location,
   LocationError,
@@ -30,20 +26,20 @@ import { useFocusEffect } from "@react-navigation/native";
 import coachellaOverlayData from "../../assets/coachella.json";
 import { getMobileNumber } from "../../utils/helper";
 import OverlayScreen from "./OverlayScreen";
-import FBSaver from "../../services/FBSaver";
 import AlarmOverlay from "./AlarmOverlay";
 import CacheImage from "../../utils/CacheImage";
+import moment from "moment";
 
 //this is my personal access token, you can use your own, I think it's tied to my secret token which is hardcoded to my environment
 Mapbox.setAccessToken(
   "pk.eyJ1Ijoic29jaWFsbmF2IiwiYSI6ImNsZXB2N2g4aTBhOWQzenE2ZTcxdmxlOGoifQ.HL3LG1DJoVRYTZGH9nsOmA"
 );
+// Mapbox?.setConnected(true);
+
 const Map = ({ navigation }) => {
   const { height } = useWindowDimensions();
   const [loading, setLoading] = useState(false);
-  const [location, setLocation] = useState([
-    -116.23774063311555, 33.68024422721021,
-  ]);
+  const [location, setLocation] = useState([]);
   const [error, setError] = useState(null);
   const [alarmDisabled, setAlarmDisabled] = useState(false);
   const [counter, setCounter] = useState();
@@ -68,32 +64,8 @@ const Map = ({ navigation }) => {
   useEffect(() => {
     getContacts();
     getAlarm();
+    requestLocation();
   }, []);
-
-  // useEffect(() => {
-  //   FGLocationRetriever.getInstance().cashFriendsImages();
-  // }, []);
-
-  const UserMarker = () => (
-    <LinearGradient
-      colors={["#FF857933", "#FFA56033"]}
-      useAngle={true}
-      angle={225}
-      style={{
-        width: normalize(86),
-        height: normalize(86),
-        justifyContent: "center",
-        alignItems: "center",
-        borderRadius: normalize(43),
-      }}
-    >
-      <AssetImage
-        asset={Assets.userPoint}
-        width={normalize(29)}
-        height={normalize(29)}
-      />
-    </LinearGradient>
-  );
 
   const getInitials = (name, surname) => {
     const fullName = name + " " + surname;
@@ -104,62 +76,96 @@ const Map = ({ navigation }) => {
   };
 
   const FriendMarker = memo(({ contact, setUserToPush, setVisible }) => {
-   
-    console.log(contact.profile_pic)
-    console.log(contact, "CONTACT");
+    const [lastUpdate, setLastUpdate] = useState(
+      (Date.now() / 1000 - Date.parse(contact.date) / 1000).toFixed(0)
+    );
+
+    setInterval(
+      () =>
+        setLastUpdate(
+          (Date.now() / 1000 - Date.parse(contact.date) / 1000).toFixed(0)
+        ),
+      10000
+    );
+
     return (
-      <TouchableOpacity
-        onPress={() => {
-          setVisible(true);
-          setUserToPush(contact.phone);
-        }}
-      >
-        <AssetImage
-          asset={contact.alarm ? Assets.emrgUserMarker : Assets.userMarker}
-          width={normalize(51)}
-          height={normalize(56)}
-        />
-        <View
-          style={{
-            width: normalize(51),
-            height: normalize(51),
-            position: "absolute",
-            borderRadius: normalize(26),
-            justifyContent: "center",
-            alignItems: "center",
+      <View style={{ justifyContent: "center", alignItems: "center" }}>
+        <TouchableOpacity
+          onPress={() => {
+            setUserToPush(contact.phone);
+            setVisible(true);
           }}
         >
-          {contact.profile_pic ? (       
-            <CacheImage
-              source={{
-                uri: contact.profile_pic,
-              }}
-              cacheKey={contact.key}
-              style={{
-                width: normalize(42),
-                height: normalize(42),
-                borderRadius: 21,
-              }}
-            />
-          ) : (
-            <View
-              style={{
-                width: normalize(42),
-                height: normalize(42),
-                borderRadius: normalize(21),
-                backgroundColor: Colors.darkGray,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              children={
-                <Text style={{ color: Colors.white, fontSize: normalize(18) }}>
-                  {getInitials(contact.givenName, contact.familyName)}
-                </Text>
-              }
-            />
-          )}
+          <AssetImage
+            asset={contact.alarm ? Assets.emrgUserMarker : Assets.userMarker}
+            width={normalize(51)}
+            height={normalize(56)}
+          />
+          <View
+            style={{
+              width: normalize(51),
+              height: normalize(51),
+              position: "absolute",
+              borderRadius: normalize(26),
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {contact.profile_pic ? (
+              <CacheImage
+                source={{
+                  uri: contact.profile_pic,
+                }}
+                cacheKey={contact.key}
+                style={{
+                  width: normalize(42),
+                  height: normalize(42),
+                  borderRadius: 21,
+                }}
+              />
+            ) : (
+              <View
+                style={{
+                  width: normalize(42),
+                  height: normalize(42),
+                  borderRadius: normalize(21),
+                  backgroundColor: Colors.darkGray,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                children={
+                  <Text
+                    style={{ color: Colors.white, fontSize: normalize(18) }}
+                  >
+                    {getInitials(contact.givenName, contact.familyName)}
+                  </Text>
+                }
+              />
+            )}
+          </View>
+        </TouchableOpacity>
+        <View
+          style={{
+            backgroundColor: "#EBEBEB",
+            borderRadius: 10,
+            paddingHorizontal: 3,
+          }}
+        >
+          <Text
+            style={{
+              color: "black",
+              fontSize: normalize(14),
+              fontFamily: "Poppins-Medium",
+            }}
+          >
+            {lastUpdate < 60
+              ? `${lastUpdate} s. ago`
+              : lastUpdate < 3600
+              ? `${(lastUpdate / 60).toFixed(0)} m. ago`
+              : `${(lastUpdate / 60 / 60).toFixed(0)} h. ago`}
+          </Text>
         </View>
-      </TouchableOpacity>
+      </View>
     );
   });
 
@@ -204,14 +210,13 @@ const Map = ({ navigation }) => {
 
   const onUsersLocationUpdate = (locations) => {
     const users = locations.map((location) => {
-      // console.log(location.phone, [location.long, location.lat])
       return {
         phone: location.phone,
         coordinates: [location.long, location.lat],
         date: location.date,
         alarm: location.alarm,
         profile_pic: location.profile_pic,
-        key: location.key
+        key: location.key,
       };
     });
 
@@ -231,28 +236,13 @@ const Map = ({ navigation }) => {
           givenName: contacts[elem].givenName,
           familyName: contacts[elem].familyName,
           profile_pic: user.profile_pic,
-          key: user.key
+          key: user.key,
+          date: user.date,
         });
       }
     }
-    // console.log("renderUsers", renderUsers);
     return renderUsers;
   }
-
-  // useEffect(() => {
-  //   async function getImages() {
-  //     const usersWithImg = [];
-  //     await Promise.all(
-  //       renderUsers.map(async (user) => {
-  //         const key = await FBSaver.getInstance()._getUserKey(user.phone);
-  //         const friendData = await FBSaver.getInstance().getFriendData(key);
-  //         if (friendData != null) {
-  //           [...usersWithImg, { ...user, image: friendData.profile_pic }]
-  //       })
-  //     );
-  //   }
-  //   getImages();
-  // }, [users]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -331,10 +321,6 @@ const Map = ({ navigation }) => {
       <View style={{ height: height * 0.86, width: "100%" }}>
         <Mapbox.MapView
           style={{ ...StyleSheet.absoluteFillObject }}
-          //  styleURL={"mapbox://styles/mapbox/satellite-v9"}
-          // onPress={(feature) =>
-          //   console.log("Coords:", feature.geometry.coordinates)
-          // }
         >
           <Mapbox.Camera
             followZoomLevel={5}
@@ -372,41 +358,23 @@ const Map = ({ navigation }) => {
             />
           </Mapbox.ShapeSource>
 
-          {location[0] !== -116.23774063311555 &&
-            location[1] !== 33.68024422721021 && (
-              <Mapbox.MarkerView coordinate={location}>
-                <UserMarker />
-              </Mapbox.MarkerView>
-            )}
-
-          {/* <Mapbox.MarkerView coordinate={location}>
-            <FriendMarker
-              contact={{
-                phone: "+18005553535",
-                coordinates: [-116.23774063311555, 33.68024422721021],
-                givenName: "Jay",
-                familyName: "Z",
-                thumbnailPath: null,
-              }}
-              setUserToPush={setUserToPush}
-              setVisible={setVisible}
-            />
-          </Mapbox.MarkerView> */}
-
           {renderUsers?.map((user, index) => (
             <Mapbox.MarkerView
               coordinate={user?.coordinates}
               key={user?.phone}
               id={user?.phone}
             >
+              {/* <View style={{justifyContent: 'center', alignItems: 'center'}}> */}
               <FriendMarker
                 contact={user}
                 setUserToPush={setUserToPush}
                 setVisible={setVisible}
               />
+              {/* <Text>{user.date}</Text> */}
+              {/* </View> */}
             </Mapbox.MarkerView>
           ))}
-          {/* <Mapbox.UserLocation showsUserHeadingIndicator={true} /> */}
+          <Mapbox.UserLocation showsUserHeadingIndicator={true} />
         </Mapbox.MapView>
       </View>
       <TouchableOpacity
@@ -437,8 +405,6 @@ const Map = ({ navigation }) => {
           position: "absolute",
           right: 10,
           bottom: 58,
-          // zIndex: 1,
-          // backgroundColor: "red",
           justifyContent: "center",
           alignItems: "center",
         }}
@@ -453,7 +419,6 @@ const Map = ({ navigation }) => {
             asset={Assets.whiteBell}
             stroke={"black"}
             containerStyle={{ position: "absolute" }}
-            // asset={Assets.userPosition}
             width={normalize(32)}
             height={normalize(32)}
           />

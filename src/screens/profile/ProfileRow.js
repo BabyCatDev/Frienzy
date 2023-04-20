@@ -1,5 +1,5 @@
 import React, { useState, memo } from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, TouchableOpacity } from "react-native";
 import { AssetImage } from "../../assets/asset_image";
 import Assets from "../../assets";
 import normalize from "react-native-normalize";
@@ -10,7 +10,7 @@ import { AppStyles } from "../../utils/AppStyles";
 export const ProfileRow = memo(
   ({ navigation, title, toggle, toggleOn, onToggle, onPress, qrCode }) => {
     return (
-      <Pressable onPress={onPress} style={AppStyles.profileRowContainer}>
+      <TouchableOpacity onPress={onPress} style={AppStyles.profileRowContainer} disabled={toggle}>
         <Text style={AppStyles.medium17}>{title}</Text>
         {!toggle && (
           <View style={AppStyles.profileRowIcon}>
@@ -49,7 +49,7 @@ export const ProfileRow = memo(
             />
           </Pressable>
         )}
-      </Pressable>
+      </TouchableOpacity>
     );
   }
 );

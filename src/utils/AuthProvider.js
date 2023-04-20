@@ -64,7 +64,6 @@ export default class AuthProvider {
       console.debug("loginUser: Instance is empty");
       return;
     }
-    console.log("loginUser: ", phoneNumber, code)
     if (phoneNumber == "+18005553535" && code == "111111") {
       await saveAccessToken(
         "LJKfdkjio345h54jjhjjhJhhfflepw%",

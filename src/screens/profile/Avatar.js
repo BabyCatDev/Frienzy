@@ -6,7 +6,6 @@ import {
   Alert,
   Linking,
   Text,
-  TouchableOpacity,
   Platform,
 } from "react-native";
 import { AssetImage } from "../../assets/asset_image";
@@ -18,27 +17,20 @@ import Toast from "react-native-toast-message";
 import { Sizes } from "../../utils/AppConstants";
 import { AppStyles } from "../../utils/AppStyles";
 import { storeObject, getObject } from "../../utils/AsyncStore";
-import storage from "@react-native-firebase/storage";
 import FBSaver from "../../services/FBSaver";
 
 export const Avatar = ({ username, profilePic }) => {
   const [response, setResponse] = useState(null);
   const [dataImage, setDataImage] = useState([]);
-  console.log(username, "avatar name");
-  console.log(profilePic, "avatar name");
 
   async function getAvatar() {
     const image = await getObject("image");
-    console.log(image);
     if (image) {
       setDataImage(image);
-      // setResponse(image)
     }
-    // return image;
   }
 
   useEffect(() => {
-    // setDataImage([profilePic]);
     getAvatar();
   }, []);
 
@@ -91,7 +83,6 @@ export const Avatar = ({ username, profilePic }) => {
               },
             });
           } else {
-            console.log(res);
             setResponse(res);
             let data = res.assets?.map((el) => el.uri);
             storeObject("image", data).then(async() => {
@@ -153,27 +144,6 @@ export const Avatar = ({ username, profilePic }) => {
           containerStyle={AppStyles.editImage}
         />
       </Pressable>
-      {/* <Pressable
-        onPress={async () => {
-          try {
-            const pathToFile =
-              Platform.OS === "ios"
-                ? dataImage?.[0]?.replace("file://", "")
-                : dataImage?.[0];
-            console.log(pathToFile);
-            await reference.putFile(dataImage?.[0]);
-          } catch (e) {
-            console.log(e);
-          }
-        }}
-      >
-        <AssetImage
-          asset={Assets.pencilButton}
-          width={normalize(49)}
-          height={normalize(48)}
-          containerStyle={{ position: "absolute", top: 0 }}
-        />
-      </Pressable> */}
     </View>
   );
 };

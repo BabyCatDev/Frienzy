@@ -125,7 +125,7 @@ export default class FGLocationRetriever {
         .set({
           lat: location.latitude,
           long: location.longitude,
-          date: moment().format("YYYY-MM-DD HH:mm:ss"),
+          date: moment().format(),
         });
     } catch (error) {
       console.log(error);
@@ -174,7 +174,6 @@ export default class FGLocationRetriever {
           if (user.exists() && this.keyToPhone[key]) {
             const ref = database().ref(`users/${key}`);
             const userData = await ref.once(`value`);
-            console.log(userData?.val()?.alarm);
             const userModel = user.val();
             userModel["phone"] = this.keyToPhone[key];
             userModel["alarm"] = userData?.val()?.alarm;

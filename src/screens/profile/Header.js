@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { AssetImage } from "../../assets/asset_image";
 import Assets from "../../assets";
 import normalize from "react-native-normalize";
@@ -46,7 +46,9 @@ export const Header = ({
           {title}
         </Text>
         {friendsCounter && (
-          <Text style={{...AppStyles.medium17, textAlign: 'center'}}>{friendsCounter}</Text>
+          <Text style={{ ...AppStyles.medium17, textAlign: "center" }}>
+            {friendsCounter}
+          </Text>
         )}
       </View>
       <Pressable style={AppStyles.headerRightIcon} onPress={onPressRight}>
