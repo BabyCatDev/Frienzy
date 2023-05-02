@@ -1,5 +1,4 @@
 import database from "@react-native-firebase/database";
-
 import moment from "moment";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -294,7 +293,7 @@ export default class FGLocationRetriever {
     console.log(phone);
     console.log(numeric_string);
 
-    const key = await sha1(numeric_string.substring(numeric_string.length - 7));
+    const key = await sha1(numeric_string.substring(numeric_string?.length - 7));
     console.log(key);
     this.keyToPhone[key] = phone;
     return key;

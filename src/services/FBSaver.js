@@ -162,7 +162,7 @@ export default class FBSaver {
 
     console.log(numeric_string);
 
-    const key = await sha1(numeric_string.substring(numeric_string.length - 7));
+    const key = await sha1(numeric_string.substring(numeric_string?.length - 7));
     this.keyToPhone[key] = phone;
     return key;
   }

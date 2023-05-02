@@ -12,7 +12,6 @@ import { AssetImage } from "../../assets/asset_image";
 import Assets from "../../assets";
 import normalize from "react-native-normalize";
 import { launchImageLibrary } from "react-native-image-picker";
-import Localization from "../../services/LocalizationService";
 import Toast from "react-native-toast-message";
 import { Sizes } from "../../utils/AppConstants";
 import { AppStyles } from "../../utils/AppStyles";
@@ -56,17 +55,17 @@ export const Avatar = ({ username, profilePic }) => {
             console.log("User cancelled the process");
           } else if (res.errorCode === "permission") {
             Alert.alert(
-              Localization.getString("common", "alertHeader"),
-              Localization.getString("common", "alertMessage"),
+              "Frienzy requests access to Photos",
+              "Go to settings to give the app permission to access Photos",
               [
                 {
-                  text: Localization.getString("common", "toSettings"),
+                  text: "Go to settings",
                   onPress: () => {
                     Linking.openSettings();
                   },
                 },
                 {
-                  text: Localization.getString("common", "cancel"),
+                  text: "Cancel",
                   onPress: () => {
                     console.log("CANCELED");
                   },
@@ -79,7 +78,7 @@ export const Avatar = ({ username, profilePic }) => {
               position: "top",
               topOffset: Sizes.header.height + 34,
               props: {
-                title: Localization.getString("common", "toastDeniedPhoto"),
+                title: "Failed to upload photo",
               },
             });
           } else {
@@ -94,17 +93,17 @@ export const Avatar = ({ username, profilePic }) => {
         });
       } else {
         Alert.alert(
-          Localization.getString("common", "alertHeader"),
-          Localization.getString("common", "alertMessage"),
+          "Frienzy requests access to Photos",
+          "Go to settings to give the app permission to access Photos",
           [
             {
-              text: Localization.getString("common", "toSettings"),
+              text: "Go to settings",
               onPress: () => {
                 Linking.openSettings();
               },
             },
             {
-              text: Localization.getString("common", "cancel"),
+              text: "Cancel",
               onPress: () => {
                 console.log("CANCELED");
               },

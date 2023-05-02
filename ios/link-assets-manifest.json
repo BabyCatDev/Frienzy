@@ -60,6 +60,26 @@
     {
       "path": "assets/fonts/Poppins/Poppins-SemiBold.ttf",
       "sha1": "8a4ace9392d06bcb7f8ea2f5169b07e4c383a90d"
+    },
+    {
+      "path": "assets/fonts/NewOrder/NewOrder-Bold.otf",
+      "sha1": "5a533617a80d969ab8500806ea239299954d5c1d"
+    },
+    {
+      "path": "assets/fonts/NewOrder/NewOrder-Light.otf",
+      "sha1": "c894d875b9c008463465eb3f0ac12e17ecd1c568"
+    },
+    {
+      "path": "assets/fonts/NewOrder/NewOrder-Medium.otf",
+      "sha1": "5562e2789f2f8f03782cda9bc72e336cc685bf4f"
+    },
+    {
+      "path": "assets/fonts/NewOrder/NewOrder-Regular.otf",
+      "sha1": "4b198b875dab798b7794c96cc2d5b5456ea1354c"
+    },
+    {
+      "path": "assets/fonts/NewOrder/NewOrder-SemiBold.otf",
+      "sha1": "4da4e6d0663c17e04c2238dfbceca73ecf38b20e"
     }
   ]
 }

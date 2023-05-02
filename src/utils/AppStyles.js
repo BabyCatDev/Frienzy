@@ -145,6 +145,7 @@ export const AppStyles = {
     flexDirection: "row",
     width: "100%",
     justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: normalize(25),
   },
   profileRowIcon: {

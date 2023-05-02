@@ -11,6 +11,7 @@ export const Header = ({
   onPressLeft,
   onPressRight,
   rightIcon,
+  leftIcon,
   friendsCounter,
   rightWidth,
   rightHeight,
@@ -24,7 +25,11 @@ export const Header = ({
         ...containerStyle,
       }}
     >
-      {noBackButton ? (
+      {noBackButton ? leftIcon ? (
+        <Pressable style={AppStyles.headerRightIcon} onPress={onPressLeft}>
+          {leftIcon()}
+        </Pressable>
+      ) : (
         <View style={{ width: normalize(27), height: normalize(27) }} />
       ) : (
         <Pressable
@@ -52,13 +57,7 @@ export const Header = ({
         )}
       </View>
       <Pressable style={AppStyles.headerRightIcon} onPress={onPressRight}>
-        {rightIcon && (
-          <AssetImage
-            asset={rightIcon}
-            width={normalize(rightWidth)}
-            height={normalize(rightHeight)}
-          />
-        )}
+        {rightIcon && rightIcon()}
       </Pressable>
     </View>
   );

@@ -1,16 +1,12 @@
 import React, { useEffect } from "react";
-import store from "./src/store";
+import configureStore from './src/redux/store/configureStore';
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { Provider } from "react-redux";
-import RootNavigator from "./src/navigators/RootNavigator";
-import OverlayScreen from "./src/screens/overlay/OverlayScreen";
-import { autoLoginUser, checkFirstLaunch } from "./src/store/slices/AuthSlice";
+import NavigationManager from "./src/navigation/NavigationManager";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
-import { ToastConfig } from "./src/components/lav.toast_config";
-import { Strings } from "./src/utils/Localizations";
+import { ToastConfig } from "./src/components/toastConfig";
 import { StatusBar } from "react-native";
 import AuthProvider from "./src/utils/AuthProvider";
-import { setAutoLoginLoading } from "./src/store/slices/AuthSlice";
 import FGLocationRetriever from "./src/services/FGLocationRetriever";
 import OneSignal from "react-native-onesignal";
 import FBSaver from "./src/services/FBSaver";
@@ -44,6 +40,8 @@ OneSignal.setNotificationOpenedHandler((notification) => {
 
 // window.server = initMirageJs(window.server);
 
+const store2 = configureStore()
+
 const App = () => {
   const fetchCredentials = async () => {
     const key = FBSaver.getInstance().userKey;
@@ -67,24 +65,18 @@ const App = () => {
     appStart();
   }, []);
 
-  useEffect(() => {
-    if (Strings.getLanguage() == "ru") {
-      Strings.setLanguage("ru");
-    } else {
-      Strings.setLanguage("en");
-    }
-  }, []);
-
   return (
-    <Provider store={store}>
-      <StatusBar barStyle="light-content" backgroundColor={"#1A1822"} />
-      <BottomSheetModalProvider>
-        <RootNavigator />
-      </BottomSheetModalProvider>
-      <Toast config={ToastConfig} />
-      <OverlayScreen />
+    <Provider store={store2}>
+        <StatusBar barStyle="light-content" backgroundColor={"#1A1822"} />
+        <BottomSheetModalProvider>
+          <NavigationManager />
+        </BottomSheetModalProvider>
+        <Toast config={ToastConfig} />
     </Provider>
   );
 };
 
 export default App;
+
+
+//        <OverlayScreen />

@@ -11,14 +11,13 @@ import normalize from "react-native-normalize";
 import { Colors } from "../../utils/Colors";
 import { AppStyles } from "../../utils/AppStyles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { useSelector } from "react-redux";
 import { Avatar } from "./Avatar";
 import { Header } from "./Header";
 import { ProfileRow } from "./ProfileRow";
 import AuthProvider from "../../utils/AuthProvider";
-import { useDispatch } from "react-redux";
-import { logout } from "../../store/slices/AuthSlice";
-import { MainButton } from "../../components/main_button";
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import { useDispatch, useSelector } from "react-redux";
 import FGLocationRetriever from "../../services/FGLocationRetriever";
 import QrOverlay from "./QrOverlay";
 import FBSaver from "../../services/FBSaver";
@@ -34,8 +33,8 @@ const UserProfile = ({ navigation }) => {
   const [confirm, setConfirm] = useState(false);
   const scrollRef = React.useRef();
   const isAndroid = Platform.OS === "android";
-  const { isFirstLaunch } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const userDetails = useSelector(state => state.FrienzyAuth.userDetails);
 
   const firstName = useMemo(() => {
     const nameArr = name?.username?.split(" ");
@@ -69,9 +68,8 @@ const UserProfile = ({ navigation }) => {
 
   const onLogout = async () => {
     try {
-      await AuthProvider.logoutUser();
-      FGLocationRetriever.getInstance().reset();
-      dispatch(logout());
+      await firestore().collection("users").doc(auth().currentUser.uid).update({ loggedIn: false });
+      auth().signOut().then(() => console.log('User signed out!'));
     } catch (e) {
       console.log(e);
     }
@@ -126,11 +124,11 @@ const UserProfile = ({ navigation }) => {
           <Header
             navigation={navigation}
             title={"Profile"}
-            noBackButton={isFirstLaunch ? true : false}
+            noBackButton={true}
           />
           <View style={{ alignItems: "center", width: "100%" }}>
             {/* AVATAR  */}
-            <Avatar username={name?.username} profilePic={name?.profile_pic} />
+            <Avatar username={userDetails?.name} profilePic={userDetails?.profilePic} />
             {/* NAME */}
             {!isChange ? (
               <View>
@@ -141,7 +139,7 @@ const UserProfile = ({ navigation }) => {
                     alignSelf: "center",
                   }}
                 >
-                  {name?.username}
+                  {userDetails?.name}
                 </Text>
                 <Text
                   style={{
@@ -150,7 +148,7 @@ const UserProfile = ({ navigation }) => {
                     alignSelf: "center",
                   }}
                 >
-                  {phone}
+                  {userDetails.phone}
                 </Text>
               </View>
             ) : (
@@ -158,7 +156,7 @@ const UserProfile = ({ navigation }) => {
                 returnKeyType="done"
                 autoFocus={true}
                 textAlign="center"
-                value={name?.username}
+                value={userDetails?.name}
                 onChangeText={(text) => setName({ ...name, username: text })}
                 style={AppStyles.profileInput}
                 placeholderTextColor={Colors.darkText}
@@ -170,6 +168,10 @@ const UserProfile = ({ navigation }) => {
             {/* PHONE */}
           </View>
           <View style={{ width: "100%", marginTop: normalize(60) }}>
+            <ProfileRow
+              title={"My Friends (" + userDetails?.friends?.length + ")"}
+              onPress={() => navigation.push("MyFriends")}
+            />
             {/* SHOW LOCATION */}
             <ProfileRow
               title={"Show location"}
@@ -179,7 +181,7 @@ const UserProfile = ({ navigation }) => {
             />
             {/* PROFILE ROW */}
             <ProfileRow
-              title={"Change nickname"}
+              title={"Change Name"}
               onPress={() => setIsChange(!isChange)}
             />
             <ProfileRow
@@ -194,23 +196,6 @@ const UserProfile = ({ navigation }) => {
             />
           </View>
         </View>
-        {isFirstLaunch && (
-        <MainButton
-          title={"CONTINUE"}
-          containerStyle={{
-            // position: "absolute",
-            paddingBottom: height * 0.06,
-            alignSelf: "center",
-          }}
-          onPress={async () => {
-            await FBSaver.getInstance().saveUsername(
-              name?.username,
-              isFirstLaunch
-            );
-            navigation.push("ContactsStack");
-          }}
-        />
-      )}
       </KeyboardAwareScrollView>
       {visible && (
         <QrOverlay

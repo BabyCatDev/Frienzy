@@ -36,6 +36,14 @@
 				<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.855597315261-n4pmi36dhl9q8gf7dv12plap50413sjq</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
@@ -44,7 +52,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>MBXAccessToken</key>
-	<string>pk.eyJ1IjoiYmFuYXJ1bXMiLCJhIjoiY2xlc2MxdGdrMGlicjNwbjFheWd1YzNwZSJ9.fnUNAsXBtfkFa1ceAVe_Pg</string>
+	<string>pk.eyJ1Ijoibm9sYW5kb25sZXkxNCIsImEiOiJjazJta2dqNmowaXR2M25uM3RyNzl4bmU1In0.IG-7dVSFafe9cSEpQJoU2A</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>
@@ -59,13 +67,13 @@
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like access to your camera</string>
 	<key>NSContactsUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>App needs access to location to share it with other users</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>App needs access to location to share it with others</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like access to your microphone</string>
 	<key>NSMotionUsageDescription</key>
@@ -89,6 +97,32 @@
 		<string>Poppins-Medium.ttf</string>
 		<string>Poppins-SemiBold.ttf</string>
 		<string>Poppins-Regular.ttf</string>
+		<string>NewOrder-Bold.ttf</string>
+		<string>NewOrder-Light.ttf</string>
+		<string>NewOrder-Medium.ttf</string>
+		<string>NewOrder-SemiBold.ttf</string>
+		<string>NewOrder-Regular.ttf</string>
+		<string>AntDesign.ttf</string>
+		<string>Entypo.ttf</string>
+		<string>EvilIcons.ttf</string>
+		<string>Feather.ttf</string>
+		<string>FontAwesome.ttf</string>
+		<string>FontAwesome5_Brands.ttf</string>
+		<string>FontAwesome5_Regular.ttf</string>
+		<string>FontAwesome5_Solid.ttf</string>
+		<string>Foundation.ttf</string>
+		<string>Ionicons.ttf</string>
+		<string>MaterialIcons.ttf</string>
+		<string>MaterialCommunityIcons.ttf</string>
+		<string>SimpleLineIcons.ttf</string>
+		<string>Octicons.ttf</string>
+		<string>Zocial.ttf</string>
+		<string>Fontisto.ttf</string>
+		<string>NewOrder-Bold.otf</string>
+		<string>NewOrder-Light.otf</string>
+		<string>NewOrder-Medium.otf</string>
+		<string>NewOrder-Regular.otf</string>
+		<string>NewOrder-SemiBold.otf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
@@ -106,7 +140,7 @@
 	<key>UIRequiresFullScreen</key>
 	<true/>
 	<key>UIStatusBarStyle</key>
-	<string></string>
+	<string/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

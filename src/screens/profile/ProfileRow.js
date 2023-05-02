@@ -1,14 +1,12 @@
-import React, { useState, memo } from "react";
-import { View, Text, Pressable, TouchableOpacity } from "react-native";
+import React, { memo } from "react";
+import { View, Text, TouchableOpacity, Switch } from "react-native";
 import { AssetImage } from "../../assets/asset_image";
 import Assets from "../../assets";
 import normalize from "react-native-normalize";
-import { MemoToggle } from "../../components/toggle";
-import { Colors } from "../../utils/Colors";
 import { AppStyles } from "../../utils/AppStyles";
 
 export const ProfileRow = memo(
-  ({ navigation, title, toggle, toggleOn, onToggle, onPress, qrCode }) => {
+  ({ title, toggle, toggleOn, onToggle, onPress, qrCode }) => {
     return (
       <TouchableOpacity onPress={onPress} style={AppStyles.profileRowContainer} disabled={toggle}>
         <Text style={AppStyles.medium17}>{title}</Text>
@@ -33,21 +31,12 @@ export const ProfileRow = memo(
           </View>
         )}
         {toggle && (
-          <Pressable
-            onPress={() => onToggle(!toggleOn)}
-            style={AppStyles.toggleContainer}
-          >
-            <MemoToggle
-              onToggle={() => onToggle(!toggleOn)}
-              isOn={toggleOn}
-              onColor={Colors.darkGray}
-              offColor={Colors.gray}
-              style={{
-                width: normalize(42),
-                height: normalize(20.62),
-              }}
-            />
-          </Pressable>
+          <Switch
+            trackColor={{false: "#313132", true: "#313132"}}
+            thumbColor={toggleOn ? '#FF956D' : '#f4f3f4'}
+            onValueChange={() => onToggle(!toggleOn)}
+            value={toggleOn}
+          />
         )}
       </TouchableOpacity>
     );

@@ -64,7 +64,7 @@ const CacheImage = (props) => {
   useEffect(() => {
     async function loadImg() {
       let imgXt = getImgXtension(uri);
-      if (!imgXt || !imgXt.length) {
+      if (!imgXt || !imgXt?.length) {
         console.error(`Couldn't load Image:`, cacheKey);
         setUri(require('../../assets/imgs/emrgUserMarker.png'))
         return;

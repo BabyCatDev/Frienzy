@@ -8,7 +8,6 @@ import {
   Platform,
 } from "react-native";
 import Mapbox from "@rnmapbox/maps";
-import { shapeSource } from "@rnmapbox/maps";
 import { Header } from "../profile/Header";
 import { AssetImage } from "../../assets/asset_image";
 import Assets from "../../assets";
@@ -16,9 +15,7 @@ import normalize from "react-native-normalize";
 import LinearGradient from "react-native-linear-gradient";
 import { Colors } from "../../utils/Colors";
 import GetLocation, {
-  Location,
   LocationError,
-  LocationErrorCode,
 } from "react-native-get-location";
 import { getObject } from "../../utils/AsyncStore";
 import FGLocationRetriever from "../../services/FGLocationRetriever";
@@ -28,11 +25,11 @@ import { getMobileNumber } from "../../utils/helper";
 import OverlayScreen from "./OverlayScreen";
 import AlarmOverlay from "./AlarmOverlay";
 import CacheImage from "../../utils/CacheImage";
-import moment from "moment";
+import Ionicon from "react-native-vector-icons/Ionicons";
 
 //this is my personal access token, you can use your own, I think it's tied to my secret token which is hardcoded to my environment
 Mapbox.setAccessToken(
-  "pk.eyJ1Ijoic29jaWFsbmF2IiwiYSI6ImNsZXB2N2g4aTBhOWQzenE2ZTcxdmxlOGoifQ.HL3LG1DJoVRYTZGH9nsOmA"
+  "pk.eyJ1Ijoibm9sYW5kb25sZXkxNCIsImEiOiJjazJta2dqNmowaXR2M25uM3RyNzl4bmU1In0.IG-7dVSFafe9cSEpQJoU2A"
 );
 // Mapbox?.setConnected(true);
 
@@ -308,12 +305,12 @@ const Map = ({ navigation }) => {
         colors={Colors.backgroundGradient}
       >
         <Header
-          onPressRight={() => navigation.push("ProfileStack")}
-          rightIcon={Assets.userProfile}
-          rightWidth={23}
-          rightHeight={23}
+          onPressRight={() => navigation.navigate("Contacts")}
+          onPressLeft={requestLocation}
+          rightIcon={() => <Ionicon name={"person-add-outline"} size={normalize(23)} color={"white"} />}
+          leftIcon={() => <Ionicon name={"locate-outline"} size={normalize(23)} color={"white"} />}
           title={"Coachella"}
-          friendsCounter={`${counter ? counter : "0"} friends`}
+          friendsCounter={counter ? counter == 1 ? "1 friend" : `${counter} friends` : "0 friends"}
           navigation={navigation}
           noBackButton
         />
@@ -321,10 +318,11 @@ const Map = ({ navigation }) => {
       <View style={{ height: height * 0.86, width: "100%" }}>
         <Mapbox.MapView
           style={{ ...StyleSheet.absoluteFillObject }}
+          styleURL={"mapbox://styles/mapbox/dark-v11"}
         >
           <Mapbox.Camera
             followZoomLevel={5}
-            zoomLevel={1}
+            zoomLevel={17}
             centerCoordinate={location}
             // Coachella
             // here
@@ -378,33 +376,12 @@ const Map = ({ navigation }) => {
         </Mapbox.MapView>
       </View>
       <TouchableOpacity
-        style={{ position: "absolute", left: 10, bottom: 58 }}
-        onPress={() => navigation.push("ContactsStack")}
-      >
-        <AssetImage
-          asset={Assets.addUser}
-          width={normalize(90)}
-          height={normalize(91)}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{ position: "absolute", right: 10, bottom: 144.56 }}
-        onPress={requestLocation}
-      >
-        <AssetImage
-          asset={Assets.userPosition}
-          width={normalize(90)}
-          height={normalize(91)}
-        />
-      </TouchableOpacity>
-
-      <TouchableOpacity
         onPress={() => setAlarm(true)}
         disabled={alarmDisabled}
         style={{
           position: "absolute",
           right: 10,
-          bottom: 58,
+          bottom: 80,
           justifyContent: "center",
           alignItems: "center",
         }}

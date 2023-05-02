@@ -6,7 +6,7 @@ import RNFS from "react-native-fs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const getMobileNumber = (item) => {
-  if (item?.phoneNumbers.length == 1) {
+  if (item?.phoneNumbers?.length == 1) {
     return item?.phoneNumbers[0]?.number;
   } else {
     const mobile = item?.phoneNumbers.find((b) => b.label === "mobile");
@@ -93,7 +93,7 @@ export async function setSelectedContacts(
   if (value !== null) {
     let selected = {};
     let counter = 0;
-    for (let i = 0; i < contacts.length; i++) {
+    for (let i = 0; i < contacts?.length; i++) {
       if (value[contacts[i].recordID] !== undefined) {
         selected[contacts[i].recordID] = value[contacts[i].recordID];
       }
@@ -109,7 +109,7 @@ export async function setSelectedContacts(
 
 export async function loadImg(uri, cacheKey) {
   let imgXt = getImgXtension(uri);
-  if (!imgXt || !imgXt.length) {
+  if (!imgXt || !imgXt?.length) {
     console.error(`Couldn't load Image:`, cacheKey);
     // setUri(require('../../assets/imgs/emrgUserMarker.png'))
     return;
