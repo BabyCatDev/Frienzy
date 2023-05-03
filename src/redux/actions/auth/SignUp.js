@@ -33,8 +33,10 @@ export function signInUpWithPhone(confirmFunc, code) {
         const userData = userIn.user;
 
         if (additionalUserDetails.isNewUser) {
+          console.log("New User")
           createFirebaseUser(userData)
         } else {
+          console.log("Existing User")
           await firestore().collection("users").doc(auth().currentUser.uid).update({ loggedIn: true });
         }
         await dispatch(signInUpAction(userData.uid))

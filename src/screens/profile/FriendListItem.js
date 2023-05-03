@@ -27,10 +27,10 @@ const FriendListItem = ({ item, onPress, index }) => {
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <View style={AppStyles.contactImageContainer}>
-          {item.pic ? (
+          {item.profilePic ? (
             <Image
               resizeMode="cover"
-              source={{ uri: item.pic }}
+              source={{ uri: item.profilePic }}
               style={AppStyles.contactImage}
             />
           ) : (

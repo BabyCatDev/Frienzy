@@ -31,6 +31,17 @@ export const getUserDetails = async () => {
       return details
 }
 
+export const getUserById = (docID) => new Promise((resolve, reject) => {
+  firestore()
+  .collection("users")
+  .doc(docID)
+  .get()
+  .then((snapshot) => {
+      resolve(snapshot.exists ? snapshot.data() : null)
+  })
+  .catch(() => reject())
+})
+
 export const saveNameAndPhoto = async (uid, photoURL, username) => {
   try {
     const filename = photoURL?.substring(photoURL?.lastIndexOf("/") + 1);

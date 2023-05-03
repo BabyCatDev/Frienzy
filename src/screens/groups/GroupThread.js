@@ -1,57 +1,199 @@
-import React from "react";
-import { View, Text, Image, Pressable } from "react-native";
+import Ionicon from "react-native-vector-icons/Ionicons";
+import React, { useState, useEffect, useCallback } from 'react';
+import { ActivityIndicator, SafeAreaView } from 'react-native';
+import { Pressable, View, StyleSheet } from 'react-native'
+import { useSelector, useDispatch } from 'react-redux';
+import firestore from "@react-native-firebase/firestore";
+import { Composer, GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat'
+import { useThread } from "../../hooks/useThread";
 import { Colors } from "../../utils/Colors";
-import { AppStyles } from "../../utils/AppStyles";
-import Assets from "../../assets";
-import { AssetImage } from "../../assets/asset_image";
-import normalize from "react-native-normalize";
+import MessageCard from "./MessageCard";
 import LinearGradient from "react-native-linear-gradient";
-import FGLocationRetriever from "../../services/FGLocationRetriever";
-import { getMobileNumber } from "../../utils/helper";
+import { Header } from "../profile/Header";
+import { sendMessage } from "../../services/firebase/conversations";
 
-const GroupListItem = ({ item, onPress, index }) => {
-  const getInitials = (name) => {
-    const fullName = name;
-    return fullName
-      ?.split(" ")
-      .map((n) => n[0])
-      .join("");
-  };
+const GroupThread = ({ navigation, route }) => {
+    const { threadId, name } = route.params
+    const [message, setMessage] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-  return (
-    <Pressable
-      onPress={() => {
-        onPress({ itemClicked: item });
-      }}
-      style={{
-        ...AppStyles.contactItem,
-        marginTop: !index ? normalize(6.56) : 0,
-        borderTopWidth: index ? 1.5 : 0,
-        borderTopColor: index ? Colors.gray : "transparent",
-      }}
-    >
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <View style={AppStyles.contactImageContainer}>
-          {item?.pic ? (
-            <Image
-              resizeMode="cover"
-              source={{ uri: item?.pic }}
-              style={AppStyles.contactImage}
+    const { thread } = useThread(threadId);
+    const userDetails = useSelector(state => state.FrienzyAuth.userDetails);
+
+    const renderItem = ({ item, prev, next }) => {
+        return <MessageCard item={item} prev={prev} next={next} />
+    }
+
+    useEffect(() => {
+        console.log(thread)
+        async function setUp() {
+          await firestore()
+          .collection("groups")
+          .doc(threadId)
+          .update({
+            [`recentMessage.readBy.${userDetails.uid}`]: true
+          })
+        }
+        setUp()
+    }, [])
+
+    const handleSendMessage = async () => {
+
+      const newMessage = {
+        text: message,
+        sentBy: userDetails.uid,
+        sentAt: firestore.FieldValue.serverTimestamp()
+      }
+
+      setLoading(true);
+      setMessage(null);
+      await sendMessage(newMessage, threadId, userDetails);
+      setLoading(false);
+    };
+
+
+    const renderSend = (props) => {
+      return (
+        <Send {...props} style={styles.sendBtn}>
+            <LinearGradient colors={Colors.mainGradient} style={styles.sendBtnContainer}>
+              {loading ? (
+                <ActivityIndicator color={"#1A1822"}/>
+              ) : (
+                <Ionicon name="arrow-up-outline" size={20} color={"white"} />
+              )}
+            </LinearGradient>
+        </Send>
+      )
+    }
+
+    const renderActions = (props) => {
+        console.log("action props", props)
+        return (
+            <View style={styles.buttonRow}>
+                <Pressable style={styles.newMessageButton} onPress={() => console.log("location pressed")}>
+                   <Ionicon name="locate-outline" size={20} color={"white"} />
+                </Pressable>
+            </View>
+        )
+    }
+
+    const renderComposer = (props) => {
+        return (
+            <Composer textInputStyle={{color: "white"}} {...props}  />
+        )
+    }
+
+    const renderInputToolbar = (props) => {
+      return (
+          <InputToolbar 
+            containerStyle={styles.messageContainer} 
+            {...props} 
+          />
+      )
+    }
+
+
+    // const onSend = useCallback(async (messages = []) => {
+    //     setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
+    // }, [])
+
+    return (
+      <LinearGradient colors={Colors.backgroundGradient} style={styles.container}>
+        <SafeAreaView style={{ flex: 1 }}>
+          <Header navigation={navigation} title={name} containerStyle={{marginHorizontal: 20, height: 40, alignItems: "center"}} />
+          <GiftedChat
+                messages={thread}
+                onSend={async () => {
+                  await handleSendMessage()
+                }}
+                renderBubble={({ currentMessage, nextMessage, previousMessage }) => {
+                  return renderItem({item: currentMessage, prev: previousMessage ?? null, next: nextMessage ?? null})
+                }}
+                text={message}
+                onInputTextChanged={text => setMessage(text)}
+                alwaysShowSend
+                renderAvatar={null}
+                inverted={false}
+                renderInputToolbar={renderInputToolbar}
+                renderComposer={renderComposer}
+                renderSend={renderSend}
+                user={{
+                    _id: userDetails.uid,
+                }}
             />
-          ) : (
-            <Text style={AppStyles.semibold25}>
-              {getInitials(item.name).substr(0, 2)}
-            </Text>
-          )}
-        </View>
-        <View>
-          <Text style={{ ...AppStyles.semibold17, maxWidth: 300 }}>
-            {item?.name}
-          </Text>
-          <Text style={AppStyles.medium13}>{item.recentMessage.text}</Text>
-        </View>
-      </View>
-    </Pressable>
-  );
-};
-export default GroupListItem;
+        </SafeAreaView>
+      </LinearGradient>
+  )
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    color: "white",
+    flex: 1,
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  navBar: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "center",
+    height: 75,
+    zIndex: 100,
+    backgroundColor: "black"
+  },
+  bigView: {
+    justifyContent: "flex-start",
+    flex: 1,
+  },
+  messageContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 5,
+    backgroundColor: "transparent"
+  },
+  messageInput: {
+    backgroundColor: "#303030",
+    marginRight: 5,
+    borderRadius: 10,
+    color: "white",
+  },
+  sendBtnContainer: {
+    borderRadius: 10,
+    height: 30,
+    width: 30,
+    justifyContent: "center", 
+    alignItems: "center",
+    padding: 5, 
+  },
+  sendBtn: {
+    height: 30,
+    width: 30,
+    borderRadius: 10,
+    justifyContent: "center", 
+    alignItems: "center",
+    padding: 5, 
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "flex-end",
+    marginVertical: 10,
+    zIndex: 1000,
+  },
+  newMessageButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: 40,
+    width: 40,
+    borderRadius: 10,
+    backgroundColor: Colors.gray,
+  },
+
+})
+
+
+export default GroupThread;

@@ -9,6 +9,7 @@ import CustomTabBar from "./customTabBar";
 
 const MainApp = createBottomTabNavigator();
 
+
 export const MainAppTabs = () => (
     <MainApp.Navigator tabBar={props => <CustomTabBar {...props} />} initialRouteName="Home">
       <MainApp.Screen

@@ -1,9 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Pressable, StyleSheet } from 'react-native';
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import LinearGradient from "react-native-linear-gradient";
 import { Colors } from "../../utils/Colors";
 
 const CustomTabBar = ({ state, descriptors, navigation }) => {
+
+    const [routeName, setRouteName] = useState("");
+
+
+    useEffect(() => {
+        setRouteName(getFocusedRouteNameFromRoute(state.routes[state.index]));
+    }, [state, navigation])
+
+    if (routeName == "GroupThread") {
+        return null;
+    }
+
   return (
     <View style={localStyles.navContainer}>
         <View style={localStyles.tabContianer}>

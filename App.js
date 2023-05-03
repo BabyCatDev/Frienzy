@@ -8,6 +8,7 @@ import { ToastConfig } from "./src/components/toastConfig";
 import { StatusBar } from "react-native";
 import AuthProvider from "./src/utils/AuthProvider";
 import FGLocationRetriever from "./src/services/FGLocationRetriever";
+import { QueryClientProvider, QueryClient } from "react-query";
 import OneSignal from "react-native-onesignal";
 import FBSaver from "./src/services/FBSaver";
 // OneSignal Initialization
@@ -42,23 +43,25 @@ OneSignal.setNotificationOpenedHandler((notification) => {
 
 const store2 = configureStore()
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchInterval: false,
+      staleTime: Infinity
+    }
+  }
+})
+
 const App = () => {
   const fetchCredentials = async () => {
     const key = FBSaver.getInstance().userKey;
     const phone = FBSaver.getInstance().keyToPhone[key];
     const token = await AuthProvider.getToken(phone, "111111");
-
-    if (token) {
-      store.dispatch(autoLoginUser(token));
-    } else {
-      store.dispatch(setAutoLoginLoading(false));
-    }
   };
 
   useEffect(() => {
     async function appStart() {
       FBSaver.getInstance().init();
-      await store.dispatch(checkFirstLaunch());
       fetchCredentials();
       FGLocationRetriever.getInstance().init();
     }
@@ -67,11 +70,13 @@ const App = () => {
 
   return (
     <Provider store={store2}>
+      <QueryClientProvider client={queryClient}>
         <StatusBar barStyle="light-content" backgroundColor={"#1A1822"} />
-        <BottomSheetModalProvider>
-          <NavigationManager />
-        </BottomSheetModalProvider>
+          <BottomSheetModalProvider>
+            <NavigationManager />
+          </BottomSheetModalProvider>
         <Toast config={ToastConfig} />
+      </QueryClientProvider>
     </Provider>
   );
 };

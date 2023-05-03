@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createConversation, threadListener, conversationListener } from '../services/conversations';
+import { threadListener } from "../services/firebase/conversations";
 
-export const useThread = (threadId, contactId) => {
+export const useThread = (threadId) => {
     const dispatch = useDispatch();
     const userDetails = useSelector(state => state.FrienzyAuth.userDetails);
    //const conversations = useSelector(state => state.FrienzyData.conversations);
@@ -17,15 +17,6 @@ export const useThread = (threadId, contactId) => {
 
     useEffect(() => {
         let listenerInstance;
-        // if (!convIdInst) {
-        //     let conversation = conversations.find(item => item.members.some(member => member === contactId))
-        //     if (!conversation) {
-        //       console.log("Create")
-        //         //createChat(contactId).then((res) => setChatIdInst(res.id))
-        //     } else {
-        //         setConvIdInst(conversation.id)
-        //     }
-        // }
         if (userDetails != null) {
             listenerInstance = threadListener(handleThreadChange, threadId)
         }

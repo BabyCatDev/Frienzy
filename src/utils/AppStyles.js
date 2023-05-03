@@ -231,10 +231,24 @@ export const AppStyles = {
     alignItems: "center",
     backgroundColor: Colors.darkGray,
   },
+  messageImageContainer: {
+    width: normalize(30),
+    height: normalize(30),
+    borderRadius: normalize(15),
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.darkGray,
+  },
   contactImage: {
     width: normalize(60),
     height: normalize(60),
     borderRadius: normalize(30),
+    backgroundColor: Colors.darkGray,
+  },
+  messageImage: {
+    width: normalize(30),
+    height: normalize(30),
+    borderRadius: normalize(15),
     backgroundColor: Colors.darkGray,
   },
   checkBoxContainer: {

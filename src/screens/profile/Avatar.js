@@ -117,12 +117,12 @@ export const Avatar = ({ username, profilePic }) => {
   return (
     <View style={{ marginTop: normalize(44) }}>
       <View style={AppStyles.avatarContainer}>
-        {dataImage?.[0] || profilePic ? (
+        {profilePic ? (
           <Image
             resizeMode="cover"
             resizeMethod="scale"
             style={AppStyles.avatar}
-            source={{ uri: dataImage?.[0] ?? profilePic.replace('.googleapis.com:443/', '.googleapis.com/') }}
+            source={{ uri: profilePic }}
           />
         ) : (
           <Text

@@ -9,16 +9,15 @@ export const useConversations = () => {
 
   const handleConversationChange = useCallback(
       (change) => {
-        console.log("Im Here", change)
-          dispatch(setConversations(change ? change.docs.map(item => ({ ...item.data() })) : []))
+          dispatch(setConversations(change.docs.map(item => ({ ...item.data() }))))
       },
       [dispatch],
   )
 
   useEffect(() => {
     let listenerInstance;
-    if (userDetails != null) {
-      listenerInstance = conversationListener(handleConversationChange, userDetails.uid)
+    if (userDetails != null && userDetails.groups.length > 0) {
+      listenerInstance = conversationListener(handleConversationChange, userDetails.groups)
     }
 
     return () => {

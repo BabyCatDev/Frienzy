@@ -51,6 +51,7 @@ const MyFriends = ({ navigation }) => {
         </View>
         <FlatList
             data={filteredItems}
+            keyExtractor={(item) => item.uid}
             renderItem={({item, index}) => 
                 <FriendListItem 
                     item={item} 
@@ -59,12 +60,11 @@ const MyFriends = ({ navigation }) => {
                 /> 
             }
             ListEmptyComponent={
-                <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+                <View style={{flex: 1, justifyContent: "center", alignItems: "center", marginTop: 40}}>
                     <Text style={{...AppStyles.medium22, color: "white"}}>{"No Friends Yet  :("}</Text>
                 </View>
                 
             }
-            keyExtractor={item => item.id}
         />
     </LinearGradient>
   );

@@ -5,6 +5,8 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "ios-14-plus": "react-native run-ios --simulator='iPhone 14 Plus'",
+    "ios-14-pro": "react-native run-ios --simulator='iPhone 14 Pro'",
     "ios-14": "react-native run-ios --simulator='iPhone 14'",
     "start": "react-native start",
     "test": "jest",
@@ -51,6 +53,7 @@
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.8.0",
     "react-native-get-location": "^3.0.1",
+    "react-native-gifted-chat": "^2.0.1",
     "react-native-image-picker": "^4.10.2",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-linear-gradient": "^2.6.2",

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		076B9E86E2BB4D5F9344A518 /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EF031B23C5554184AB26C3D2 /* Poppins-Medium.ttf */; };
+		0BE908FBDC9648A982D7B63D /* NewOrder-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 98BABED344F24F58B99FA1E3 /* NewOrder-Regular.otf */; };
 		0C8CE869EF6B409B83285E29 /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 632762CE4EBA4C698450B473 /* Poppins-Regular.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -45,22 +46,21 @@
 		6466CF8CB4E74528ABB332DB /* Roboto-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0A3A8C5D367F4AD88417EFAE /* Roboto-Light.ttf */; };
 		661A99ADC238450497027C3E /* Roboto-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0B2FCDD8245F4991AC2135D0 /* Roboto-BoldItalic.ttf */; };
 		6C2350A38F8A43D8AFCCB561 /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0A8B1820D4B1455E9002A24B /* Roboto-Black.ttf */; };
+		7B9A146B6C404E58958DC321 /* NewOrder-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 9F27AF9195BC4AC4A9BC8FFD /* NewOrder-Light.otf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		87BEB174BEEF261FD8143B46 /* Pods_OneSignalNotificationServiceExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5A3F6EF96160154416C4471 /* Pods_OneSignalNotificationServiceExtension.framework */; };
 		A1A01C4EFCF643469E0C842A /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C4A1CC8E56DF4355BAE66AAD /* Roboto-Regular.ttf */; };
+		B01174993BB64603B02EC22C /* NewOrder-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = F9B4362CA4654CA58B5577D7 /* NewOrder-Medium.otf */; };
 		B78BE56C29E0099D00066792 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78BE56B29E0099D00066792 /* NotificationService.swift */; };
 		B78BE57029E0099D00066792 /* OneSignalNotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B78BE56929E0099D00066792 /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		BB2EF4D9C9924AB497350D69 /* NewOrder-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2B0070E71440418BA7E7021A /* NewOrder-Bold.otf */; };
 		BEB212DC7D0C4CA39A3366BF /* Poppins-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D5A3760DDE394209B019C494 /* Poppins-SemiBold.ttf */; };
+		C9BD002504184155977DDCD2 /* NewOrder-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = E335F3566E9F4AA3B7E643A2 /* NewOrder-SemiBold.otf */; };
 		CD73D7DB314E440384D58255 /* Roboto-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C69C21CF2A2848D59FE84635 /* Roboto-MediumItalic.ttf */; };
 		DB0BCB6729D3146B0097DBFC /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0BCB6629D3146B0097DBFC /* RNBackgroundFetch+AppDelegate.m */; };
 		EE423D0D097EA7ED425D9E30 /* Pods_lavanda.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D3C274C758C88A01D4C90E5 /* Pods_lavanda.framework */; };
 		F4DFD22C1F47463DA8519F4A /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6585FC6BA9FD4CDEA547065F /* Roboto-LightItalic.ttf */; };
 		FECE72288E074F25B3DF86F1 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8C59BE29A0D410F99EFFDF6 /* Roboto-Medium.ttf */; };
-		BB2EF4D9C9924AB497350D69 /* NewOrder-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2B0070E71440418BA7E7021A /* NewOrder-Bold.otf */; };
-		7B9A146B6C404E58958DC321 /* NewOrder-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 9F27AF9195BC4AC4A9BC8FFD /* NewOrder-Light.otf */; };
-		B01174993BB64603B02EC22C /* NewOrder-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = F9B4362CA4654CA58B5577D7 /* NewOrder-Medium.otf */; };
-		0BE908FBDC9648A982D7B63D /* NewOrder-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 98BABED344F24F58B99FA1E3 /* NewOrder-Regular.otf */; };
-		C9BD002504184155977DDCD2 /* NewOrder-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = E335F3566E9F4AA3B7E643A2 /* NewOrder-SemiBold.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,6 +100,7 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = lavanda/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = lavanda/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = lavanda/main.m; sourceTree = "<group>"; };
+		2B0070E71440418BA7E7021A /* NewOrder-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NewOrder-Bold.otf"; path = "../assets/fonts/NewOrder/NewOrder-Bold.otf"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* lavanda-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "lavanda-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		363D3E2729FC27D200C4664F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		363D3E2A29FC90D400C4664F /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
@@ -132,7 +133,9 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = lavanda/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		81B864CA870440BC9D1DF9CA /* Roboto-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Italic.ttf"; path = "../assets/fonts/Roboto/Roboto-Italic.ttf"; sourceTree = "<group>"; };
 		83756452D9E5697BC70B2664 /* Pods-lavanda.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lavanda.debug.xcconfig"; path = "Target Support Files/Pods-lavanda/Pods-lavanda.debug.xcconfig"; sourceTree = "<group>"; };
+		98BABED344F24F58B99FA1E3 /* NewOrder-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NewOrder-Regular.otf"; path = "../assets/fonts/NewOrder/NewOrder-Regular.otf"; sourceTree = "<group>"; };
 		9DF2670061BD93DBE81E2BA1 /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; sourceTree = "<group>"; };
+		9F27AF9195BC4AC4A9BC8FFD /* NewOrder-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NewOrder-Light.otf"; path = "../assets/fonts/NewOrder/NewOrder-Light.otf"; sourceTree = "<group>"; };
 		B78173D929E00C0700222091 /* OneSignalNotificationServiceExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OneSignalNotificationServiceExtension.entitlements; sourceTree = "<group>"; };
 		B78BE56429E0093000066792 /* lavanda.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = lavanda.entitlements; path = lavanda/lavanda.entitlements; sourceTree = "<group>"; };
 		B78BE56929E0099D00066792 /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -143,18 +146,15 @@
 		C8C59BE29A0D410F99EFFDF6 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Medium.ttf"; path = "../assets/fonts/Roboto/Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		D5A3760DDE394209B019C494 /* Poppins-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBold.ttf"; path = "../assets/fonts/Poppins/Poppins-SemiBold.ttf"; sourceTree = "<group>"; };
 		DB0BCB6629D3146B0097DBFC /* RNBackgroundFetch+AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "RNBackgroundFetch+AppDelegate.m"; path = "../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/RNBackgroundFetch+AppDelegate.m"; sourceTree = "<group>"; };
+		E335F3566E9F4AA3B7E643A2 /* NewOrder-SemiBold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NewOrder-SemiBold.otf"; path = "../assets/fonts/NewOrder/NewOrder-SemiBold.otf"; sourceTree = "<group>"; };
 		E4A71AEAC06D4D7CA71C45B2 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Thin.ttf"; path = "../assets/fonts/Roboto/Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		E5A3F6EF96160154416C4471 /* Pods_OneSignalNotificationServiceExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OneSignalNotificationServiceExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		EF031B23C5554184AB26C3D2 /* Poppins-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Medium.ttf"; path = "../assets/fonts/Poppins/Poppins-Medium.ttf"; sourceTree = "<group>"; };
 		F77BE1A4F8C1481E956C56E3 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Bold.ttf"; path = "../assets/fonts/Roboto/Roboto-Bold.ttf"; sourceTree = "<group>"; };
+		F9B4362CA4654CA58B5577D7 /* NewOrder-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NewOrder-Medium.otf"; path = "../assets/fonts/NewOrder/NewOrder-Medium.otf"; sourceTree = "<group>"; };
 		FB88F17C62E743A59D07E105 /* Roboto-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-BlackItalic.ttf"; path = "../assets/fonts/Roboto/Roboto-BlackItalic.ttf"; sourceTree = "<group>"; };
-		2B0070E71440418BA7E7021A /* NewOrder-Bold.otf */ = {isa = PBXFileReference; name = "NewOrder-Bold.otf"; path = "../assets/fonts/NewOrder/NewOrder-Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		9F27AF9195BC4AC4A9BC8FFD /* NewOrder-Light.otf */ = {isa = PBXFileReference; name = "NewOrder-Light.otf"; path = "../assets/fonts/NewOrder/NewOrder-Light.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		F9B4362CA4654CA58B5577D7 /* NewOrder-Medium.otf */ = {isa = PBXFileReference; name = "NewOrder-Medium.otf"; path = "../assets/fonts/NewOrder/NewOrder-Medium.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		98BABED344F24F58B99FA1E3 /* NewOrder-Regular.otf */ = {isa = PBXFileReference; name = "NewOrder-Regular.otf"; path = "../assets/fonts/NewOrder/NewOrder-Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		E335F3566E9F4AA3B7E643A2 /* NewOrder-SemiBold.otf */ = {isa = PBXFileReference; name = "NewOrder-SemiBold.otf"; path = "../assets/fonts/NewOrder/NewOrder-SemiBold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -416,6 +416,7 @@
 				LastUpgradeCheck = 1130;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = 2QY6BKLCTW;
 						LastSwiftMigration = 1120;
 						ProvisioningStyle = Automatic;
 					};
@@ -751,7 +752,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 2QY6BKLCTW;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = lavanda/Info.plist;
@@ -763,7 +764,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.frienzy-app";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nolandonley.frienzy;
 				PRODUCT_NAME = lavanda;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -787,7 +788,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 2QY6BKLCTW;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = lavanda/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
@@ -798,7 +799,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.frienzy-app";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nolandonley.frienzy;
 				PRODUCT_NAME = lavanda;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
