@@ -84,10 +84,11 @@ export default MessageCard;
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "flex-end"
+    alignItems: "flex-end",
+    maxWidth: "75%"
   },
   messageContainer: {
-    maxWidth: "80%",
+
   },
   message: {
     borderRadius: 10,

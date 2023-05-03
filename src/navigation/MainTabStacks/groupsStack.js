@@ -8,9 +8,9 @@ import GroupThread from "../../screens/groups/GroupThread";
 const GroupsStack = createNativeStackNavigator();
 
 const GroupsStackComponent = ({ navigation }) => (
-  <GroupsStack.Navigator initialRouteName="Groups">
-    <GroupsStack.Screen options={{ headerShown: false }} name="Groups" component={GroupsPage} />
-    <GroupsStack.Screen options={{ headerShown: false }} name={"GroupThread"} component={GroupThread}/>
+  <GroupsStack.Navigator initialRouteName="GroupsList">
+    <GroupsStack.Screen options={{ headerShown: false }} name="GroupsList" component={GroupsPage} />
+    <GroupsStack.Screen options={{ headerShown: false }} name="GroupThread" component={GroupThread}/>
     <GroupsStack.Screen options={{ headerShown: false }} name="Contacts" component={ContactList} />
   </GroupsStack.Navigator>
 );
