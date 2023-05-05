@@ -30,7 +30,7 @@ import { useGroupById } from '../../hooks/useThread';
 import { addUserToGroup, getGroupById } from '../../services/firebase/conversations';
 
 const GroupsList = ({ navigation, route }) => {
-  const { threadId } = route.params;
+  const { threadId } = route.params ?? '';
   const { height } = useWindowDimensions();
   const [groupList, setGroupList] = useState([]);
   const [query, setQuery] = useState('');
