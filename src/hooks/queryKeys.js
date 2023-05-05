@@ -1,4 +1,5 @@
 export const keys = {
-    user: (user) => ['user', user],
-    userFriends: (userId, otherUserId) => ['friends', userId + otherUserId],
-  }
+  user: (user) => ['user', user],
+  group: (group) => ['group', group],
+  userFriends: (userId, otherUserId) => ['friends', userId + otherUserId],
+};

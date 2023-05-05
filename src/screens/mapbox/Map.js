@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,34 +6,32 @@ import {
   Text,
   TouchableOpacity,
   Platform,
-} from "react-native";
-import Mapbox from "@rnmapbox/maps";
-import { Header } from "../profile/Header";
-import { AssetImage } from "../../assets/asset_image";
-import Assets from "../../assets";
-import normalize from "react-native-normalize";
-import LinearGradient from "react-native-linear-gradient";
-import { Colors } from "../../utils/Colors";
-import GetLocation, {
-  LocationError,
-} from "react-native-get-location";
-import { getObject } from "../../utils/AsyncStore";
-import FGLocationRetriever from "../../services/FGLocationRetriever";
-import { useFocusEffect } from "@react-navigation/native";
-import coachellaOverlayData from "../../assets/coachella.json";
-import { getMobileNumber } from "../../utils/helper";
-import OverlayScreen from "./OverlayScreen";
-import AlarmOverlay from "./AlarmOverlay";
-import CacheImage from "../../utils/CacheImage";
-import Ionicon from "react-native-vector-icons/Ionicons";
+} from 'react-native';
+import Mapbox from '@rnmapbox/maps';
+import { Header } from '../../components/Header';
+import { AssetImage } from '../../assets/asset_image';
+import Assets from '../../assets';
+import normalize from 'react-native-normalize';
+import LinearGradient from 'react-native-linear-gradient';
+import { Colors } from '../../utils/Colors';
+import GetLocation, { LocationError } from 'react-native-get-location';
+import { getObject } from '../../utils/AsyncStore';
+import FGLocationRetriever from '../../services/FGLocationRetriever';
+import { useFocusEffect } from '@react-navigation/native';
+import coachellaOverlayData from '../../assets/coachella.json';
+import { getMobileNumber } from '../../utils/helper';
+import OverlayScreen from './OverlayScreen';
+import AlarmOverlay from './AlarmOverlay';
+import CacheImage from '../../utils/CacheImage';
+import Ionicon from 'react-native-vector-icons/Ionicons';
 
 //this is my personal access token, you can use your own, I think it's tied to my secret token which is hardcoded to my environment
 Mapbox.setAccessToken(
-  "pk.eyJ1Ijoibm9sYW5kb25sZXkxNCIsImEiOiJjazJta2dqNmowaXR2M25uM3RyNzl4bmU1In0.IG-7dVSFafe9cSEpQJoU2A"
+  'pk.eyJ1Ijoibm9sYW5kb25sZXkxNCIsImEiOiJjazJta2dqNmowaXR2M25uM3RyNzl4bmU1In0.IG-7dVSFafe9cSEpQJoU2A'
 );
 // Mapbox?.setConnected(true);
 
-const Map = ({ navigation }) => {
+const Map = ({ navigation, route }) => {
   const { height } = useWindowDimensions();
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState([]);
@@ -46,15 +44,15 @@ const Map = ({ navigation }) => {
   const [users, setUsers] = useState([]);
   const [visible, setVisible] = useState(false);
   const renderUsers = filterUsers(users);
-  const [userToPush, setUserToPush] = useState("");
+  const [userToPush, setUserToPush] = useState('');
   async function getContacts() {
-    const selectedContactList = await getObject("selectedContactList");
-    const contacts = await getObject("contacts");
+    const selectedContactList = await getObject('selectedContactList');
+    const contacts = await getObject('contacts');
     setSelectedContacts(selectedContactList);
     setContacts(contacts);
   }
   async function getAlarm() {
-    const alarm = await getObject("alarm");
+    const alarm = await getObject('alarm');
     setAlarmDisabled(alarm);
   }
 
@@ -65,11 +63,11 @@ const Map = ({ navigation }) => {
   }, []);
 
   const getInitials = (name, surname) => {
-    const fullName = name + " " + surname;
+    const fullName = name + ' ' + surname;
     return fullName
-      ?.split(" ")
+      ?.split(' ')
       .map((n) => n[0])
-      .join("");
+      .join('');
   };
 
   const FriendMarker = memo(({ contact, setUserToPush, setVisible }) => {
@@ -78,15 +76,12 @@ const Map = ({ navigation }) => {
     );
 
     setInterval(
-      () =>
-        setLastUpdate(
-          (Date.now() / 1000 - Date.parse(contact.date) / 1000).toFixed(0)
-        ),
+      () => setLastUpdate((Date.now() / 1000 - Date.parse(contact.date) / 1000).toFixed(0)),
       10000
     );
 
     return (
-      <View style={{ justifyContent: "center", alignItems: "center" }}>
+      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
         <TouchableOpacity
           onPress={() => {
             setUserToPush(contact.phone);
@@ -102,10 +97,10 @@ const Map = ({ navigation }) => {
             style={{
               width: normalize(51),
               height: normalize(51),
-              position: "absolute",
+              position: 'absolute',
               borderRadius: normalize(26),
-              justifyContent: "center",
-              alignItems: "center",
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
             {contact.profile_pic ? (
@@ -127,13 +122,11 @@ const Map = ({ navigation }) => {
                   height: normalize(42),
                   borderRadius: normalize(21),
                   backgroundColor: Colors.darkGray,
-                  justifyContent: "center",
-                  alignItems: "center",
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
                 children={
-                  <Text
-                    style={{ color: Colors.white, fontSize: normalize(18) }}
-                  >
+                  <Text style={{ color: Colors.white, fontSize: normalize(18) }}>
                     {getInitials(contact.givenName, contact.familyName)}
                   </Text>
                 }
@@ -143,16 +136,16 @@ const Map = ({ navigation }) => {
         </TouchableOpacity>
         <View
           style={{
-            backgroundColor: "#EBEBEB",
+            backgroundColor: '#EBEBEB',
             borderRadius: 10,
             paddingHorizontal: 3,
           }}
         >
           <Text
             style={{
-              color: "black",
+              color: 'black',
               fontSize: normalize(14),
-              fontFamily: "Poppins-Medium",
+              fontFamily: 'Poppins-Medium',
             }}
           >
             {lastUpdate < 60
@@ -173,14 +166,14 @@ const Map = ({ navigation }) => {
   const renderStages = () => {
     return stages.map((stage) => {
       const isSelected = selectedStage === stage.id;
-      const fillColor = isSelected ? "#00FF00" : "#0000FF";
+      const fillColor = isSelected ? '#00FF00' : '#0000FF';
 
       return (
         <Mapbox.ShapeSource
           key={stage.id}
           id={stage.id}
           shape={{
-            type: "Point",
+            type: 'Point',
             coordinates: stage.coordinates,
           }}
         >
@@ -197,7 +190,7 @@ const Map = ({ navigation }) => {
               textField: stage.stageName,
               textSize: 12,
               textOffset: [0, 1],
-              textAnchor: "top",
+              textAnchor: 'top',
             }}
           />
         </Mapbox.ShapeSource>
@@ -243,14 +236,12 @@ const Map = ({ navigation }) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      FGLocationRetriever.getInstance().setOnPhonesLocationsListener(
-        onUsersLocationUpdate
-      );
+      FGLocationRetriever.getInstance().setOnPhonesLocationsListener(onUsersLocationUpdate);
 
       FGLocationRetriever.getInstance().startListeningToLocationUpdates();
 
       async function getCounter() {
-        const counter = await getObject("counter");
+        const counter = await getObject('counter');
         setCounter(counter == null ? 0 : counter);
       }
       getCounter();
@@ -271,9 +262,9 @@ const Map = ({ navigation }) => {
       enableHighAccuracy: true,
       timeout: 30000,
       rationale: {
-        title: "Location permission",
-        message: "The app needs the permission to request your location.",
-        buttonPositive: "Ok",
+        title: 'Location permission',
+        message: 'The app needs the permission to request your location.',
+        buttonPositive: 'Ok',
       },
     })
       .then((newLocation) => {
@@ -294,31 +285,35 @@ const Map = ({ navigation }) => {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <LinearGradient
         style={{
           height: height * 0.14,
-          width: "100%",
+          width: '100%',
           paddingTop: height * 0.075,
           paddingHorizontal: 20,
         }}
         colors={Colors.backgroundGradient}
       >
         <Header
-          onPressRight={() => navigation.navigate("Contacts")}
+          onPressRight={() => navigation.navigate('Contacts')}
           onPressLeft={requestLocation}
-          rightIcon={() => <Ionicon name={"person-add-outline"} size={normalize(23)} color={"white"} />}
-          leftIcon={() => <Ionicon name={"locate-outline"} size={normalize(23)} color={"white"} />}
-          title={"Coachella"}
-          friendsCounter={counter ? counter == 1 ? "1 friend" : `${counter} friends` : "0 friends"}
+          rightIcon={() => (
+            <Ionicon name={'person-add-outline'} size={normalize(23)} color={'white'} />
+          )}
+          leftIcon={() => <Ionicon name={'locate-outline'} size={normalize(23)} color={'white'} />}
+          title={'Coachella'}
+          friendsCounter={
+            counter ? (counter == 1 ? '1 friend' : `${counter} friends`) : '0 friends'
+          }
           navigation={navigation}
           noBackButton
         />
       </LinearGradient>
-      <View style={{ height: height * 0.86, width: "100%" }}>
+      <View style={{ height: height * 0.86, width: '100%' }}>
         <Mapbox.MapView
           style={{ ...StyleSheet.absoluteFillObject }}
-          styleURL={"mapbox://styles/mapbox/dark-v11"}
+          styleURL={'mapbox://styles/mapbox/dark-v11'}
         >
           <Mapbox.Camera
             followZoomLevel={5}
@@ -328,27 +323,24 @@ const Map = ({ navigation }) => {
             // here
             animationDuration={1000}
           />
-          <Mapbox.ShapeSource
-            id="coachellaOverlay"
-            shape={coachellaOverlayData}
-          >
+          <Mapbox.ShapeSource id="coachellaOverlay" shape={coachellaOverlayData}>
             <Mapbox.FillLayer
               id="coachellaOverlayFill"
-              style={{ fillColor: "#ff6600", fillOpacity: 0.5 }}
+              style={{ fillColor: '#ff6600', fillOpacity: 0.5 }}
             />
             <Mapbox.LineLayer
               id="coachellaOverlayLine"
-              style={{ lineColor: "#ff6600", lineWidth: 2 }}
+              style={{ lineColor: '#ff6600', lineWidth: 2 }}
             />
             <Mapbox.SymbolLayer
               id="coachellaOverlaySymbol"
               style={{
-                textField: ["get", "stageName"],
+                textField: ['get', 'stageName'],
                 textSize: 8,
                 textOffset: [0, 1],
-                textJustify: "center",
-                textAnchor: "center",
-                textFont: ["Open Sans Bold"],
+                textJustify: 'center',
+                textAnchor: 'center',
+                textFont: ['Open Sans Bold'],
                 textPadding: 5,
                 textAllowOverlap: true,
                 textIgnorePlacement: true,
@@ -357,17 +349,9 @@ const Map = ({ navigation }) => {
           </Mapbox.ShapeSource>
 
           {renderUsers?.map((user, index) => (
-            <Mapbox.MarkerView
-              coordinate={user?.coordinates}
-              key={user?.phone}
-              id={user?.phone}
-            >
+            <Mapbox.MarkerView coordinate={user?.coordinates} key={user?.phone} id={user?.phone}>
               {/* <View style={{justifyContent: 'center', alignItems: 'center'}}> */}
-              <FriendMarker
-                contact={user}
-                setUserToPush={setUserToPush}
-                setVisible={setVisible}
-              />
+              <FriendMarker contact={user} setUserToPush={setUserToPush} setVisible={setVisible} />
               {/* <Text>{user.date}</Text> */}
               {/* </View> */}
             </Mapbox.MarkerView>
@@ -379,11 +363,11 @@ const Map = ({ navigation }) => {
         onPress={() => setAlarm(true)}
         disabled={alarmDisabled}
         style={{
-          position: "absolute",
+          position: 'absolute',
           right: 10,
           bottom: 80,
-          justifyContent: "center",
-          alignItems: "center",
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
         <AssetImage
@@ -391,19 +375,17 @@ const Map = ({ navigation }) => {
           width={normalize(90)}
           height={normalize(91)}
         />
-        {Platform.OS === "android" && (
+        {Platform.OS === 'android' && (
           <AssetImage
             asset={Assets.whiteBell}
-            stroke={"black"}
-            containerStyle={{ position: "absolute" }}
+            stroke={'black'}
+            containerStyle={{ position: 'absolute' }}
             width={normalize(32)}
             height={normalize(32)}
           />
         )}
       </TouchableOpacity>
-      {visible && (
-        <OverlayScreen setVisible={setVisible} userToPush={userToPush} />
-      )}
+      {visible && <OverlayScreen setVisible={setVisible} userToPush={userToPush} />}
       {alarm && (
         <AlarmOverlay
           setVisible={setAlarm}

@@ -1186,6 +1186,8 @@ PODS:
     - React-RCTImage
   - RNSha1 (1.2.3):
     - React
+  - RNShare (8.2.2):
+    - React-Core
   - RNStaticSafeAreaInsets (2.2.0):
     - React-Core
   - RNSVG (13.8.0):
@@ -1266,6 +1268,7 @@ DEPENDENCIES:
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSha1 (from `../node_modules/react-native-sha1`)
+  - RNShare (from `../node_modules/react-native-share`)
   - RNStaticSafeAreaInsets (from `../node_modules/react-native-static-safe-area-insets`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -1433,6 +1436,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNSha1:
     :path: "../node_modules/react-native-sha1"
+  RNShare:
+    :path: "../node_modules/react-native-share"
   RNStaticSafeAreaInsets:
     :path: "../node_modules/react-native-static-safe-area-insets"
   RNSVG:
@@ -1534,6 +1539,7 @@ SPEC CHECKSUMS:
   RNReanimated: ce445c233a6ff5600223484a88ad5704945d972a
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
   RNSha1: 6de589cd0b0397d0f6248a2e5ee9e5f0d7da38dc
+  RNShare: d82e10f6b7677f4b0048c23709bd04098d5aee6c
   RNStaticSafeAreaInsets: 055ddbf5e476321720457cdaeec0ff2ba40ec1b8
   RNSVG: c1e76b81c76cdcd34b4e1188852892dc280eb902
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d

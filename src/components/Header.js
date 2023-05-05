@@ -1,9 +1,8 @@
 import React from "react";
 import { View, Text, Pressable } from "react-native";
-import { AssetImage } from "../../assets/asset_image";
-import Assets from "../../assets";
+import Ionicon from "react-native-vector-icons/Ionicons";
 import normalize from "react-native-normalize";
-import { AppStyles } from "../../utils/AppStyles";
+import { AppStyles } from "../utils/AppStyles";
 
 export const Header = ({
   title,
@@ -39,11 +38,7 @@ export const Header = ({
           }}
           onPress={() => navigation.canGoBack() && navigation.pop()}
         >
-          <AssetImage
-            asset={Assets.arrowBack}
-            width={normalize(12)}
-            height={normalize(23)}
-          />
+          <Ionicon name={"chevron-back-outline"} size={normalize(20)} color={"white"} />
         </Pressable>
       )}
       <View style={{ width: "71%", flexGrow: 1 }}>

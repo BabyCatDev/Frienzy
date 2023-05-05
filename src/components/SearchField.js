@@ -6,9 +6,9 @@ import Assets from "../assets";
 import { AssetImage } from "../assets/asset_image";
 import normalize from "react-native-normalize";
 
-const SearchField = ({ search, setSearch }) => {
+const SearchField = ({ search, setSearch, containerStyle }) => {
   return (
-    <View>
+    <View style={containerStyle}>
       <View style={AppStyles.searchFieldContainer}>
         <TextInput
           placeholder="Name"

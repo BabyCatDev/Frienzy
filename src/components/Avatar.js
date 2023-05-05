@@ -8,17 +8,17 @@ import {
   Text,
   Platform,
 } from "react-native";
-import { AssetImage } from "../../assets/asset_image";
-import Assets from "../../assets";
+import { AssetImage } from "../assets/asset_image";
+import Assets from "../assets";
 import normalize from "react-native-normalize";
 import { launchImageLibrary } from "react-native-image-picker";
 import Toast from "react-native-toast-message";
-import { Sizes } from "../../utils/AppConstants";
-import { AppStyles } from "../../utils/AppStyles";
-import { storeObject, getObject } from "../../utils/AsyncStore";
-import FBSaver from "../../services/FBSaver";
+import { Sizes } from "../utils/AppConstants";
+import { AppStyles } from "../utils/AppStyles";
+import { storeObject, getObject } from "../utils/AsyncStore";
+import FBSaver from "../services/FBSaver";
 
-export const Avatar = ({ username, profilePic }) => {
+export const Avatar = ({ username, profilePic, setProfilePic, isGroup=false }) => {
   const [response, setResponse] = useState(null);
   const [dataImage, setDataImage] = useState([]);
 
@@ -86,7 +86,8 @@ export const Avatar = ({ username, profilePic }) => {
             let data = res.assets?.map((el) => el.uri);
             storeObject("image", data).then(async() => {
               setDataImage(data);
-              await FBSaver.getInstance().saveProfilePic(data?.[0], Platform.OS);
+              setProfilePic(data?.[0])
+              // await FBSaver.getInstance().saveProfilePic(data?.[0], Platform.OS);
             });
             
           }
@@ -115,16 +116,16 @@ export const Avatar = ({ username, profilePic }) => {
     [response]
   );
   return (
-    <View style={{ marginTop: normalize(44) }}>
-      <View style={AppStyles.avatarContainer}>
-        {profilePic ? (
+    <View style={{ marginTop: isGroup ? 0 : normalize(44) }}>
+      <Pressable style={isGroup ? AppStyles.groupAvatarContainer : AppStyles.avatarContainer} onPress={() => onButtonPress(options)}>
+        {profilePic && profilePic.length > 0 ? (
           <Image
             resizeMode="cover"
             resizeMethod="scale"
-            style={AppStyles.avatar}
+            style={isGroup ? AppStyles.groupAvatar : AppStyles.avatar}
             source={{ uri: profilePic }}
           />
-        ) : (
+        ) : username.length > 0 ? (
           <Text
             style={{
               ...AppStyles.medium70,
@@ -133,15 +134,17 @@ export const Avatar = ({ username, profilePic }) => {
           >
             {getInitials(username)}
           </Text>
+        ) : (
+          <Text
+            style={{
+              ...AppStyles.medium13,
+              textAlign: "center",
+              color: "white"
+            }}
+          >
+            {"Set Group Pic\n(Optional)"}
+          </Text>
         )}
-      </View>
-      <Pressable onPress={() => onButtonPress(options)}>
-        <AssetImage
-          asset={Assets.pencilButton}
-          width={normalize(49)}
-          height={normalize(48)}
-          containerStyle={AppStyles.editImage}
-        />
       </Pressable>
     </View>
   );

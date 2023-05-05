@@ -3,8 +3,10 @@ import { View, Text, Image, Pressable } from "react-native";
 import { Colors } from "../../utils/Colors";
 import { AppStyles } from "../../utils/AppStyles";
 import normalize from "react-native-normalize";
+import LinearGradient from "react-native-linear-gradient";
+import Ionicon from "react-native-vector-icons/Ionicons";
 
-const FriendListItem = ({ item, onPress, index }) => {
+const FriendListItem = ({ item, onPressHandler, index, selected, showChecks=false }) => {
   const getInitials = (name) => {
     const fullName = name;
     return fullName
@@ -16,7 +18,7 @@ const FriendListItem = ({ item, onPress, index }) => {
   return (
     <Pressable
       onPress={() => {
-        onPress({ itemClicked: item });
+        onPressHandler({ itemClicked: item });
       }}
       style={{
         ...AppStyles.contactItem,
@@ -25,7 +27,7 @@ const FriendListItem = ({ item, onPress, index }) => {
         borderTopColor: index ? Colors.gray : "transparent",
       }}
     >
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <View style={AppStyles.contactImageContainer}>
           {item.profilePic ? (
             <Image
@@ -39,12 +41,29 @@ const FriendListItem = ({ item, onPress, index }) => {
             </Text>
           )}
         </View>
-        <View>
+        <View style={{flex: 1}}>
           <Text style={{ ...AppStyles.semibold17, maxWidth: 300 }}>
             {item.name}
           </Text>
           <Text style={AppStyles.medium13}>{item.phone}</Text>
         </View>
+        {showChecks ? selected ? (
+          <LinearGradient
+            colors={Colors.mainGradient}
+            useAngle={true}
+            angle={132.35}
+            style={AppStyles.checkBoxContainer}
+          >
+            <Ionicon name={"checkmark-sharp"} size={normalize(13)} color={"white"} />
+          </LinearGradient>
+        ) : (
+          <View
+            style={{
+              ...AppStyles.checkBoxContainer,
+              backgroundColor: Colors.gray,
+            }}
+          />
+        ) : null}
       </View>
     </Pressable>
   );

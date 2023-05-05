@@ -11,12 +11,12 @@ import { getMobileNumber } from "../../utils/helper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LinearGradient from "react-native-linear-gradient";
 import { Colors } from "../../utils/Colors";
-import { Header } from "../profile/Header";
+import { Header } from "../../components/Header";
 import { AppStyles } from "../../utils/AppStyles";
 import normalize from "react-native-normalize";
 import SearchField from "../../components/SearchField";
 import ContactItem from "./ContactItem";
-import { MainButton } from "../../components/mainButton";
+import { MainButton } from "../../components/MainButton";
 
 import FGLocationRetriever from "../../services/FGLocationRetriever";
 import Animated, {
