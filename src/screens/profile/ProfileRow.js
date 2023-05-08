@@ -6,7 +6,7 @@ import normalize from "react-native-normalize";
 import { AppStyles } from "../../utils/AppStyles";
 
 export const ProfileRow = memo(
-  ({ title, toggle, toggleOn, onToggle, onPress, qrCode }) => {
+  ({ title, toggle, defaultToggle, toggleOn, onToggle, onPress, qrCode }) => {
     return (
       <TouchableOpacity onPress={onPress} style={AppStyles.profileRowContainer} disabled={toggle}>
         <Text style={AppStyles.medium17}>{title}</Text>
