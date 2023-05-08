@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Image,
@@ -46,7 +46,7 @@ const PhotoUpload = ({
 }) => {
   const imageSize = useSharedValue(step > 0 ? wp(20) : wp(70));
   const [response, setResponse] = useState(null);
-  const [dataImage, setDataImage] = useState([]);
+  const [dataImage, setDataImage] = useState(null);
   const [showName, setShowName] = useState(false);
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
@@ -72,7 +72,7 @@ const PhotoUpload = ({
 
   const nextScreen = async () => {
     setLoading(true);
-    await saveNameAndPhoto(userDetails.uid, dataImage?.[0], username);
+    await saveNameAndPhoto(userDetails.uid, dataImage, username);
     setLoading(false);
   };
 
@@ -80,6 +80,10 @@ const PhotoUpload = ({
     imageSize.value = withSpring(showName ? wp(70) : wp(30));
     setShowName(!showName);
   };
+
+  useEffect(() => {
+    console.log('image', dataImage);
+  }, [dataImage]);
 
   const onImageButtonPressed = useCallback(() => {
     getPhoto(response, setResponse, group ? setGroupAvatar : setDataImage);
@@ -218,14 +222,14 @@ const PhotoUpload = ({
                       >
                         <View style={localStyles.innerCircleSecondContainer}>
                           <View style={localStyles.avatarImageContainer}>
-                            {(dataImage?.[0] || userDetails?.profilePic?.length > 0) && (
+                            {(dataImage || userDetails?.profilePic?.length > 0) && (
                               <Image
                                 resizeMode="cover"
                                 resizeMethod="scale"
                                 style={localStyles.avatarImage}
                                 source={{
-                                  uri: dataImage?.[0]
-                                    ? dataImage?.[0]
+                                  uri: dataImage
+                                    ? dataImage
                                     : userDetails?.profilePic?.length > 0
                                     ? userDetails.profilePic
                                     : null,
@@ -239,9 +243,9 @@ const PhotoUpload = ({
                   </LinearGradient>
                 </Pressable>
               </Animated.View>
-              <View style={localStyles.inputContainer}>
+              <View style={[localStyles.inputContainer]}>
                 {showName ? (
-                  <View>
+                  <View style={{ flex: 1 }}>
                     <Text style={{ ...localStyles.nameHelper, ...AppStyles.medium13 }}>
                       What do your friends call you?
                     </Text>
@@ -290,18 +294,14 @@ const localStyles = StyleSheet.create({
   },
   nameHelper: {
     marginBottom: 10,
+    textAlign: 'center',
   },
   inputContainer: {
     width: '80%',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: Colors.darkText,
-    borderRadius: 10,
-    paddingRight: 20,
     paddingVertical: 16,
-    paddingHorizontal: 20,
   },
   nameInput: {
     paddingRight: 20,

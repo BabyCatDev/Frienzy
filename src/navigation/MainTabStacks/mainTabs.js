@@ -1,71 +1,143 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
+import BackgroundGeolocation from 'react-native-background-geolocation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeStackComponent from "./homeStack";
-import GroupsStackComponent from "./groupsStack";
-import ProfileStackComponent from "./profileStack";
-import { StyleSheet } from "react-native";
-import Ionicon from "react-native-vector-icons/Ionicons";
-import CustomTabBar from "./customTabBar";
+import HomeStackComponent from './homeStack';
+import GroupsStackComponent from './groupsStack';
+import ProfileStackComponent from './profileStack';
+import { StyleSheet } from 'react-native';
+import Ionicon from 'react-native-vector-icons/Ionicons';
+import CustomTabBar from './customTabBar';
+import { useDispatch } from 'react-redux';
+import { setLocationEnabled } from '../../redux/actions/data/UserLocation';
+import { useSelector } from 'react-redux';
+import { saveUserLocation } from '../../services/location/geolocation';
 
 const MainApp = createBottomTabNavigator();
 
+export const MainAppTabs = () => {
+  const enabled = useSelector((state) => state.FrienzyData.isEnabled);
+  //const [enabled, setEnabled] = useState(false);
+  const [location, setLocation] = useState('');
 
-export const MainAppTabs = () => (
-    <MainApp.Navigator tabBar={props => <CustomTabBar {...props} />} initialRouteName="Home">
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    //   /// 1.  Subscribe to events.
+    const onLocation = BackgroundGeolocation.onLocation(async (location) => {
+      console.log('[onLocation]', location);
+    });
+
+    const onHeartbeat = BackgroundGeolocation.onHeartbeat((event) => {
+      console.log('[onHeartbeat]', event);
+    });
+
+    const onMotionChange = BackgroundGeolocation.onMotionChange((event) => {
+      console.log('[onMotionChange]', event);
+    });
+
+    const onActivityChange = BackgroundGeolocation.onActivityChange((event) => {
+      console.log('[onActivityChange]', event);
+    });
+
+    const onProviderChange = BackgroundGeolocation.onProviderChange((event) => {
+      console.log('[onProviderChange]', event);
+    });
+
+    /// 2. ready the plugin.
+    BackgroundGeolocation.ready({
+      desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
+      heartbeatInterval: 60,
+      preventSuspend: true,
+      stopTimeout: 5,
+
+      debug: false,
+      logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
+      stopOnTerminate: false,
+      startOnBoot: true,
+      batchSync: false,
+      autoSync: true,
+    }).then((state) => {
+      dispatch(setLocationEnabled(state.enabled));
+      //setEnabled(state.enabled);
+      console.log('- BackgroundGeolocation is configured and ready: ', state.enabled);
+    });
+
+    return () => {
+      // Remove BackgroundGeolocation event-subscribers when the View is removed or refreshed
+      // during development live-reload.  Without this, event-listeners will accumulate with
+      // each refresh during live-reload.
+      onLocation.remove();
+      onMotionChange.remove();
+      onActivityChange.remove();
+      onProviderChange.remove();
+      onHeartbeat.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log('Enabled', enabled);
+    if (enabled) {
+      BackgroundGeolocation.start();
+    } else {
+      BackgroundGeolocation.stop();
+      setLocation('');
+    }
+  }, [enabled]);
+
+  return (
+    <MainApp.Navigator tabBar={(props) => <CustomTabBar {...props} />} initialRouteName="Home">
       <MainApp.Screen
         options={({ navigation, route }) => ({
-          tabBarLabel: "Groups",
+          tabBarLabel: 'Groups',
           headerShown: false,
           tabBarIcon: (focused) => {
             return (
-                <Ionicon
-                  name={focused ? "people" : "people-outline"}
-                  style={localStyles.iconStyle}
-                />
+              <Ionicon name={focused ? 'people' : 'people-outline'} style={localStyles.iconStyle} />
             );
           },
         })}
-        name={"Groups"}
+        name={'Groups'}
         component={GroupsStackComponent}
       />
       <MainApp.Screen
         options={({ navigation, route }) => ({
-          tabBarLabel: "Home",
+          tabBarLabel: 'Home',
           headerShown: false,
           tabBarIcon: (focused) => {
             return (
-                <Ionicon
-                  name={focused ? "location" : "location-outline"}
-                  style={localStyles.iconStyle}
-                />
+              <Ionicon
+                name={focused ? 'location' : 'location-outline'}
+                style={localStyles.iconStyle}
+              />
             );
           },
         })}
-        name={"Home"}
+        name={'Home'}
         component={HomeStackComponent}
       />
       <MainApp.Screen
         options={({ navigation, route }) => ({
-          tabBarLabel: "Profile",
+          tabBarLabel: 'Profile',
           headerShown: false,
           tabBarIcon: (focused) => {
             return (
-                <Ionicon
-                  name={focused ? "person-circle" : "person-circle-outline"}
-                  style={localStyles.iconStyle}
-                />
+              <Ionicon
+                name={focused ? 'person-circle' : 'person-circle-outline'}
+                style={localStyles.iconStyle}
+              />
             );
           },
         })}
-        name={"Profile"}
+        name={'Profile'}
         component={ProfileStackComponent}
       />
     </MainApp.Navigator>
-);
+  );
+};
 
 const localStyles = StyleSheet.create({
   iconStyle: {
-    color: "white", 
-    fontSize: 25
-  }
-})
+    color: 'white',
+    fontSize: 25,
+  },
+});

@@ -36,6 +36,7 @@ export const getGroupById = (threadId) =>
   });
 
 export const sendMessage = async (messageDetails, threadId) => {
+  console.log(threadId, messageDetails);
   await firestore().collection('groups').doc(threadId).collection('messages').add(messageDetails);
   await firestore()
     .collection('groups')
@@ -72,7 +73,6 @@ export const createNewGroup = async ({ name, pic, members, message = null }) => 
     .collection('groups')
     .add({
       name: name,
-      pic: pic,
       members: [...members, currentId],
       createdBy: currentId,
       createdAt: time,
@@ -80,8 +80,13 @@ export const createNewGroup = async ({ name, pic, members, message = null }) => 
       recentMessage: messageToAdd,
     });
 
+  const filename = pic?.substring(pic?.lastIndexOf('/') + 1);
+  const reference = storage().ref(`GroupPhotos/${group.id}/${filename}`);
+  await reference.putFile(photoURL);
+  const url = await storage().ref(`GroupPhotos/${group.id}/${filename}`).getDownloadURL();
+
   await firestore().collection('groups').doc(group.id).collection('messages').add(messageToAdd);
-  await firestore().collection('groups').doc(group.id).update({ id: group.id });
+  await firestore().collection('groups').doc(group.id).update({ id: group.id, pic: url });
 
   await firestore()
     .collection('users')
@@ -122,5 +127,21 @@ export const addUserToGroup = async (threadId, userId, ownerId) => {
     .doc(ownerId)
     .update({
       friends: firestore.FieldValue.arrayUnion(userId),
+    });
+};
+
+export const removeUserFromGroup = async (threadId, userId) => {
+  await firestore()
+    .collection('users')
+    .doc(userId)
+    .update({
+      groups: firestore.FieldValue.arrayRemove(threadId),
+    });
+
+  await firestore()
+    .collection('groups')
+    .doc(threadId)
+    .update({
+      members: firestore.FieldValue.arrayRemove(userId),
     });
 };

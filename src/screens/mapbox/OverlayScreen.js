@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,16 +6,16 @@ import {
   Platform,
   TouchableWithoutFeedback,
   TouchableOpacity,
-} from "react-native";
-import { BlurView } from "@react-native-community/blur";
-import LinearGradient from "react-native-linear-gradient";
-import { AppStyles } from "../../utils/AppStyles";
-import normalize from "react-native-normalize";
-import FGLocationRetriever from "../../services/FGLocationRetriever";
-import FBSaver from "../../services/FBSaver";
+} from 'react-native';
+import { BlurView } from '@react-native-community/blur';
+import LinearGradient from 'react-native-linear-gradient';
+import { AppStyles } from '../../utils/AppStyles';
+import normalize from 'react-native-normalize';
+import FGLocationRetriever from '../../services/FGLocationRetriever';
+import FBSaver from '../../services/FBSaver';
 
 const OverlayScreen = ({ setVisible, userToPush }) => {
-  const [name, setName] = useState("");
+  const [name, setName] = useState('');
 
   useEffect(() => {
     async function fetchData() {
@@ -28,8 +28,8 @@ const OverlayScreen = ({ setVisible, userToPush }) => {
     <View
       style={{
         ...StyleSheet.absoluteFillObject,
-        justifyContent: "center",
-        alignItems: "center",
+        justifyContent: 'center',
+        alignItems: 'center',
         paddingHorizontal: 22,
       }}
     >
@@ -39,17 +39,17 @@ const OverlayScreen = ({ setVisible, userToPush }) => {
             ...StyleSheet.absoluteFillObject,
           }}
           blurType="dark"
-          blurAmount={Platform.OS === "ios" ? 2 : 11}
+          blurAmount={Platform.OS === 'ios' ? 2 : 11}
         />
       </TouchableWithoutFeedback>
       <LinearGradient
         style={{
-          width: "100%",
+          width: '100%',
           borderRadius: 20,
           padding: normalize(49),
-          alignItems: "center",
+          alignItems: 'center',
         }}
-        colors={["#1A1822", "#12101A"]}
+        colors={['#1A1822', '#12101A']}
       >
         <Text
           style={{
@@ -62,20 +62,20 @@ const OverlayScreen = ({ setVisible, userToPush }) => {
         </Text>
         <TouchableOpacity
           onPress={() => {
-            FGLocationRetriever.getInstance().sendNotiffication(
-              userToPush,
-              name,
-              "Come to me.\nI'm standing still."
-            );
+            // FGLocationRetriever.getInstance().sendNotiffication(
+            //   userToPush,
+            //   name,
+            //   "Come to me.\nI'm standing still."
+            // );
             setVisible(false);
           }}
           style={{
-            backgroundColor: "#221F2D",
+            backgroundColor: '#221F2D',
             paddingHorizontal: normalize(15),
             paddingVertical: normalize(15),
             borderRadius: 10,
-            width: "100%",
-            justifyContent: "center",
+            width: '100%',
+            justifyContent: 'center',
             marginBottom: normalize(20),
           }}
         >
@@ -83,7 +83,7 @@ const OverlayScreen = ({ setVisible, userToPush }) => {
             style={{
               ...AppStyles.semibold17,
               lineHeight: normalize(26),
-              textAlign: "center",
+              textAlign: 'center',
             }}
           >
             {"Come to me.\nI'm standing still."}
@@ -91,27 +91,27 @@ const OverlayScreen = ({ setVisible, userToPush }) => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            FGLocationRetriever.getInstance().sendNotiffication(
-              userToPush,
-              name,
-              "I'm coming to you.\nStay where you are."
-            );
+            // FGLocationRetriever.getInstance().sendNotiffication(
+            //   userToPush,
+            //   name,
+            //   "I'm coming to you.\nStay where you are."
+            // );
             setVisible(false);
           }}
           style={{
-            backgroundColor: "#221F2D",
+            backgroundColor: '#221F2D',
             paddingHorizontal: normalize(15),
             paddingVertical: normalize(15),
             borderRadius: 10,
-            width: "100%",
-            justifyContent: "center",
+            width: '100%',
+            justifyContent: 'center',
           }}
         >
           <Text
             style={{
               ...AppStyles.semibold17,
               lineHeight: normalize(26),
-              textAlign: "center",
+              textAlign: 'center',
             }}
           >
             {"I'm coming to you.\nStay where you are."}

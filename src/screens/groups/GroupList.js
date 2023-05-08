@@ -57,7 +57,7 @@ const GroupsList = ({ navigation, route }) => {
   useEffect(() => {
     async function getId() {
       if (threadId) {
-        if (conversations.find((group) => group.id == threadId) > -1) {
+        if (conversations.findIndex((group) => group.id == threadId) > -1) {
           navigation.push('GroupThread', { threadId: threadId });
         } else {
           const threadData = await getGroupById(threadId);
@@ -89,6 +89,7 @@ const GroupsList = ({ navigation, route }) => {
 
   const handlePresentModalPress = useCallback(
     (index) => {
+      //console.log(showNewGroupModal);
       if (!showNewGroupModal) {
         setShowNewGroupModal(true);
         bottomSheetModalRef.current?.present();

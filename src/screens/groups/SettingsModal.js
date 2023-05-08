@@ -2,16 +2,21 @@ import React from 'react';
 import { View, StyleSheet, Text, Pressable, Share } from 'react-native';
 import { Colors } from '../../utils/Colors';
 import Ionicon from 'react-native-vector-icons/Ionicons';
+import auth from '@react-native-firebase/auth';
+import { removeUserFromGroup } from '../../services/firebase/conversations';
+import { useNavigation } from '@react-navigation/native';
 
 const BUTTON_TEXT_SIZE = 16;
 
-const SettingsModal = ({ groupId }) => {
+const SettingsModal = ({ threadData, navigation }) => {
+  const isOwner = threadData.createdBy == auth().currentUser.uid;
+
   const shareHandler = async () => {
     try {
       const result = await Share.share({
-        url: `frienzy://groups/${groupId}`,
+        url: `frienzy://groups/${threadData.id}`,
         title: 'Join My Frienzy',
-        message: 'Checkout my group on Frienzy!',
+        message: `Checkout my group on Frienzy! ~> frienzy://groups/${threadData.id}`,
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
@@ -30,6 +35,13 @@ const SettingsModal = ({ groupId }) => {
     }
   };
 
+  const archiveHandler = () => {};
+
+  const leaveHandler = async () => {
+    await removeUserFromGroup(threadData.id, auth().currentUser.uid);
+    navigation.goBack();
+  };
+
   const buttons = [
     {
       id: 0,
@@ -45,13 +57,21 @@ const SettingsModal = ({ groupId }) => {
       onClick: () => console.log('Add Friends'),
       type: 'regular',
     },
-    {
-      id: 2,
-      title: 'Delete',
-      icon: <Ionicon name={'trash-outline'} color={'red'} size={BUTTON_TEXT_SIZE + 8} />,
-      onClick: () => console.log('Delete'),
-      type: 'danger',
-    },
+    isOwner
+      ? {
+          id: 2,
+          title: 'Archive',
+          icon: <Ionicon name={'archive-outline'} color={'red'} size={BUTTON_TEXT_SIZE + 8} />,
+          onClick: () => console.log('Delete'),
+          type: 'danger',
+        }
+      : {
+          id: 2,
+          title: 'Leave Frienzy',
+          icon: <Ionicon name={'exit-outline'} color={'red'} size={BUTTON_TEXT_SIZE + 8} />,
+          onClick: () => leaveHandler(),
+          type: 'danger',
+        },
   ];
 
   const ButtonComp = ({ button }) => {

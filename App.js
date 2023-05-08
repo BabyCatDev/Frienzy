@@ -58,7 +58,7 @@ const App = () => {
     async function appStart() {
       FBSaver.getInstance().init();
       fetchCredentials();
-      FGLocationRetriever.getInstance().init();
+      //FGLocationRetriever.getInstance().init();
     }
     appStart();
   }, []);

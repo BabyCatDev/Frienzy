@@ -32,7 +32,7 @@ const NavigationManager = (props) => {
 
   useEffect(() => {
     dispatch(userAuthStateListener());
-  }, []);
+  }, [currentUserObj.userDetails?.loggedIn]);
 
   if (!currentUserObj.loaded) {
     return <SplashScreen />;

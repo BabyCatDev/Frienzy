@@ -1562,6 +1562,11 @@
   "resolved" "https://registry.npmjs.org/@react-native-community/eslint-plugin/-/eslint-plugin-1.3.0.tgz"
   "version" "1.3.0"
 
+"@react-native-community/geolocation@^3.0.6":
+  "integrity" "sha512-+iidKFgw1HxCJSHVnlywAKu6uerdpDAKTXLRnlsUdhgqtgTiIixb496Z267iPVFmIO1bp4lOU6UiwzmvcyXdbg=="
+  "resolved" "https://registry.npmjs.org/@react-native-community/geolocation/-/geolocation-3.0.6.tgz"
+  "version" "3.0.6"
+
 "@react-native-firebase/app@^17.3.2", "@react-native-firebase/app@17.3.2":
   "integrity" "sha512-JPA9PuD3il2/FERnsW5bC/PbXdcBcVMtk4V0vL8YgLh+jQg+E3qQTQmeWn9eOWTYJb6BYOiiNHTdTglvqoo5Cg=="
   "resolved" "https://registry.npmjs.org/@react-native-firebase/app/-/app-17.3.2.tgz"

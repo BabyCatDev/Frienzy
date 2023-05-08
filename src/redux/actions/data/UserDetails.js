@@ -64,36 +64,35 @@ export const getUserDetails = () => (dispatch) => {
   firestore()
     .collection('users')
     .doc(auth().currentUser.uid)
-    .onSnapshot((res) => {
-      console.log('Here on update');
+    .onSnapshot(async (res) => {
       if (res.exists) {
-        dispatch(getUserFriends());
-        dispatch(getUserInvites());
+        const userDetails = res.data();
+        await dispatch(getUserFriends(userDetails));
         return dispatch({
           type: 'UserStateChange',
-          userData: res.data(),
+          userData: userDetails,
           loaded: true,
         });
       }
     });
 };
 
-export const getUserFriends = () => (dispatch) => {
-  firestore()
-    .collection('users')
-    .doc(auth().currentUser.uid)
-    .collection('friends')
-    .onSnapshot((querySnap) => {
-      let friends = [];
-      querySnap.forEach((docSnap) => {
-        friends.push({ id: docSnap.id, data: docSnap.data() });
-      });
-      console.log('Friends', friends);
-      return dispatch({
-        type: 'UserFriendsChange',
-        friendsData: friends,
-      });
-    });
+export const getUserFriends = (userDetails) => async (dispatch) => {
+  const friends = [];
+  for (const groupId of userDetails.groups) {
+    const groupData = await firestore().collection('groups').doc(groupId).get();
+    const mems = groupData.data().members;
+    for (const mem of mems) {
+      friends.indexOf(mem) === -1 && friends.push(mem);
+    }
+  }
+  await firestore().collection('users').doc(auth().currentUser.uid).update({
+    friends: friends,
+  });
+  return dispatch({
+    type: 'UserFriendsChange',
+    friendsData: friends,
+  });
 };
 
 export const getUserInvites = () => (dispatch) => {

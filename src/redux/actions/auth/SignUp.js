@@ -1,10 +1,10 @@
-import auth from "@react-native-firebase/auth";
-import firestore from "@react-native-firebase/firestore";
-import { Alert } from "react-native";
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import { Alert } from 'react-native';
 
 export function signInUpAction(user) {
   return {
-    type: "SignInUp",
+    type: 'SignInUp',
     payload: user,
   };
 }
@@ -19,32 +19,33 @@ async function createFirebaseUser(user) {
     invites: [],
     location: [],
     groups: [],
-    profilePic: "",
-    name: "",
-  }
-  await firestore().collection("users").doc(auth().currentUser.uid).set(newData);
+    profilePic: '',
+    name: '',
+  };
+  await firestore().collection('users').doc(auth().currentUser.uid).set(newData);
 }
 
 export function signInUpWithPhone(confirmFunc, code) {
   return async (dispatch) => {
     try {
       await confirmFunc.confirm(code).then(async (userIn) => {
-        const additionalUserDetails = userIn.additionalUserInfo
+        const additionalUserDetails = userIn.additionalUserInfo;
         const userData = userIn.user;
 
         if (additionalUserDetails.isNewUser) {
-          console.log("New User")
-          createFirebaseUser(userData)
+          console.log('New User');
+          createFirebaseUser(userData);
         } else {
-          console.log("Existing User")
-          await firestore().collection("users").doc(auth().currentUser.uid).update({ loggedIn: true });
+          console.log('Existing User');
+          await firestore()
+            .collection('users')
+            .doc(auth().currentUser.uid)
+            .update({ loggedIn: true });
         }
-        await dispatch(signInUpAction(userData.uid))
-      })
+        await dispatch(signInUpAction(userData.uid));
+      });
     } catch (error) {
-
       console.error(error);
-
     }
   };
 }

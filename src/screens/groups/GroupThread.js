@@ -199,7 +199,7 @@ const GroupThread = ({ navigation, route }) => {
         onDismiss={() => setShowSettingsModal(false)}
       >
         <BottomSheetView style={contentContainerStyle} onLayout={handleContentLayout}>
-          <SettingsModal groupId={threadId} />
+          <SettingsModal threadData={threadData} navigation={navigation} />
         </BottomSheetView>
       </BottomSheetModal>
     </LinearGradient>

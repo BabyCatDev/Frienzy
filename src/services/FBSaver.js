@@ -1,7 +1,7 @@
-import database from "@react-native-firebase/database";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import storage from "@react-native-firebase/storage";
-import { sha1 } from "react-native-sha1";
+import database from '@react-native-firebase/database';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import storage from '@react-native-firebase/storage';
+import { sha1 } from 'react-native-sha1';
 
 export default class FBSaver {
   static instance = null;
@@ -15,13 +15,13 @@ export default class FBSaver {
   constructor() {
     this.userKey = null;
     this.keyToPhone = {};
-    this.profilePicture = "";
+    this.profilePicture = '';
   }
 
   init() {
     this.userKey = null;
     this.keyToPhone = {};
-    this.profilePicture = "";
+    this.profilePicture = '';
     this._loadDataLocaly();
   }
 
@@ -32,11 +32,11 @@ export default class FBSaver {
       profilePicture: this.profilePicture,
     };
 
-    await AsyncStorage.setItem("FBSaver", JSON.stringify(data));
+    await AsyncStorage.setItem('FBSaver', JSON.stringify(data));
   }
 
   async _loadDataLocaly() {
-    const data = await AsyncStorage.getItem("FBSaver");
+    const data = await AsyncStorage.getItem('FBSaver');
     if (data) {
       const parsedData = JSON.parse(data);
       this.userKey = parsedData.userKey;
@@ -46,7 +46,7 @@ export default class FBSaver {
   }
 
   async _removeDataLocaly() {
-    await AsyncStorage.removeItem("FBSaver");
+    await AsyncStorage.removeItem('FBSaver');
   }
 
   async setUserPhone(phone) {
@@ -56,18 +56,14 @@ export default class FBSaver {
 
   async saveProfilePic(path, platform) {
     try {
-      if (this.profilePicture !== "") {
+      if (this.profilePicture !== '') {
         await storage().ref(`UsersPhotos/${this.profilePicture}`).delete();
       }
-      const filename =
-        this.userKey + "-" + path?.substring(path?.lastIndexOf("/") + 1);
+      const filename = this.userKey + '-' + path?.substring(path?.lastIndexOf('/') + 1);
       const reference = storage().ref(`UsersPhotos/${filename}`);
-      const pathToFile =
-        platform === "ios" ? path?.replace("file://", "") : path;
+      const pathToFile = platform === 'ios' ? path?.replace('file://', '') : path;
       const res = await reference.putFile(pathToFile);
-      const url = await storage()
-        .ref(`UsersPhotos/${filename}`)
-        .getDownloadURL();
+      const url = await storage().ref(`UsersPhotos/${filename}`).getDownloadURL();
       database().ref(`users/${this.userKey}`).update({
         profile_pic: url,
       });
@@ -102,8 +98,8 @@ export default class FBSaver {
       const user = await this.getUserData();
       if (user == null) {
         database().ref(`users/${this.userKey}`).set({
-          username: "Frienzy Nickname",
-          profile_pic: "",
+          username: 'Frienzy Nickname',
+          profile_pic: '',
           alarm: false,
         });
       }
@@ -117,8 +113,9 @@ export default class FBSaver {
     ref.set(null);
     this._saveDataLocaly();
   }
+
   async deleteProfilePicture() {
-    if (this.profilePicture !== "") {
+    if (this.profilePicture !== '') {
       const reference = storage().ref(`UsersPhotos/${this.profilePicture}`);
       await reference.delete();
       this._saveDataLocaly();
@@ -130,7 +127,7 @@ export default class FBSaver {
     const user = await ref.once(`value`);
     if (user.exists() && this.keyToPhone[this.userKey]) {
       const userModel = user.val();
-      userModel["phone"] = this.keyToPhone[this.userKey];
+      userModel['phone'] = this.keyToPhone[this.userKey];
       return userModel;
     }
     return null;
@@ -154,11 +151,11 @@ export default class FBSaver {
   }
 
   async _getUserKey(phone) {
-    if (phone == "*") {
-      return "*";
+    if (phone == '*') {
+      return '*';
     }
 
-    const numeric_string = phone.replace(/\D/g, "");
+    const numeric_string = phone.replace(/\D/g, '');
 
     console.log(numeric_string);
 

@@ -166,6 +166,7 @@ export const AppStyles = {
   headerRightIcon: {
     width: normalize(27),
     height: normalize(27),
+    zIndex: 100,
     alignItems: 'flex-end',
   },
   avatarContainer: {
