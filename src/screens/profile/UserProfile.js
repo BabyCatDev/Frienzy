@@ -20,6 +20,7 @@ import DeleteAccountOverlay from './DeleteAccountOverlay';
 import { useLocation } from '../../hooks/useLocation';
 import BackgroundGeolocation from 'react-native-background-geolocation';
 import { setLocationEnabled } from '../../redux/actions/data/UserLocation';
+import Ionicon from 'react-native-vector-icons/Ionicons';
 
 const UserProfile = ({ navigation }) => {
   const { height } = useWindowDimensions();
@@ -126,7 +127,7 @@ const UserProfile = ({ navigation }) => {
           }}
         >
           {/* HEADER */}
-          <Header navigation={navigation} title={'Profile'} noBackButton={true} />
+          <Header navigation={navigation} title={'Profile'} noBackButton={true} onPressRight={() => navigation.navigate('Settings')} rightIcon={() => <Ionicon name={'settings'} size={normalize(20)} color={"white"} />} />
           <View style={{ alignItems: 'center', width: '100%' }}>
             {/* AVATAR  */}
             <Avatar username={userDetails?.name} profilePic={userDetails?.profilePic} />
@@ -178,6 +179,7 @@ const UserProfile = ({ navigation }) => {
               title={'Show location'}
               toggle
               toggleOn={enabled}
+              defaultToggle={enabled}
               onToggle={() => toggleLocationEnabled()}
             />
             {/* PROFILE ROW */}

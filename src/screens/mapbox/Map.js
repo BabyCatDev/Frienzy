@@ -704,7 +704,7 @@ const Map = ({ navigation, route }) => {
         <Header
           onPressLeft={requestLocation}
           leftIcon={() => <Ionicon name={'locate-outline'} size={normalize(23)} color={'white'} />}
-          title={'Coachella'}
+          title={'Frienzy'}
           navigation={navigation}
           noBackButton
         />

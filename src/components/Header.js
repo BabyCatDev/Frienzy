@@ -3,6 +3,8 @@ import { View, Text, Pressable } from "react-native";
 import Ionicon from "react-native-vector-icons/Ionicons";
 import normalize from "react-native-normalize";
 import { AppStyles } from "../utils/AppStyles";
+// import Assets from "../../assets";
+
 
 export const Header = ({
   title,
