@@ -95,7 +95,6 @@ export const getGroupsForUser = async (groups) => {
   try {
     const groupsData = [];
     for (const group of groups) {
-      console.log(group);
       const temp = await firestore().collection('groups').doc(group).get();
       groupsData.push(temp.data());
     }
