@@ -405,6 +405,7 @@ import {
   useWindowDimensions,
   Text,
   TouchableOpacity,
+  Image,
   Platform,
 } from 'react-native';
 import Mapbox from '@rnmapbox/maps';
@@ -427,6 +428,7 @@ import Ionicon from 'react-native-vector-icons/Ionicons';
 import { useLocationForGroup } from '../../hooks/useLocation';
 import { saveUserLocation } from '../../services/location/geolocation';
 import { useSelector } from 'react-redux';
+
 
 //this is my personal access token, you can use your own, I think it's tied to my secret token which is hardcoded to my environment
 Mapbox.setAccessToken(
@@ -556,8 +558,8 @@ const Map = ({ navigation, route }) => {
             {lastUpdate < 60
               ? `${lastUpdate} s. ago`
               : lastUpdate < 3600
-              ? `${(lastUpdate / 60).toFixed(0)} m. ago`
-              : `${(lastUpdate / 60 / 60).toFixed(0)} h. ago`}
+                ? `${(lastUpdate / 60).toFixed(0)} m. ago`
+                : `${(lastUpdate / 60 / 60).toFixed(0)} h. ago`}
           </Text>
         </View>
       </View>
@@ -703,8 +705,18 @@ const Map = ({ navigation, route }) => {
       >
         <Header
           onPressLeft={requestLocation}
-          leftIcon={() => <Ionicon name={'locate-outline'} size={normalize(23)} color={'white'} />}
-          title={'Frienzy'}
+          leftIcon={() => <Ionicon name={'locate-outline'} size={normalize(30)} color={'white'} />}
+          title={(
+            <View style={{ flex: 1, marginLeft: 200, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={{ color: 'white', fontWeight: 'bold', fontSize: normalize(30) }}>Frienzy</Text>
+              {/* <AssetImage
+                asset={Assets.logo}
+                width={normalize(40)}
+                height={normalize(30)}
+                style={{ marginLeft: 15 }}
+              /> */}
+            </View>
+          )}
           navigation={navigation}
           noBackButton
         />
