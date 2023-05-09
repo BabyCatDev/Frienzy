@@ -2,6 +2,7 @@ import { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { groupListener, locationListener } from '../services/location/geolocation';
 import { setGroupLocations, setLocation } from '../redux/actions/data/UserLocation';
+import auth from '@react-native-firebase/auth';
 
 export const useLocationForUser = (userId) => {
   const dispatch = useDispatch();
@@ -32,9 +33,16 @@ export const useLocationForGroup = (groupId) => {
 
   const handleGroupLocationChange = useCallback(
     (change) => {
-      const usersLocations = change.docs.map((item) => {
-        return item.data().currentLocation;
-      });
+      const usersLocations = change.docs
+        .filter((item) => item.id != auth().currentUser.uid)
+        .map((item) => {
+          const itemData = item.data();
+          return {
+            ...itemData.currentLocation,
+            name: itemData.name,
+            profilePic: itemData.profilePic,
+          };
+        });
       dispatch(setGroupLocations(usersLocations));
     },
     [dispatch]
