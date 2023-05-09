@@ -201,10 +201,6 @@ const UserProfile = ({ navigation }) => {
             </View>
           </View>
           <View style={{ width: '100%' }}>
-            {/* <ProfileRow
-              title={'Friends (' + userFriends?.length + ')'}
-              onPress={() => navigation.push('MyFriends')}
-            /> */}
             {/* SHOW LOCATION */}
             <ProfileRow
               title={'Show location'}
@@ -216,8 +212,6 @@ const UserProfile = ({ navigation }) => {
             {/* PROFILE ROW */}
             <ProfileRow title={'Change Name'} onPress={() => setIsChange(!isChange)} />
             <ProfileRow title={'My QR code'} onPress={() => setVisible(true)} qrCode />
-            {/* <ProfileRow title={'Log out'} onPress={async () => await onLogout()} />
-            <ProfileRow title={'Delete account'} onPress={() => setConfirm(true)} /> */}
           </View>
         </View>
       </KeyboardAwareScrollView>

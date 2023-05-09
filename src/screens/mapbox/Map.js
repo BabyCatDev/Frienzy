@@ -420,6 +420,7 @@ import { getObject } from '../../utils/AsyncStore';
 import FGLocationRetriever from '../../services/FGLocationRetriever';
 import { useFocusEffect } from '@react-navigation/native';
 import coachellaOverlayData from '../../assets/coachella.json';
+import edcOverlayData from '../../assets/EDC.json';
 import { getMobileNumber } from '../../utils/helper';
 import OverlayScreen from './OverlayScreen';
 import AlarmOverlay from './AlarmOverlay';
@@ -708,7 +709,7 @@ const Map = ({ navigation, route }) => {
           leftIcon={() => <Ionicon name={'locate-outline'} size={normalize(30)} color={'white'} />}
           title={(
             <View style={{ flex: 1, marginLeft: 200, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ color: 'white', fontWeight: 'bold', fontSize: normalize(30) }}>Frienzy</Text>
+              <Text style={{ marginBottom: 15, color: 'white', fontWeight: 'bold', fontSize: normalize(28) }}>Frienzy</Text>
               {/* <AssetImage
                 asset={Assets.logo}
                 width={normalize(40)}
@@ -732,7 +733,7 @@ const Map = ({ navigation, route }) => {
             centerCoordinate={location}
             animationDuration={1000}
           />
-          <Mapbox.ShapeSource id="coachellaOverlay" shape={coachellaOverlayData}>
+          <Mapbox.ShapeSource id="coachellaOverlay" shape={edcOverlayData}>
             <Mapbox.FillLayer
               id="coachellaOverlayFill"
               style={{ fillColor: '#ff6600', fillOpacity: 0.5 }}
