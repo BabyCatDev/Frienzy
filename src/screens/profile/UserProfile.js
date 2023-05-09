@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { View, Text, useWindowDimensions, Platform, TextInput } from 'react-native';
+import { View, Text, useWindowDimensions, Platform, TextInput, TouchableOpacity } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import normalize from 'react-native-normalize';
 import { Colors } from '../../utils/Colors';
@@ -20,6 +20,7 @@ import DeleteAccountOverlay from './DeleteAccountOverlay';
 import { useLocation } from '../../hooks/useLocation';
 import BackgroundGeolocation from 'react-native-background-geolocation';
 import { setLocationEnabled } from '../../redux/actions/data/UserLocation';
+import Ionicon from 'react-native-vector-icons/Ionicons';
 
 const UserProfile = ({ navigation }) => {
   const { height } = useWindowDimensions();
@@ -33,8 +34,11 @@ const UserProfile = ({ navigation }) => {
   const dispatch = useDispatch();
   const userDetails = useSelector((state) => state.FrienzyAuth.userDetails);
   const userFriends = useSelector((state) => state.FrienzyAuth.userFriends);
+  const userGroups = useSelector((state) => userDetails.groups || []);
   const enabled = useSelector((state) => state.FrienzyData.isEnabled);
 
+  console.log('userDetails', userDetails);
+  console.log('userFriends', userFriends);
   const firstName = useMemo(() => {
     const nameArr = name?.username?.split(' ');
     if (nameArr?.length > 1) {
@@ -69,16 +73,7 @@ const UserProfile = ({ navigation }) => {
   //   }
   // }, [locationSharing]);
 
-  const onLogout = async () => {
-    try {
-      await firestore().collection('users').doc(auth().currentUser.uid).update({ loggedIn: false });
-      auth()
-        .signOut()
-        .then(() => console.log('User signed out!'));
-    } catch (e) {
-      console.log(e);
-    }
-  };
+
 
   const onDeleteAccount = async () => {
     try {
@@ -126,8 +121,13 @@ const UserProfile = ({ navigation }) => {
           }}
         >
           {/* HEADER */}
-          <Header navigation={navigation} title={'Profile'} noBackButton={true} />
-          <View style={{ alignItems: 'center', width: '100%' }}>
+          <Header navigation={navigation}
+            title={'Profile'}
+            noBackButton={true}
+            onPressRight={() => navigation.navigate('Settings')}
+            rightIcon={() => <Ionicon name={'settings'} size={normalize(20)} color={"white"} />} />
+          {/* PROFILE */}
+          <View style={{ alignItems: 'center', width: '100%', transform: [{ scale: 1}] }}>
             {/* AVATAR  */}
             <Avatar username={userDetails?.name} profilePic={userDetails?.profilePic} />
             {/* NAME */}
@@ -167,24 +167,51 @@ const UserProfile = ({ navigation }) => {
               />
             )}
             {/* PHONE */}
+            <View style={{  marginTop: 20, flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 10 }}>
+              <TouchableOpacity
+                onPress={() => navigation.push('MyFriends')}
+                style={{
+                  alignItems: 'center',
+                  marginBottom: 20,
+                  borderWidth: 3,
+                  marginHorizontal: 10,
+                  borderColor: 'white',
+                  borderRadius: 5,
+                  padding: 5,
+                  width: '45%',
+                }}>
+                <Text style={{ ...AppStyles.semibold22, color: 'white', fontSize: 20 }}>{userFriends?.length}</Text>
+                <Text style={{ ...AppStyles.medium17, fontSize: 16, fontWeight: 'normal' }}>Friends</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Groups')}
+                style={{
+                  alignItems: 'center',
+                  marginBottom: 20,
+                  borderWidth: 3,
+                  marginHorizontal: 10,
+                  borderColor: 'white',
+                  borderRadius: 5,
+                  padding: 5,
+                  width: '45%',
+                }}>
+                <Text style={{ ...AppStyles.semibold22, color: 'white', fontSize: 20 }}>{userGroups?.length}</Text>
+                <Text style={{ ...AppStyles.medium17, fontSize: 16, fontWeight: 'normal' }}>Frienzies</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={{ width: '100%', marginTop: normalize(60) }}>
-            <ProfileRow
-              title={'My Friends (' + userFriends?.length + ')'}
-              onPress={() => navigation.push('MyFriends')}
-            />
+          <View style={{ width: '100%' }}>
             {/* SHOW LOCATION */}
             <ProfileRow
               title={'Show location'}
               toggle
               toggleOn={enabled}
+              defaultToggle={true}
               onToggle={() => toggleLocationEnabled()}
             />
             {/* PROFILE ROW */}
             <ProfileRow title={'Change Name'} onPress={() => setIsChange(!isChange)} />
             <ProfileRow title={'My QR code'} onPress={() => setVisible(true)} qrCode />
-            <ProfileRow title={'Log out'} onPress={async () => await onLogout()} />
-            <ProfileRow title={'Delete account'} onPress={() => setConfirm(true)} />
           </View>
         </View>
       </KeyboardAwareScrollView>

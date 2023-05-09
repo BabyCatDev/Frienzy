@@ -5,6 +5,7 @@ import {
   useWindowDimensions,
   Text,
   TouchableOpacity,
+  Image,
   Platform,
 } from 'react-native';
 import Mapbox from '@rnmapbox/maps';
@@ -19,6 +20,7 @@ import { getObject } from '../../utils/AsyncStore';
 import FGLocationRetriever from '../../services/FGLocationRetriever';
 import { useFocusEffect } from '@react-navigation/native';
 import coachellaOverlayData from '../../assets/coachella.json';
+import edcOverlayData from '../../assets/EDC.json';
 import { getMobileNumber } from '../../utils/helper';
 import OverlayScreen from './OverlayScreen';
 import AlarmOverlay from './AlarmOverlay';
@@ -32,6 +34,7 @@ import { useSelector } from 'react-redux';
 import FriendMarker from './FriendMarker';
 import { getGroupById } from '../../services/firebase/conversations';
 import { useQuery } from 'react-query';
+
 
 //this is my personal access token, you can use your own, I think it's tied to my secret token which is hardcoded to my environment
 Mapbox.setAccessToken(
@@ -272,8 +275,18 @@ const Map = ({ navigation, route }) => {
       >
         <Header
           onPressLeft={requestLocation}
-          leftIcon={() => <Ionicon name={'locate-outline'} size={normalize(23)} color={'white'} />}
-          title={'Coachella'}
+          leftIcon={() => <Ionicon name={'locate-outline'} size={normalize(30)} color={'white'} />}
+          title={(
+            <View style={{ flex: 1, marginLeft: 200, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={{ marginBottom: 15, color: 'white', fontWeight: 'bold', fontSize: normalize(28) }}>Frienzy</Text>
+              {/* <AssetImage
+                asset={Assets.logo}
+                width={normalize(40)}
+                height={normalize(30)}
+                style={{ marginLeft: 15 }}
+              /> */}
+            </View>
+          )}
           navigation={navigation}
           headerButton
           headerValue={currentGroup}
@@ -296,7 +309,7 @@ const Map = ({ navigation, route }) => {
             centerCoordinate={location}
             animationDuration={1000}
           />
-          <Mapbox.ShapeSource id="coachellaOverlay" shape={coachellaOverlayData}>
+          <Mapbox.ShapeSource id="coachellaOverlay" shape={edcOverlayData}>
             <Mapbox.FillLayer
               id="coachellaOverlayFill"
               style={{ fillColor: '#ff6600', fillOpacity: 0.5 }}
