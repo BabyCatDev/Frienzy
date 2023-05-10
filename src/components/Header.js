@@ -74,6 +74,7 @@ export const Header = ({
             setOpen={setOpen}
             setValue={setHeaderValue}
             setItems={setGroupItems}
+            placeholder="Select A Frienzy"
             mode="BADGE"
             ArrowUpIconComponent={({ style }) => (
               <Ionicon name={'chevron-up'} color={'white'} size={20} style={style} />
@@ -81,6 +82,18 @@ export const Header = ({
             ArrowDownIconComponent={({ style }) => (
               <Ionicon name={'chevron-down'} color={'white'} size={20} style={style} />
             )}
+            itemSeparator={true}
+            itemSeparatorStyle={{
+              backgroundColor: '#313132',
+            }}
+            dropDownContainerStyle={{
+              backgroundColor: '#12101A',
+              borderWidth: 0.25,
+              borderColor: '#313132',
+              borderRadius: 10,
+              padding: 5,
+              color: 'white',
+            }}
             containerStyle={{
               padding: 0,
             }}
@@ -89,11 +102,20 @@ export const Header = ({
               borderWidth: 0,
               justifyContent: 'center',
             }}
+            placeholderStyle={{
+              ...AppStyles.semibold20,
+              textAlign: 'center',
+              color: 'white',
+              flex: 0,
+            }}
             labelStyle={{
               ...AppStyles.semibold20,
               textAlign: 'center',
               color: 'white',
               flex: 0,
+            }}
+            listItemLabelStyle={{
+              color: '#FFF',
             }}
           />
         ) : (

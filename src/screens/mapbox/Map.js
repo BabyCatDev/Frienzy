@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -35,7 +35,6 @@ import FriendMarker from './FriendMarker';
 import { getGroupById } from '../../services/firebase/conversations';
 import { useQuery } from 'react-query';
 
-
 //this is my personal access token, you can use your own, I think it's tied to my secret token which is hardcoded to my environment
 Mapbox.setAccessToken(
   'pk.eyJ1Ijoibm9sYW5kb25sZXkxNCIsImEiOiJjazJta2dqNmowaXR2M25uM3RyNzl4bmU1In0.IG-7dVSFafe9cSEpQJoU2A'
@@ -43,6 +42,7 @@ Mapbox.setAccessToken(
 // Mapbox?.setConnected(true);
 
 const Map = ({ navigation, route }) => {
+  const camera = useRef(null);
   const { height } = useWindowDimensions();
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState([]);
@@ -58,27 +58,54 @@ const Map = ({ navigation, route }) => {
   const [userToPush, setUserToPush] = useState('');
   //const usersLocations = useSelector((state) => state.FrienzyData.groupLocations);
   const [usersLocations, setUsersLocations] = useState([]);
-  const [currentGroup, setCurrentGroup] = useState('AcQSnKXxDMQDjSgsJ85u');
+  const [currentGroup, setCurrentGroup] = useState('');
   const [groupDetails, setGroupDetails] = useState({});
+
+  const getBoundingBoxCorners = (coordinates) => {
+    console.log('Getting bounds for coords', coordinates);
+    if (coordinates.length == 0) return { location, location };
+    let minLng = coordinates[0][0];
+    let minLat = coordinates[0][1];
+    let maxLng = coordinates[0][0];
+    let maxLat = coordinates[0][1];
+
+    for (const coordinate of coordinates) {
+      const [lng, lat] = coordinate;
+      minLat = Math.min(minLat, lat);
+      minLng = Math.min(minLng, lng);
+      maxLat = Math.max(maxLat, lat);
+      maxLng = Math.max(maxLng, lng);
+    }
+
+    const sw = [minLng, minLat];
+    const ne = [maxLng, maxLat];
+
+    return { sw, ne };
+  };
 
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('users')
       .where('groups', 'array-contains', currentGroup)
       .onSnapshot((docSnap) => {
-        const usersLocationsNew = docSnap.docs
-          .filter((item) => item.id != auth().currentUser.uid)
-          .map((item) => {
-            const itemData = item.data();
-            return {
-              ...itemData.currentLocation,
-              name: itemData.name,
-              profilePic: itemData.profilePic,
-            };
-          });
+        const usersLocationsNew = docSnap.docs.map((item) => {
+          const itemData = item.data();
+          return {
+            ...itemData.currentLocation,
+            name: itemData.name,
+            profilePic: itemData.profilePic,
+            id: itemData.uid,
+          };
+        });
         //console.log('\nHERE in docsnap\n', usersLocationsNew);
-        setUsersLocations(usersLocationsNew);
+
+        const bounds = getBoundingBoxCorners(
+          usersLocationsNew.map((loc) => [loc.longitude, loc.latitude])
+        );
+        // after this, markers are no longer added to the center of the map
+        if (usersLocationsNew.length > 0) camera?.current?.fitBounds(bounds.sw, bounds.ne, 50);
         //dispatch(setGroupLocations(usersLocations));
+        setUsersLocations(usersLocationsNew.filter((uLN) => uLN.id != auth().currentUser.uid));
       });
 
     return unsubscribe;
@@ -276,9 +303,26 @@ const Map = ({ navigation, route }) => {
         <Header
           onPressLeft={requestLocation}
           leftIcon={() => <Ionicon name={'locate-outline'} size={normalize(30)} color={'white'} />}
-          title={(
-            <View style={{ flex: 1, marginLeft: 200, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ marginBottom: 15, color: 'white', fontWeight: 'bold', fontSize: normalize(28) }}>Frienzy</Text>
+          title={
+            <View
+              style={{
+                flex: 1,
+                marginLeft: 200,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Text
+                style={{
+                  marginBottom: 15,
+                  color: 'white',
+                  fontWeight: 'bold',
+                  fontSize: normalize(28),
+                }}
+              >
+                Frienzy
+              </Text>
               {/* <AssetImage
                 asset={Assets.logo}
                 width={normalize(40)}
@@ -286,7 +330,7 @@ const Map = ({ navigation, route }) => {
                 style={{ marginLeft: 15 }}
               /> */}
             </View>
-          )}
+          }
           navigation={navigation}
           headerButton
           headerValue={currentGroup}
@@ -304,6 +348,7 @@ const Map = ({ navigation, route }) => {
           styleURL={'mapbox://styles/mapbox/dark-v11'}
         >
           <Mapbox.Camera
+            ref={camera}
             followZoomLevel={5}
             zoomLevel={17}
             centerCoordinate={location}

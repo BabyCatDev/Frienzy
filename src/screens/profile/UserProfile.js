@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { View, Text, useWindowDimensions, Platform, TextInput, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  useWindowDimensions,
+  Platform,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import normalize from 'react-native-normalize';
 import { Colors } from '../../utils/Colors';
@@ -73,8 +80,6 @@ const UserProfile = ({ navigation }) => {
   //   }
   // }, [locationSharing]);
 
-
-
   const onDeleteAccount = async () => {
     try {
       await AuthProvider.logoutUser();
@@ -121,13 +126,17 @@ const UserProfile = ({ navigation }) => {
           }}
         >
           {/* HEADER */}
-          <Header navigation={navigation}
+          <Header
+            navigation={navigation}
             title={'Profile'}
             noBackButton={true}
             onPressRight={() => navigation.navigate('Settings')}
-            rightIcon={() => <Ionicon name={'settings'} size={normalize(20)} color={"white"} />} />
+            rightIcon={() => (
+              <Ionicon name={'settings-outline'} size={normalize(20)} color={'white'} />
+            )}
+          />
           {/* PROFILE */}
-          <View style={{ alignItems: 'center', width: '100%', transform: [{ scale: 1}] }}>
+          <View style={{ alignItems: 'center', width: '100%', transform: [{ scale: 1 }] }}>
             {/* AVATAR  */}
             <Avatar username={userDetails?.name} profilePic={userDetails?.profilePic} />
             {/* NAME */}
@@ -167,36 +176,57 @@ const UserProfile = ({ navigation }) => {
               />
             )}
             {/* PHONE */}
-            <View style={{  marginTop: 20, flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 10 }}>
+            <View
+              style={{
+                marginTop: 20,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginHorizontal: 10,
+              }}
+            >
               <TouchableOpacity
                 onPress={() => navigation.push('MyFriends')}
                 style={{
                   alignItems: 'center',
+                  justifyContent: 'center',
                   marginBottom: 20,
-                  borderWidth: 3,
                   marginHorizontal: 10,
-                  borderColor: 'white',
-                  borderRadius: 5,
+                  backgroundColor: '#1A1822',
+                  borderWidth: 0.25,
+                  borderColor: '#313132',
+                  borderRadius: 10,
                   padding: 5,
                   width: '45%',
-                }}>
-                <Text style={{ ...AppStyles.semibold22, color: 'white', fontSize: 20 }}>{userFriends?.length}</Text>
-                <Text style={{ ...AppStyles.medium17, fontSize: 16, fontWeight: 'normal' }}>Friends</Text>
+                }}
+              >
+                <Text style={{ ...AppStyles.semibold22, color: 'white', fontSize: 20 }}>
+                  {userFriends?.length}
+                </Text>
+                <Text style={{ ...AppStyles.medium17, fontSize: 16, fontWeight: 'normal' }}>
+                  Friends
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => navigation.navigate('Groups')}
                 style={{
                   alignItems: 'center',
+                  justifyContent: 'center',
                   marginBottom: 20,
-                  borderWidth: 3,
                   marginHorizontal: 10,
-                  borderColor: 'white',
-                  borderRadius: 5,
+                  backgroundColor: '#1A1822',
+                  borderWidth: 0.25,
+                  borderColor: '#313132',
+                  borderRadius: 10,
                   padding: 5,
                   width: '45%',
-                }}>
-                <Text style={{ ...AppStyles.semibold22, color: 'white', fontSize: 20 }}>{userGroups?.length}</Text>
-                <Text style={{ ...AppStyles.medium17, fontSize: 16, fontWeight: 'normal' }}>Frienzies</Text>
+                }}
+              >
+                <Text style={{ ...AppStyles.semibold22, color: 'white', fontSize: 20 }}>
+                  {userGroups?.length}
+                </Text>
+                <Text style={{ ...AppStyles.medium17, fontSize: 16, fontWeight: 'normal' }}>
+                  Frienzies
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
