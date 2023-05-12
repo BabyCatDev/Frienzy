@@ -41,10 +41,11 @@ const MyFriends = ({ navigation, setSelectedFriends, selectedFriends, isSelectin
               selected={selectedFriends.includes(item)}
               onPressHandler={({ itemClicked }) => {
                 console.log(itemClicked);
-                if (selectedFriends.includes(itemClicked)) {
-                  setSelectedFriends(selectedFriends.filter((sf) => sf != itemClicked));
+                console.log('item 44', item)
+                if (selectedFriends.includes(itemClicked.uid)) {
+                  setSelectedFriends(selectedFriends.filter((sf) => sf != itemClicked.uid));
                 } else {
-                  setSelectedFriends([...selectedFriends, itemClicked]);
+                  setSelectedFriends([...selectedFriends, itemClicked.uid]);
                 }
               }}
               showChecks
