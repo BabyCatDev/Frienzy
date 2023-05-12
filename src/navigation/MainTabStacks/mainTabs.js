@@ -16,6 +16,8 @@ const MainApp = createBottomTabNavigator();
 
 export const MainAppTabs = () => {
   const enabled = useSelector((state) => state.FrienzyData.isEnabled);
+  const bigState = useSelector((state) => state.FrienzyData);
+  console.log(bigState)
   //const [enabled, setEnabled] = useState(false);
   const [location, setLocation] = useState('');
 
@@ -25,6 +27,7 @@ export const MainAppTabs = () => {
     //   /// 1.  Subscribe to events.
     const onLocation = BackgroundGeolocation.onLocation(async (location) => {
       console.log('[onLocation]', location);
+      saveUserLocation(location);
     });
 
     const onHeartbeat = BackgroundGeolocation.onHeartbeat((event) => {
@@ -57,8 +60,8 @@ export const MainAppTabs = () => {
       batchSync: false,
       autoSync: true,
     }).then((state) => {
-      dispatch(setLocationEnabled(state.enabled));
       //setEnabled(state.enabled);
+      dispatch(setLocationEnabled(state.enabled));
       console.log('- BackgroundGeolocation is configured and ready: ', state.enabled);
     });
 
