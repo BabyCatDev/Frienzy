@@ -1,5 +1,6 @@
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import storage from '@react-native-firebase/storage';
 
 export const conversationListener = (listener, groupsIDS) => {
   firestore()
@@ -82,7 +83,7 @@ export const createNewGroup = async ({ name, pic, members, message = null }) => 
 
   const filename = pic?.substring(pic?.lastIndexOf('/') + 1);
   const reference = storage().ref(`GroupPhotos/${group.id}/${filename}`);
-  await reference.putFile(photoURL);
+  await reference.putFile(pic);
   const url = await storage().ref(`GroupPhotos/${group.id}/${filename}`).getDownloadURL();
 
   await firestore().collection('groups').doc(group.id).collection('messages').add(messageToAdd);
