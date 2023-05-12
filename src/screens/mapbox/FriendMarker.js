@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import { View, Pressable, Text } from 'react-native';
 import Assets from '../../assets';
 import { AssetImage } from '../../assets/asset_image';
@@ -11,10 +11,16 @@ const FriendMarker = memo(({ contact, setUserToPush, setVisible }) => {
     (Date.now() / 1000 - new Date(contact.time) / 1000).toFixed(0)
   );
 
-  setInterval(
-    () => setLastUpdate((Date.now() / 1000 - new Date(contact.time) / 1000).toFixed(0)),
-    10000
-  );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLastUpdate((Date.now() / 1000 - new Date(contact.time) / 1000).toFixed(0));
+    }, 10000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  console.log('contact', contact)
 
   return (
     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
