@@ -54,12 +54,13 @@ const Map = ({ navigation, route }) => {
   const [selectedContacts, setSelectedContacts] = useState({});
   const [users, setUsers] = useState([]);
   const [visible, setVisible] = useState(false);
-  const renderUsers = filterUsers(users);
+  // const renderUsers = filterUsers(users);
   const [userToPush, setUserToPush] = useState('');
   //const usersLocations = useSelector((state) => state.FrienzyData.groupLocations);
   const [usersLocations, setUsersLocations] = useState([]);
   const [currentGroup, setCurrentGroup] = useState('');
   const [groupDetails, setGroupDetails] = useState({});
+  const [isFirstUpdate, setIsFirstUpdate] = useState(true);
 
   const getBoundingBoxCorners = (coordinates) => {
     console.log('Getting bounds for coords', coordinates);
@@ -90,26 +91,51 @@ const Map = ({ navigation, route }) => {
       .onSnapshot((docSnap) => {
         const usersLocationsNew = docSnap.docs.map((item) => {
           const itemData = item.data();
-          return {
-            ...itemData.currentLocation,
-            name: itemData.name,
-            profilePic: itemData.profilePic,
-            id: itemData.uid,
-          };
+          const location = itemData.currentLocation;
+          console.log('item', item )
+  
+          if ('latitude' in location && 'longitude' in location) {
+            console.log('No coords', location.timestamp)
+            return {
+              latitude: location.latitude,
+              longitude: location.longitude,
+              name: itemData.name,
+              profilePic: itemData.profilePic,
+              id: itemData.uid,
+            };
+          } else if ('coords' in location && 'latitude' in location.coords && 'longitude' in location.coords) {
+            console.log('coords. location', location.timestamp)
+            return {
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+              name: itemData.name,
+              profilePic: itemData.profilePic,
+              id: itemData.uid,
+              time: location.timestamp
+            };
+          } else {
+            return null;
+          }
         });
-        //console.log('\nHERE in docsnap\n', usersLocationsNew);
-
+  
+        const filteredLocations = usersLocationsNew.filter((location) => location !== null);
+  
         const bounds = getBoundingBoxCorners(
-          usersLocationsNew.map((loc) => [loc.longitude, loc.latitude])
+          filteredLocations.map((loc) => [loc.longitude, loc.latitude])
         );
-        // after this, markers are no longer added to the center of the map
-        if (usersLocationsNew.length > 0) camera?.current?.fitBounds(bounds.sw, bounds.ne, 50);
-        //dispatch(setGroupLocations(usersLocations));
-        setUsersLocations(usersLocationsNew.filter((uLN) => uLN.id != auth().currentUser.uid));
+  
+        
+        if (filteredLocations.length > 0 && isFirstUpdate) {
+          camera?.current?.fitBounds(bounds.sw, bounds.ne, 50);
+          setIsFirstUpdate(false);
+        }
+  
+        setUsersLocations(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
+        setUsers(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid)); // Update the users state
       });
-
+  
     return unsubscribe;
-  }, [currentGroup]);
+  }, [currentGroup, isFirstUpdate]);
 
   useEffect(() => {
     async function getGroupDetails() {
@@ -204,26 +230,28 @@ const Map = ({ navigation, route }) => {
     setUsers(users);
   };
 
-  function filterUsers(users) {
-    const renderUsers = [];
-    for (elem in contacts) {
-      const phone = getMobileNumber(contacts[elem]);
-      const user = users.find((user) => user.phone == phone);
-      if (user !== undefined) {
-        renderUsers.push({
-          alarm: user.alarm,
-          phone: user.phone,
-          coordinates: user.coordinates,
-          givenName: contacts[elem].givenName,
-          familyName: contacts[elem].familyName,
-          profile_pic: user.profile_pic,
-          key: user.key,
-          date: user.date,
-        });
-      }
-    }
-    return renderUsers;
-  }
+  // function filterUsers(users) {
+  //   console.log('Filtering users', users, contacts)
+  //   const renderUsers = [];
+  //   for (elem in contacts) {
+  //     const phone = getMobileNumber(contacts[elem]);
+  //     const user = users.find((user) => user.phone == phone);
+  //     if (user !== undefined) {
+  //       console.log('User found', user)
+  //       renderUsers.push({
+  //         alarm: user.alarm,
+  //         phone: user.phone,
+  //         coordinates: user.coordinates,
+  //         givenName: contacts[elem].givenName,
+  //         familyName: contacts[elem].familyName,
+  //         profile_pic: user.profile_pic,
+  //         key: user.key,
+  //         date: user.date,
+  //       });
+  //     }
+  //   }
+  //   return renderUsers;
+  // }
 
   // useFocusEffect(
   //   React.useCallback(() => {
@@ -379,8 +407,8 @@ const Map = ({ navigation, route }) => {
             />
           </Mapbox.ShapeSource>
 
-          {usersLocations.length > 0
-            ? usersLocations.map((user, index) => (
+          {users.length > 0
+            ? users.map((user, index) => (
                 <Mapbox.MarkerView
                   coordinate={[user.longitude, user.latitude]}
                   key={index}

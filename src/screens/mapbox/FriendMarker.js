@@ -5,22 +5,20 @@ import { AssetImage } from '../../assets/asset_image';
 import normalize from 'react-native-normalize';
 import CacheImage from '../../utils/CacheImage';
 
+
 const FriendMarker = memo(({ contact, setUserToPush, setVisible }) => {
   const [viewTime, setViewTime] = useState(false);
   const [lastUpdate, setLastUpdate] = useState(
-    (Date.now() / 1000 - new Date(contact.time) / 1000).toFixed(0)
+    ((Date.now() - new Date(contact.time)) / 1000).toFixed(0)
   );
-
-
   useEffect(() => {
     const interval = setInterval(() => {
-      setLastUpdate((Date.now() / 1000 - new Date(contact.time) / 1000).toFixed(0));
-    }, 10000)
+      setLastUpdate(((Date.now() - new Date(contact.time)) / 1000).toFixed(0));
+    }, 10000);
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
 
-  console.log('contact', contact)
 
   return (
     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -98,6 +96,23 @@ const FriendMarker = memo(({ contact, setUserToPush, setVisible }) => {
           </Text>
         </View>
       ) : null}
+       <View
+        style={{
+          backgroundColor: '#EBEBEB',
+          borderRadius: 10,
+          paddingHorizontal: 3,
+        }}
+        >
+        <Text
+          style={{
+            color: 'black',
+            fontSize: normalize(14),
+            fontFamily: 'Poppins-Medium',
+          }}
+        >
+          {contact.name}
+        </Text>
+        </View>
     </View>
   );
 });
