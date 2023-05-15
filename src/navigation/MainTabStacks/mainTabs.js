@@ -25,14 +25,14 @@ export const MainAppTabs = () => {
 
   useEffect(() => {
     //   /// 1.  Subscribe to events.
-    const onLocation = BackgroundGeolocation.onLocation(async (location) => {
-      console.log('[onLocation]', location);
-      saveUserLocation(location);
+    const onLocation = BackgroundGeolocation.onLocation((event) => {
+      console.log('[onLocation]', event.coords);
+      saveUserLocation(event.coords);
     });
 
     const onHeartbeat = BackgroundGeolocation.onHeartbeat((event) => {
-      console.log('[onHeartbeat]', event);
-      saveUserLocation(event)
+      console.log('[onHeartbeat]', event.coords);
+      saveUserLocation(event.coords)
     });
 
     const onMotionChange = BackgroundGeolocation.onMotionChange((event) => {

@@ -16,24 +16,19 @@ import normalize from 'react-native-normalize';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors } from '../../utils/Colors';
 import GetLocation, { LocationError } from 'react-native-get-location';
-import { getObject } from '../../utils/AsyncStore';
-import FGLocationRetriever from '../../services/FGLocationRetriever';
-import { useFocusEffect } from '@react-navigation/native';
-import coachellaOverlayData from '../../assets/coachella.json';
-import edcOverlayData from '../../assets/EDC.json';
-import { getMobileNumber } from '../../utils/helper';
+import edcOverlayData from '../../assets/EDC.json'
 import OverlayScreen from './OverlayScreen';
 import AlarmOverlay from './AlarmOverlay';
 import CacheImage from '../../utils/CacheImage';
 import Ionicon from 'react-native-vector-icons/Ionicons';
-import { useLocationForGroup } from '../../hooks/useLocation';
 import { saveUserLocation } from '../../services/location/geolocation';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import { useSelector } from 'react-redux';
+import { useSelector } from 'react-redux'
 import FriendMarker from './FriendMarker';
 import { getGroupById } from '../../services/firebase/conversations';
-import { useQuery } from 'react-query';
+import { set } from 'lodash';
+
 
 //this is my personal access token, you can use your own, I think it's tied to my secret token which is hardcoded to my environment
 Mapbox.setAccessToken(
@@ -47,20 +42,16 @@ const Map = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState([]);
   const [error, setError] = useState(null);
-  const [alarmDisabled, setAlarmDisabled] = useState(false);
-  const [counter, setCounter] = useState();
-  const [contacts, setContacts] = useState([]);
-  const [alarm, setAlarm] = useState(false);
-  const [selectedContacts, setSelectedContacts] = useState({});
   const [users, setUsers] = useState([]);
   const [visible, setVisible] = useState(false);
-  // const renderUsers = filterUsers(users);
   const [userToPush, setUserToPush] = useState('');
-  //const usersLocations = useSelector((state) => state.FrienzyData.groupLocations);
   const [usersLocations, setUsersLocations] = useState([]);
   const [currentGroup, setCurrentGroup] = useState('');
+  const [selectedGroup, setSelectedGroup] = useState('');
   const [groupDetails, setGroupDetails] = useState({});
-  const [isFirstUpdate, setIsFirstUpdate] = useState(true);
+  const [isCameraAdjusted, setIsCameraAdjusted] = useState(false);
+
+
 
   const getBoundingBoxCorners = (coordinates) => {
     console.log('Getting bounds for coords', coordinates);
@@ -89,10 +80,11 @@ const Map = ({ navigation, route }) => {
       .collection('users')
       .where('groups', 'array-contains', currentGroup)
       .onSnapshot((docSnap) => {
+        console.log('usersLocationsNew', docSnap.docs )
         const usersLocationsNew = docSnap.docs.map((item) => {
           const itemData = item.data();
           const location = itemData.currentLocation;
-  
+          console.log('location', location)
           if ('latitude' in location && 'longitude' in location) {
             return {
               latitude: location.latitude,
@@ -100,6 +92,7 @@ const Map = ({ navigation, route }) => {
               name: itemData.name,
               profilePic: itemData.profilePic,
               id: itemData.uid,
+              time: location.timestamp,
             };
           } else if (
             'coords' in location &&
@@ -118,25 +111,26 @@ const Map = ({ navigation, route }) => {
             return null;
           }
         });
+
+      
   
         const filteredLocations = usersLocationsNew.filter((location) => location !== null);
-  
-        setUsersLocations(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
+        const bounds = getBoundingBoxCorners(
+          usersLocationsNew.map((loc) => [loc.longitude, loc.latitude])
+        );
+        // after this, markers are no longer added to the center of the map
+        
+        // setUsersLocations(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
         setUsers(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
+        console.log('users', users);
+
+        if ( currentGroup && usersLocationsNew.length > 0) {
+          camera.current.fitBounds(bounds.sw, bounds.ne, 100, 100);
+        }
       });
-  
-    return unsubscribe;
-  }, [users]);
-  
-  useEffect(() => {
-    if (isFirstUpdate && users.length > 0) {
-      const bounds = getBoundingBoxCorners(
-        users.map((user) => [user.longitude, user.latitude])
-      );
-      camera?.current?.fitBounds(bounds.sw, bounds.ne, 50);
-      setIsFirstUpdate(false);
-    }
-  }, [isFirstUpdate, users]);
+    return () => unsubscribe();
+  }, [currentGroup]);
+
 
   useEffect(() => {
     async function getGroupDetails() {
@@ -146,132 +140,18 @@ const Map = ({ navigation, route }) => {
     getGroupDetails();
   }, [currentGroup]);
 
-  async function getContacts() {
-    const selectedContactList = await getObject('selectedContactList');
-    const contacts = await getObject('contacts');
-    setSelectedContacts(selectedContactList);
-    setContacts(contacts);
-  }
-  async function getAlarm() {
-    const alarm = await getObject('alarm');
-    setAlarmDisabled(alarm);
-  }
-
-  //useLocationForGroup(currentGroup);
-
   useEffect(() => {
-    getContacts();
-    getAlarm();
+    // getContacts();
+    // getAlarm();
     requestLocation();
   }, []);
 
-  useEffect(() => {
-    //console.log('Locations', usersLocations, usersLocations.length);
-  }, [usersLocations]);
 
-  const getInitials = (name) => {
-    const fullName = name;
-    return fullName
-      ?.split(' ')
-      .map((n) => n[0])
-      .join('');
+  const handleGroupSelection = (group) => {
+    setCurrentGroup(group);
+    setSelectedGroup(group);
+    setIsCameraAdjusted(false);
   };
-
-  const onStagePress = (stage) => {
-    setSelectedStage(stage.id);
-  };
-
-  const renderStages = () => {
-    return stages.map((stage) => {
-      const isSelected = selectedStage === stage.id;
-      const fillColor = isSelected ? '#00FF00' : '#0000FF';
-
-      return (
-        <Mapbox.ShapeSource
-          key={stage.id}
-          id={stage.id}
-          shape={{
-            type: 'Point',
-            coordinates: stage.coordinates,
-          }}
-        >
-          <Mapbox.CircleLayer
-            id={`${stage.id}-circle`}
-            style={{
-              circleColor: fillColor,
-              circleRadius: 10,
-            }}
-          />
-          <Mapbox.SymbolLayer
-            id={`${stage.id}-label`}
-            style={{
-              textField: stage.stageName,
-              textSize: 12,
-              textOffset: [0, 1],
-              textAnchor: 'top',
-            }}
-          />
-        </Mapbox.ShapeSource>
-      );
-    });
-  };
-
-  const onUsersLocationUpdate = (locations) => {
-    const users = locations.map((location) => {
-      return {
-        phone: location.phone,
-        coordinates: [location.long, location.lat],
-        date: location.date,
-        alarm: location.alarm,
-        profile_pic: location.profile_pic,
-        key: location.key,
-      };
-    });
-
-    setUsers(users);
-  };
-
-  // function filterUsers(users) {
-  //   console.log('Filtering users', users, contacts)
-  //   const renderUsers = [];
-  //   for (elem in contacts) {
-  //     const phone = getMobileNumber(contacts[elem]);
-  //     const user = users.find((user) => user.phone == phone);
-  //     if (user !== undefined) {
-  //       console.log('User found', user)
-  //       renderUsers.push({
-  //         alarm: user.alarm,
-  //         phone: user.phone,
-  //         coordinates: user.coordinates,
-  //         givenName: contacts[elem].givenName,
-  //         familyName: contacts[elem].familyName,
-  //         profile_pic: user.profile_pic,
-  //         key: user.key,
-  //         date: user.date,
-  //       });
-  //     }
-  //   }
-  //   return renderUsers;
-  // }
-
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     FGLocationRetriever.getInstance().setOnPhonesLocationsListener(onUsersLocationUpdate);
-
-  //     FGLocationRetriever.getInstance().startListeningToLocationUpdates();
-
-  //     async function getCounter() {
-  //       const counter = await getObject('counter');
-  //       setCounter(counter == null ? 0 : counter);
-  //     }
-  //     getCounter();
-
-  //     // returned function will be called on component unmount
-  //     return () => {
-  //       FGLocationRetriever.getInstance().stopListeningToLocationUpdates();
-  //     };
-  //   }, [])
-  // );
 
   const requestLocation = () => {
     setLoading(true);
@@ -363,7 +243,7 @@ const Map = ({ navigation, route }) => {
           navigation={navigation}
           headerButton
           headerValue={currentGroup}
-          setHeaderValue={(value) => setCurrentGroup(value)}
+          setHeaderValue={(value) => handleGroupSelection(value)}
           noBackButton
           containerStyle={{
             overflow: 'visible',
@@ -429,7 +309,7 @@ const Map = ({ navigation, route }) => {
           <Mapbox.UserLocation showsUserHeadingIndicator={true} />
         </Mapbox.MapView>
       </View>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => setAlarm(true)}
         disabled={alarmDisabled}
         style={{
@@ -439,8 +319,8 @@ const Map = ({ navigation, route }) => {
           justifyContent: 'center',
           alignItems: 'center',
         }}
-      >
-        <AssetImage
+      > */}
+        {/* <AssetImage
           asset={alarmDisabled ? Assets.emrgDisabled : Assets.emrgButton}
           width={normalize(90)}
           height={normalize(91)}
@@ -454,15 +334,15 @@ const Map = ({ navigation, route }) => {
             height={normalize(32)}
           />
         )}
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       {visible && <OverlayScreen setVisible={setVisible} userToPush={userToPush} />}
-      {alarm && (
+      {/* {alarm && (
         <AlarmOverlay
           setVisible={setAlarm}
           usersToPush={users}
           setAlarmDisabled={setAlarmDisabled}
         />
-      )}
+      )} */}
     </View>
   );
 };
