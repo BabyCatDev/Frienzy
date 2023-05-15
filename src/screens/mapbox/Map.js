@@ -51,7 +51,7 @@ const Map = ({ navigation, route }) => {
   const [groupDetails, setGroupDetails] = useState({});
   const [isCameraAdjusted, setIsCameraAdjusted] = useState(false);
 
-
+  console.log('users', users);
 
   const getBoundingBoxCorners = (coordinates) => {
     console.log('Getting bounds for coords', coordinates);
@@ -84,7 +84,7 @@ const Map = ({ navigation, route }) => {
         const usersLocationsNew = docSnap.docs.map((item) => {
           const itemData = item.data();
           const location = itemData.currentLocation;
-          console.log('location', location)
+          // console.log('location', location)
           if ('latitude' in location && 'longitude' in location) {
             return {
               latitude: location.latitude,
@@ -92,7 +92,7 @@ const Map = ({ navigation, route }) => {
               name: itemData.name,
               profilePic: itemData.profilePic,
               id: itemData.uid,
-              time: location.timestamp,
+              time: location.time,
             };
           } else if (
             'coords' in location &&
@@ -105,7 +105,7 @@ const Map = ({ navigation, route }) => {
               name: itemData.name,
               profilePic: itemData.profilePic,
               id: itemData.uid,
-              time: location.timestamp,
+              time: location.time,
             };
           } else {
             return null;
@@ -122,7 +122,7 @@ const Map = ({ navigation, route }) => {
         
         // setUsersLocations(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
         setUsers(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
-        console.log('users', users);
+        
 
         if ( currentGroup && usersLocationsNew.length > 0) {
           camera.current.fitBounds(bounds.sw, bounds.ne, 100, 100);

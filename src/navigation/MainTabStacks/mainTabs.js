@@ -27,20 +27,30 @@ export const MainAppTabs = () => {
     //   /// 1.  Subscribe to events.
     const onLocation = BackgroundGeolocation.onLocation((event) => {
       console.log('[onLocation]', event.coords);
-      saveUserLocation(event.coords);
+      const location = event.coords;
+      const time = event.timestamp;
+      saveUserLocation(location, time);
     });
 
     const onHeartbeat = BackgroundGeolocation.onHeartbeat((event) => {
       console.log('[onHeartbeat]', event.coords);
-      saveUserLocation(event.coords)
+      const location = event.coords;
+      const time = event.timestamp;
+      saveUserLocation(location, time);
     });
 
     const onMotionChange = BackgroundGeolocation.onMotionChange((event) => {
+      const location = event.coords;
+      const time = event.timestamp;
+      saveUserLocation(location, time);
       console.log('[onMotionChange]', event);
     });
 
     const onActivityChange = BackgroundGeolocation.onActivityChange((event) => {
       console.log('[onActivityChange]', event);
+      const location = event.coords; 
+      const time = event.timestamp;
+      saveUserLocation(event.location, event.time);
     });
 
     const onProviderChange = BackgroundGeolocation.onProviderChange((event) => {
@@ -50,10 +60,9 @@ export const MainAppTabs = () => {
     /// 2. ready the plugin.
     BackgroundGeolocation.ready({
       desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
-      heartbeatInterval: 10,
+      heartbeatInterval: 60,
       preventSuspend: true,
       stopTimeout: 5,
-
       debug: false,
       logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
       stopOnTerminate: false,

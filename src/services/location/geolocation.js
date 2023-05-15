@@ -23,7 +23,11 @@ export const groupListener = (listener, groupId) => {
     });
 };
 
-export const saveUserLocation = async (location) => {
+export const saveUserLocation = async (location, time) => {
+  const updatedLocation = {
+    ...location,
+    time: time,
+  }
   await firestore()
     .collection('users')
     .doc(auth().currentUser.uid)
@@ -32,7 +36,7 @@ export const saveUserLocation = async (location) => {
       ...location,
     });
   await firestore().collection('users').doc(auth().currentUser.uid).update({
-    currentLocation: location,
+    currentLocation: updatedLocation
   });
 };
 
