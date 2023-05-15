@@ -77,6 +77,7 @@ const NewGroupCreation = ({ handlePresentModalPress }) => {
             <Text
               style={localStyles.sectionHeader}
             >{`Add Friends (${selectedFriends.length})`}</Text>
+            <Text style={localStyles.subtitleText}>If your friends don't have the app, create an empty Frienzy and invite them to join</Text>
             <FlatList
               data={selectedFriends}
               renderItem={({ item }) => <AddedFriendIcon uid={item} />}

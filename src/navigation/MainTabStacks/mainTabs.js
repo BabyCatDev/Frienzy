@@ -32,6 +32,7 @@ export const MainAppTabs = () => {
 
     const onHeartbeat = BackgroundGeolocation.onHeartbeat((event) => {
       console.log('[onHeartbeat]', event);
+      saveUserLocation(event)
     });
 
     const onMotionChange = BackgroundGeolocation.onMotionChange((event) => {
@@ -49,7 +50,7 @@ export const MainAppTabs = () => {
     /// 2. ready the plugin.
     BackgroundGeolocation.ready({
       desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
-      heartbeatInterval: 60,
+      heartbeatInterval: 10,
       preventSuspend: true,
       stopTimeout: 5,
 

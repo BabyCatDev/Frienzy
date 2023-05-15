@@ -32,7 +32,7 @@ export default class FGLocationTrackingService {
 
     BackgroundGeolocation.ready({
       desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
-      heartbeatInterval: 60,
+      heartbeatInterval: 10,
       preventSuspend: true,
       stopTimeout: 5,
 

@@ -92,10 +92,8 @@ const Map = ({ navigation, route }) => {
         const usersLocationsNew = docSnap.docs.map((item) => {
           const itemData = item.data();
           const location = itemData.currentLocation;
-          console.log('item', item )
   
           if ('latitude' in location && 'longitude' in location) {
-            console.log('No coords', location.timestamp)
             return {
               latitude: location.latitude,
               longitude: location.longitude,
@@ -103,15 +101,18 @@ const Map = ({ navigation, route }) => {
               profilePic: itemData.profilePic,
               id: itemData.uid,
             };
-          } else if ('coords' in location && 'latitude' in location.coords && 'longitude' in location.coords) {
-            console.log('coords. location', location.timestamp)
+          } else if (
+            'coords' in location &&
+            'latitude' in location.coords &&
+            'longitude' in location.coords
+          ) {
             return {
               latitude: location.coords.latitude,
               longitude: location.coords.longitude,
               name: itemData.name,
               profilePic: itemData.profilePic,
               id: itemData.uid,
-              time: location.timestamp
+              time: location.timestamp,
             };
           } else {
             return null;
@@ -120,22 +121,22 @@ const Map = ({ navigation, route }) => {
   
         const filteredLocations = usersLocationsNew.filter((location) => location !== null);
   
-        const bounds = getBoundingBoxCorners(
-          filteredLocations.map((loc) => [loc.longitude, loc.latitude])
-        );
-  
-        
-        if (filteredLocations.length > 0 && isFirstUpdate) {
-          camera?.current?.fitBounds(bounds.sw, bounds.ne, 50);
-          setIsFirstUpdate(false);
-        }
-  
         setUsersLocations(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
-        setUsers(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid)); // Update the users state
+        setUsers(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
       });
   
     return unsubscribe;
-  }, [currentGroup, isFirstUpdate]);
+  }, [users]);
+  
+  useEffect(() => {
+    if (isFirstUpdate && users.length > 0) {
+      const bounds = getBoundingBoxCorners(
+        users.map((user) => [user.longitude, user.latitude])
+      );
+      camera?.current?.fitBounds(bounds.sw, bounds.ne, 50);
+      setIsFirstUpdate(false);
+    }
+  }, [isFirstUpdate, users]);
 
   useEffect(() => {
     async function getGroupDetails() {
