@@ -33,24 +33,24 @@ export const MainAppTabs = () => {
     });
 
     const onHeartbeat = BackgroundGeolocation.onHeartbeat((event) => {
-      console.log('[onHeartbeat]', event.coords);
-      const location = event.coords;
-      const time = event.timestamp;
+      console.log('[onHeartbeat]', event);
+      const location = event.location.coords;
+      const time = event.location.timestamp;
       saveUserLocation(location, time);
     });
 
     const onMotionChange = BackgroundGeolocation.onMotionChange((event) => {
-      const location = event.coords;
-      const time = event.timestamp;
-      saveUserLocation(location, time);
+      // const location = event.coords;
+      // const time = event.timestamp;
+      // saveUserLocation(location, time);
       console.log('[onMotionChange]', event);
     });
 
     const onActivityChange = BackgroundGeolocation.onActivityChange((event) => {
       console.log('[onActivityChange]', event);
-      const location = event.coords; 
-      const time = event.timestamp;
-      saveUserLocation(event.location, event.time);
+      // const location = event.coords; 
+      // const time = event.timestamp;
+      // saveUserLocation(event.location, event.time);
     });
 
     const onProviderChange = BackgroundGeolocation.onProviderChange((event) => {

@@ -17,7 +17,9 @@ const FriendMarker = memo(({ contact, setUserToPush, setVisible }) => {
     }, 10000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [contact]);
+
+  const cacheKey = contact.id
 
 
   return (
@@ -47,7 +49,7 @@ const FriendMarker = memo(({ contact, setUserToPush, setVisible }) => {
               source={{
                 uri: contact.profilePic,
               }}
-              cacheKey={contact.key}
+              cacheKey={cacheKey}
               style={{
                 width: normalize(45),
                 height: normalize(45),
