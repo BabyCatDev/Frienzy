@@ -1,7 +1,7 @@
 const initialState = {
   userDetails: {},
   conversations: [],
-  locationIsEnabled: true,
+  isEnabled: true,
   location: {},
   groupLocations: [],
 };

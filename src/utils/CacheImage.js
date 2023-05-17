@@ -52,55 +52,50 @@ const CacheImage = (props) => {
     children,
   } = props;
   const isMounted = useRef(true);
-  const [imgUri, setUri] = useState("");
+  const [imgUri, setUri] = useState(uri); // Separate state for imgUri
 
-  const getPlatformURI = (uri) => {
-    return Platform.select({
-      ios: uri,
-      android: 'file://' + uri,
-    })
-  }
-  
   useEffect(() => {
     async function loadImg() {
-      let imgXt = getImgXtension(uri);
+      let imgXt = getImgXtension(imgUri); // Use imgUri instead of uri
       if (!imgXt || !imgXt?.length) {
         console.error(`Couldn't load Image:`, cacheKey);
-        setUri(require('../../assets/imgs/emrgUserMarker.png'))
+        setUri(require('../../assets/imgs/emrgUserMarker.png'));
         return;
       }
       const cacheFileUri = `${RNFS.CachesDirectoryPath}/${cacheKey}.${imgXt[0]}`;
-      let imgXistsInCache = await findImageInCache(cacheFileUri);
-      if (imgXistsInCache.exists) {
+      let imgExistsInCache = await findImageInCache(cacheFileUri);
+      if (imgExistsInCache.exists) {
         console.log("already cached: ", cacheFileUri);
         setUri(getPlatformURI(cacheFileUri));
       } else {
-        let cached = await cacheImage(uri, cacheFileUri, () => {});
+        let cached = await cacheImage(imgUri, cacheFileUri, () => {});
         if (cached.cached) {
-          console.log("cached new image:", uri);
+          console.log("cached new image:", imgUri);
           setUri(getPlatformURI(cacheFileUri));
         } else {
           console.error(`Couldn't load Image:`, cacheKey);
-          setUri(require('../../assets/imgs/userMarker.png'))
+          setUri(require('../../assets/imgs/userMarker.png'));
         }
       }
     }
     loadImg();
-    return () => isMounted.current = null;
-  }, [uri]);
+    return () => (isMounted.current = null);
+  }, [imgUri]); // Include imgUri in the dependency array
 
   function isValidURI(uri) {
     return imgUri != '' && typeof imgUri == 'string';
   }
 
-  return (  
-    <FastImage source={isValidURI(imgUri)
-      ? { uri: imgUri }
-      : require('../../assets/imgs/userMarker.png')}
+  return (
+    <FastImage
+      source={
+        isValidURI(imgUri)
+          ? { uri: imgUri }
+          : require('../../assets/imgs/userMarker.png')
+      }
       style={style}
-
     >
-          {children}
+      {children}
     </FastImage>
   );
 };

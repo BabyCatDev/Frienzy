@@ -16,6 +16,8 @@ const MainApp = createBottomTabNavigator();
 
 export const MainAppTabs = () => {
   const enabled = useSelector((state) => state.FrienzyData.isEnabled);
+  const bigState = useSelector((state) => state.FrienzyData);
+  console.log(bigState)
   //const [enabled, setEnabled] = useState(false);
   const [location, setLocation] = useState('');
 
@@ -23,20 +25,32 @@ export const MainAppTabs = () => {
 
   useEffect(() => {
     //   /// 1.  Subscribe to events.
-    const onLocation = BackgroundGeolocation.onLocation(async (location) => {
-      console.log('[onLocation]', location);
+    const onLocation = BackgroundGeolocation.onLocation((event) => {
+      console.log('[onLocation]', event.coords);
+      const location = event.coords;
+      const time = event.timestamp;
+      saveUserLocation(location, time);
     });
 
     const onHeartbeat = BackgroundGeolocation.onHeartbeat((event) => {
       console.log('[onHeartbeat]', event);
+      const location = event.location.coords;
+      const time = event.location.timestamp;
+      saveUserLocation(location, time);
     });
 
     const onMotionChange = BackgroundGeolocation.onMotionChange((event) => {
+      // const location = event.coords;
+      // const time = event.timestamp;
+      // saveUserLocation(location, time);
       console.log('[onMotionChange]', event);
     });
 
     const onActivityChange = BackgroundGeolocation.onActivityChange((event) => {
       console.log('[onActivityChange]', event);
+      // const location = event.coords; 
+      // const time = event.timestamp;
+      // saveUserLocation(event.location, event.time);
     });
 
     const onProviderChange = BackgroundGeolocation.onProviderChange((event) => {
@@ -49,7 +63,6 @@ export const MainAppTabs = () => {
       heartbeatInterval: 60,
       preventSuspend: true,
       stopTimeout: 5,
-
       debug: false,
       logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
       stopOnTerminate: false,
@@ -57,8 +70,8 @@ export const MainAppTabs = () => {
       batchSync: false,
       autoSync: true,
     }).then((state) => {
-      dispatch(setLocationEnabled(state.enabled));
       //setEnabled(state.enabled);
+      dispatch(setLocationEnabled(state.enabled));
       console.log('- BackgroundGeolocation is configured and ready: ', state.enabled);
     });
 
