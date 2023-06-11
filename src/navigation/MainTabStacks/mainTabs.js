@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeStackComponent from './homeStack';
 import GroupsStackComponent from './groupsStack';
 import ProfileStackComponent from './profileStack';
+import ItineraryStackComponent  from './itineraryStack'
 import { StyleSheet } from 'react-native';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import CustomTabBar from './customTabBar';
@@ -127,6 +128,22 @@ export const MainAppTabs = () => {
         })}
         name={'Home'}
         component={HomeStackComponent}
+      />
+      <MainApp.Screen
+        options={({ navigation, route }) => ({
+          tabBarLabel: 'Itinerary',
+          headerShown: false,
+          tabBarIcon: (focused) => {
+            return (
+              <Ionicon
+                name={focused ? 'calendar' : 'calendar-outline'}
+                style={localStyles.iconStyle}
+              />
+            );
+          },
+        })}
+        name={'Itinerary'}
+        component={ItineraryStackComponent}
       />
       <MainApp.Screen
         options={({ navigation, route }) => ({

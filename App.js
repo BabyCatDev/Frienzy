@@ -4,7 +4,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { Provider } from 'react-redux';
 import NavigationManager from './src/navigation/NavigationManager';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
-import { ToastConfig } from './src/components/ToastConfig';
+import { ToastConfig } from './src/components/toastConfig';
 import { StatusBar } from 'react-native';
 import AuthProvider from './src/utils/AuthProvider';
 import FGLocationRetriever from './src/services/FGLocationRetriever';
