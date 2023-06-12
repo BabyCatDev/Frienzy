@@ -4,8 +4,8 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Mapbox from '@rnmapbox/maps';
 
 Mapbox.setAccessToken(
-    'pk.eyJ1Ijoibm9sYW5kb25sZXkxNCIsImEiOiJjazJta2dqNmowaXR2M25uM3RyNzl4bmU1In0.IG-7dVSFafe9cSEpQJoU2A'
-  );
+  'pk.eyJ1Ijoibm9sYW5kb25sZXkxNCIsImEiOiJjazJta2dqNmowaXR2M25uM3RyNzl4bmU1In0.IG-7dVSFafe9cSEpQJoU2A'
+);
 
 const CreateItineraryItem = ({ onItemCreate }) => {
   const [title, setTitle] = useState('');
@@ -18,6 +18,7 @@ const CreateItineraryItem = ({ onItemCreate }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState(null);
 
   const handleCreateItem = () => {
     const newItem = {
@@ -26,7 +27,7 @@ const CreateItineraryItem = ({ onItemCreate }) => {
       startTime: startTime ? startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
       endTime: endTime ? endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
       date: date ? date.toDateString() : '',
-      location: searchResults.length > 0 ? searchResults[0] : null,
+      location: selectedLocation,
     };
 
     // Clear the input fields
@@ -37,6 +38,7 @@ const CreateItineraryItem = ({ onItemCreate }) => {
     setDate(null);
     setSearchQuery('');
     setSearchResults([]);
+    setSelectedLocation(null);
 
     // Call the onItemCreate callback with the new item
     onItemCreate(newItem);
@@ -73,6 +75,10 @@ const CreateItineraryItem = ({ onItemCreate }) => {
     } catch (error) {
       console.log('Error searching for location:', error);
     }
+  };
+
+  const handleSelectLocation = (location) => {
+    setSelectedLocation(location);
   };
 
   return (
@@ -112,8 +118,16 @@ const CreateItineraryItem = ({ onItemCreate }) => {
         <View style={styles.searchResults}>
           <Text style={styles.searchResultsTitle}>Search Results:</Text>
           {searchResults.map((result, index) => (
-            <Text key={index} style={styles.searchResultItem}>{result}</Text>
+            <TouchableOpacity key={index} onPress={() => handleSelectLocation(result)}>
+              <Text style={styles.searchResultItem}>{result}</Text>
+            </TouchableOpacity>
           ))}
+        </View>
+      )}
+      {selectedLocation && (
+        <View style={styles.selectedLocation}>
+          <Text style={styles.selectedLocationTitle}>Selected Location:</Text>
+          <Text style={styles.selectedLocationItem}>{selectedLocation}</Text>
         </View>
       )}
       <TouchableOpacity style={styles.addButton} onPress={handleCreateItem}>
@@ -191,6 +205,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   searchResultItem: {
+    fontSize: 14,
+  },
+  selectedLocation: {
+    marginTop: 10,
+  },
+  selectedLocationTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  selectedLocationItem: {
     fontSize: 14,
   },
   addButton: {
