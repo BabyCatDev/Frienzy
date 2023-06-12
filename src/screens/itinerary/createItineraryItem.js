@@ -17,13 +17,14 @@ const CreateItineraryItem = ({ route }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const { onItemCreate } = route.params;
+  const { onItemCreate, currentGroup } = route.params;
   const navigate = useNavigation();
   const [scrollViewHeight, setScrollViewHeight] = useState(0);
   const windowHeight = Dimensions.get('window').height;
   const navigationBarHeight = 50; // Replace with your navigation bar's height
 
   useEffect(() => {
+    console.log('current group', currentGroup)
     const calculateScrollViewHeight = () => {
       const height = windowHeight - navigationBarHeight;
       setScrollViewHeight(height);
@@ -108,6 +109,7 @@ const CreateItineraryItem = ({ route }) => {
       keyboardShouldPersistTaps="handled"
     >
       <Text style={styles.title}>Create New Itinerary Item</Text>
+      <Text>{currentGroup}</Text>
       <TextInput
         style={styles.input}
         placeholder="Title"

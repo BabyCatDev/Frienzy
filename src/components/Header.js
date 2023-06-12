@@ -34,6 +34,7 @@ export const Header = ({
       const formattedData = tempDetails.map((td) => {
         return { label: td.name, value: td.id };
       });
+      console.log('formatted data', formattedData);
       setGroupItems(formattedData);
     }
     getUserGroups();
