@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { useNavigation } from '@react-navigation/native';
 import Mapbox from '@rnmapbox/maps';
 
-Mapbox.setAccessToken(
-  'pk.eyJ1Ijoibm9sYW5kb25sZXkxNCIsImEiOiJjazJta2dqNmowaXR2M25uM3RyNzl4bmU1In0.IG-7dVSFafe9cSEpQJoU2A'
-);
-
-const CreateItineraryItem = ({ onItemCreate }) => {
+const CreateItineraryItem = ({ route }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [startTime, setStartTime] = useState(null);
@@ -19,8 +16,15 @@ const CreateItineraryItem = ({ onItemCreate }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const { onItemCreate } = route.params;
+  const navigate = useNavigation();
 
   const handleCreateItem = () => {
+    if (!title || !description || !startTime || !endTime || !date || !selectedLocation) {
+      Alert.alert('Please fill out all required fields.');
+      return;
+    }
+
     const newItem = {
       title,
       description,
@@ -42,6 +46,9 @@ const CreateItineraryItem = ({ onItemCreate }) => {
 
     // Call the onItemCreate callback with the new item
     onItemCreate(newItem);
+
+    // Go back to the previous screen
+    navigate.goBack();
   };
 
   const handleStartTimeChange = (selectedTime) => {
@@ -67,10 +74,11 @@ const CreateItineraryItem = ({ onItemCreate }) => {
 
   const handleSearch = async () => {
     try {
-      const response = await Mapbox.geocoding.forwardGeocode({
-        query: searchQuery,
-      });
-      const results = response.features.map((feature) => feature.place_name);
+      const token = 'pk.eyJ1Ijoibm9sYW5kb25sZXkxNCIsImEiOiJjazJta2dqNmowaXR2M25uM3RyNzl4bmU1In0.IG-7dVSFafe9cSEpQJoU2A';
+      const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchQuery}.json?access_token=${token}&autocomplete=true&types=poi`;
+      const response = await fetch(endpoint);
+      const data = await response.json();
+      const results = data.features.map((feature) => feature.place_name);
       setSearchResults(results);
     } catch (error) {
       console.log('Error searching for location:', error);
@@ -82,7 +90,7 @@ const CreateItineraryItem = ({ onItemCreate }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Create New Itinerary Item</Text>
       <TextInput
         style={styles.input}
@@ -136,14 +144,14 @@ const CreateItineraryItem = ({ onItemCreate }) => {
       <DateTimePickerModal
         isVisible={showStartTimePicker}
         mode="time"
-        is24Hour={true}
+        is24Hour
         onConfirm={handleStartTimeChange}
         onCancel={() => setShowStartTimePicker(false)}
       />
       <DateTimePickerModal
         isVisible={showEndTimePicker}
         mode="time"
-        is24Hour={true}
+        is24Hour
         onConfirm={handleEndTimeChange}
         onCancel={() => setShowEndTimePicker(false)}
       />
@@ -153,44 +161,40 @@ const CreateItineraryItem = ({ onItemCreate }) => {
         onConfirm={handleDateChange}
         onCancel={() => setShowDatePicker(false)}
       />
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 20,
-    padding: 10,
+    flex: 1,
+    padding: 16,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 35,
-    textAlign: 'center',
+    marginBottom: 16,
   },
   input: {
-    height: 40,
-    borderColor: 'gray',
+    marginBottom: 16,
+    padding: 8,
     borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 10,
+    borderColor: '#ccc',
   },
   timePickerButton: {
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    paddingVertical: 10,
+    marginBottom: 16,
+    padding: 8,
+    borderWidth: 1,
+    borderColor: '#ccc',
     alignItems: 'center',
-    marginBottom: 10,
   },
   timePickerButtonText: {
     fontSize: 16,
-    fontWeight: 'bold',
   },
   searchButton: {
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    paddingVertical: 10,
+    marginBottom: 16,
+    padding: 8,
+    backgroundColor: '#ccc',
     alignItems: 'center',
   },
   searchButtonText: {
@@ -198,32 +202,35 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   searchResults: {
-    marginTop: 10,
+    marginBottom: 16,
   },
   searchResultsTitle: {
     fontSize: 16,
     fontWeight: 'bold',
+    marginBottom: 8,
   },
   searchResultItem: {
-    fontSize: 14,
+    marginBottom: 8,
   },
   selectedLocation: {
-    marginTop: 10,
+    marginBottom: 16,
   },
   selectedLocationTitle: {
     fontSize: 16,
     fontWeight: 'bold',
+    marginBottom: 8,
   },
   selectedLocationItem: {
-    fontSize: 14,
+    marginBottom: 8,
   },
   addButton: {
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    paddingVertical: 10,
+    backgroundColor: 'blue',
+    padding: 12,
     alignItems: 'center',
+    borderRadius: 8,
   },
   addButtonText: {
+    color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
   },
