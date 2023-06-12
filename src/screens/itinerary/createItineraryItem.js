@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Dimensions, KeyboardAvoidingView, Alert } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { useNavigation } from '@react-navigation/native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 import Mapbox from '@rnmapbox/maps';
 
 const CreateItineraryItem = ({ route }) => {
@@ -18,6 +19,18 @@ const CreateItineraryItem = ({ route }) => {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const { onItemCreate } = route.params;
   const navigate = useNavigation();
+  const [scrollViewHeight, setScrollViewHeight] = useState(0);
+  const windowHeight = Dimensions.get('window').height;
+  const navigationBarHeight = 50; // Replace with your navigation bar's height
+
+  useEffect(() => {
+    const calculateScrollViewHeight = () => {
+      const height = windowHeight - navigationBarHeight;
+      setScrollViewHeight(height);
+    };
+
+    calculateScrollViewHeight();
+  }, []);
 
   const handleCreateItem = () => {
     if (!title || !description || !startTime || !endTime || !date || !selectedLocation) {
@@ -90,7 +103,10 @@ const CreateItineraryItem = ({ route }) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
+    >
       <Text style={styles.title}>Create New Itinerary Item</Text>
       <TextInput
         style={styles.input}
@@ -161,7 +177,7 @@ const CreateItineraryItem = ({ route }) => {
         onConfirm={handleDateChange}
         onCancel={() => setShowDatePicker(false)}
       />
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -169,6 +185,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    marginTop: 25,
   },
   title: {
     fontSize: 18,
@@ -202,7 +219,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   searchResults: {
-    marginBottom: 16,
+    marginBottom: 8,
   },
   searchResultsTitle: {
     fontSize: 16,
@@ -210,15 +227,15 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   searchResultItem: {
-    marginBottom: 8,
+    marginBottom: 6,
   },
   selectedLocation: {
-    marginBottom: 16,
+    marginBottom: 1,
   },
   selectedLocationTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginBottom: 2,
   },
   selectedLocationItem: {
     marginBottom: 8,
@@ -228,6 +245,7 @@ const styles = StyleSheet.create({
     padding: 12,
     alignItems: 'center',
     borderRadius: 8,
+    marginTop: -7
   },
   addButtonText: {
     color: 'white',

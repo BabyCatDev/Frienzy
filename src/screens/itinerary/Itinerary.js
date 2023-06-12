@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicon from 'react-native-vector-icons/Ionicons';
 import { Divider } from 'react-native-elements';
+import { Header } from '../../components/Header';
+import normalize from 'react-native-normalize';
 
 const Itinerary = ({ navigation }) => {
+  const [currentGroup, setCurrentGroup] = useState('');
   const [itineraryItems, setItineraryItems] = useState([
     {
       title: 'Visit Museum',
@@ -43,39 +46,47 @@ const Itinerary = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Itinerary</Text>
-        <TouchableOpacity onPress={() => { navigation.navigate('CreateItineraryItem', { onItemCreate }); }}>
-          <Ionicons name="add-circle" size={24} color="#000" style={styles.headerIcon} />
-        </TouchableOpacity>
+        <Header
+          onPressRight={() => navigation.navigate('CreateItineraryItem', { onItemCreate })}
+          rightIcon={() => (
+            <Ionicon color={'black'} name={'duplicate-outline'} size={normalize(23)} />
+          )}
+          title={'Itinerary'}
+          navigation={navigation}
+          noBackButton
+          containerStyle={{ marginBottom: 15 }}
+        />
       </View>
-      <View style={styles.list}>
+      <ScrollView style={styles.list}>
         {itineraryItems.map((item, index) => (
           <View key={index} style={styles.itemContainer}>
-            <Divider />
             <Text style={styles.itemTitle}>{item.title}</Text>
+            <Divider />
             <Text style={styles.itemDescription}>{item.description.substring(0, 50)}...</Text>
-            <Text style={styles.itemTime}>{item.startTime} - {item.endTime}</Text>
+            <Text style={styles.itemTime}>
+              {item.startTime} - {item.endTime}
+            </Text>
             <Text style={styles.itemDate}>{item.date}</Text>
             <Text style={styles.itemLocation}>{item.location.name}</Text>
             <Text style={styles.itemAddress}>{item.location.address}</Text>
           </View>
         ))}
-      </View>
+      </ScrollView>
     </View>
   );
+  
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: '#f0f8ff', // Light blue background color
   },
   header: {
-    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 10,
+    marginTop: 30,
   },
   headerTitle: {
     fontSize: 24,
@@ -83,6 +94,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginLeft: 25,
     flex: 1,
+    color: '#000', // Black header text color
   },
   headerIcon: {
     marginLeft: 10,
@@ -91,33 +103,45 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   itemContainer: {
-    backgroundColor: '#f0f0f0',
-    padding: 3,
+    backgroundColor: '#fff', // White background color for each itinerary item
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 8,
+    elevation: 2, // Add a slight elevation for a card-like effect
+  },
+  itemDivider: {
+    marginVertical: 5,
   },
   itemTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
+    color: '#000', // Black item title color
   },
   itemDescription: {
     fontSize: 14,
     marginBottom: 5,
+    color: '#444', // Dark gray item description color
   },
   itemTime: {
     fontSize: 12,
     marginBottom: 2,
+    color: '#666', // Medium gray item time color
   },
   itemDate: {
     fontSize: 12,
     marginBottom: 2,
+    color: '#666', // Medium gray item date color
   },
   itemLocation: {
     fontSize: 12,
     marginBottom: 2,
     fontWeight: 'bold',
+    color: '#000', // Black item location color
   },
   itemAddress: {
     fontSize: 12,
+    color: '#666', // Medium gray item address color
   },
 });
 
