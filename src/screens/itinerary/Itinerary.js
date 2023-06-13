@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { Divider } from 'react-native-elements';
 import normalize from 'react-native-normalize';
-import CreateItineraryItem from './createItineraryItem';
+import { createItineraryItem, getItineraryItemsForGroup } from '../../services/firebase/itineraryService';
 import { create } from 'lodash';
 
 const Itinerary = ({ navigation, route }) => {
@@ -38,13 +38,21 @@ const Itinerary = ({ navigation, route }) => {
     // Add more itinerary items as needed
   ]);
 
+  useEffect(() => { 
+    async function getItineraryItems() {
+      const tempDetails = await getItineraryItemsForGroup(currentGroup);
+      setItineraryItems(tempDetails);
+    }
+    getItineraryItems();
+  }, [currentGroup]);
+
   const onItemCreate = (itineraryItem) => {
     // Add navigation logic for creating a new itinerary item
     // add itinerary item to itineraryItems array
     //make a post to the firebase
 
     console.log('onItemCreate', currentGroup, itineraryItem)
-    // CreateItineraryItem(groupId, itineraryItem);
+    createItineraryItem(currentGroup, itineraryItem);
 
     setItineraryItems([...itineraryItems, itineraryItem]);
     console.log('create item', itineraryItem, currentGroup)
@@ -58,7 +66,7 @@ const Itinerary = ({ navigation, route }) => {
         </TouchableOpacity>
         <Text style={styles.title}>Itinerary</Text>
         <TouchableOpacity onPress={() =>
-    navigation.navigate('CreateItineraryItem', { onItemCreate: onItemCreate })
+    navigation.navigate('CreateItineraryItem', { onItemCreate: onItemCreate, currentGroup: currentGroup })
   }
 >
           <Ionicon name="add" size={24} color="black" />
@@ -76,6 +84,8 @@ const Itinerary = ({ navigation, route }) => {
             <Text style={styles.itemDate}>{item.date}</Text>
             <Text style={styles.itemLocation}>{item.location.name}</Text>
             <Text style={styles.itemAddress}>{item.location.address}</Text>
+            <Text style={styles.itemAddress}>{item.location.latitude}</Text>
+            <Text style={styles.itemAddress}>{item.location.longitude}</Text>
           </View>
         ))}
       </ScrollView>
