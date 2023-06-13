@@ -78,61 +78,83 @@ const Map = ({ navigation, route }) => {
     return { sw, ne };
   };
 
-  useEffect(() => {
-    const unsubscribe = firestore()
+  const [mapBounds, setMapBounds] = useState(null);
+const [isInitialMount, setIsInitialMount] = useState(true);
+
+useEffect(() => {
+  let unsubscribe;
+
+  const getUsersLocations = async () => {
+    const querySnapshot = await firestore()
       .collection('users')
       .where('groups', 'array-contains', currentGroup)
-      .onSnapshot((docSnap) => {
-        console.log('usersLocationsNew', docSnap.docs)
-        const usersLocationsNew = docSnap.docs.map((item) => {
-          const itemData = item.data();
-          const location = itemData.currentLocation;
-          // console.log('location', location)
-          if ('latitude' in location && 'longitude' in location) {
-            return {
-              latitude: location.latitude,
-              longitude: location.longitude,
-              name: itemData.name,
-              profilePic: itemData.profilePic,
-              id: itemData.uid,
-              time: location.time,
-            };
-          } else if (
-            'coords' in location &&
-            'latitude' in location.coords &&
-            'longitude' in location.coords
-          ) {
-            return {
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-              name: itemData.name,
-              profilePic: itemData.profilePic,
-              id: itemData.uid,
-              time: location.time,
-            };
-          } else {
-            return null;
-          }
-        });
+      .get();
 
+    const usersLocationsNew = querySnapshot.docs.map((item) => {
+      const itemData = item.data();
+      const location = itemData.currentLocation;
 
+      if ('latitude' in location && 'longitude' in location) {
+        return {
+          latitude: location.latitude,
+          longitude: location.longitude,
+          name: itemData.name,
+          profilePic: itemData.profilePic,
+          id: itemData.uid,
+          time: location.time,
+        };
+      } else if ('coords' in location && 'latitude' in location.coords && 'longitude' in location.coords) {
+        return {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          name: itemData.name,
+          profilePic: itemData.profilePic,
+          id: itemData.uid,
+          time: location.time,
+        };
+      } else {
+        return null;
+      }
+    });
 
-        const filteredLocations = usersLocationsNew.filter((location) => location !== null);
-        const bounds = getBoundingBoxCorners(
-          usersLocationsNew.map((loc) => [loc.longitude, loc.latitude])
-        );
-        // after this, markers are no longer added to the center of the map
+    const filteredLocations = usersLocationsNew.filter((location) => location !== null);
 
-        // setUsersLocations(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
-        setUsers(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
+    // Update the users or usersLocations state here
+    // setUsersLocations(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
+    setUsers(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
 
+    if (currentGroup && usersLocationsNew.length > 0) {
+      const bounds = getBoundingBoxCorners(usersLocationsNew.map((loc) => [loc.longitude, loc.latitude]));
 
-        if (currentGroup && usersLocationsNew.length > 0) {
-          camera.current.fitBounds(bounds.sw, bounds.ne, 100, 100);
-        }
+      // Only update the mapBounds if it's not already set
+      if (!mapBounds) {
+        setMapBounds(bounds);
+      }
+    }
+  };
+
+  if (currentGroup) {
+    unsubscribe = firestore()
+      .collection('users')
+      .where('groups', 'array-contains', currentGroup)
+      .onSnapshot(() => {
+        getUsersLocations();
       });
-    return () => unsubscribe();
-  }, [currentGroup]);
+  }
+
+  return () => {
+    if (unsubscribe) {
+      unsubscribe();
+    }
+  };
+}, [currentGroup]);
+
+useEffect(() => {
+  if (isInitialMount && mapBounds) {
+    camera.current.fitBounds(mapBounds.sw, mapBounds.ne, 100, 100);
+    setIsInitialMount(false);
+  }
+}, [mapBounds, isInitialMount]);
 
 
   useEffect(() => {
@@ -160,6 +182,10 @@ const Map = ({ navigation, route }) => {
     setCurrentGroup(group);
     setSelectedGroup(group);
     setIsCameraAdjusted(false);
+  };
+
+  const handleMarkerPress = (item) => {
+    setSelectedItem(item);
   };
 
   const requestLocation = () => {
@@ -318,26 +344,15 @@ const Map = ({ navigation, route }) => {
             ))
             : null}
           <Mapbox.UserLocation showsUserHeadingIndicator={true} />
-          {itineraryItems.length > 0 ? (
-            itineraryItems.map((item, index) => (
-              <Mapbox.MarkerView
-                id={index.toString()}
-                key={index.toString()}
-                coordinate={[item.location.longitude, item.location.latitude]}
-                onPress={() => setSelectedItem(item)}
-              >
-                <View style={{ backgroundColor: 'blue', borderRadius: 10, padding: 5 }}>
-                  <Text style={{ color: 'white' }}>{item.title}</Text>
-                </View>
-              </Mapbox.MarkerView>
-            ))
-          ) : null}
-
-          {selectedItem && (
-            <Mapbox.Callout style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 10, backgroundColor: 'white' }}>
-              <Text>{selectedItem.description}</Text>
-            </Mapbox.Callout>
-          )}
+          {itineraryItems.length > 0 &&
+              itineraryItems.map((item, index) => (
+                <Mapbox.MarkerView key={index.toString()} id={index.toString()} coordinate={[item.location.longitude, item.location.latitude]}>
+                  <View style={{ backgroundColor: Colors.darkGray, borderRadius: 10, padding: 5 }}>
+                    <Text style={{ color: 'white', fontWeight: 'bold' }}>{item.title}</Text>
+                    <Text style={{ color: 'white', fontWeight: 'bold' }}>Start Time: {item.startTime}</Text>
+                  </View>
+                </Mapbox.MarkerView>
+              ))}
         </Mapbox.MapView>
       </View>
       {/* <TouchableOpacity
