@@ -1,18 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { Divider } from 'react-native-elements';
-import { Header } from '../../components/Header';
 import normalize from 'react-native-normalize';
-import { createItineraryItem } from '../../services/firebase/itineraryService';
-import { getGroupById } from '../../services/firebase/conversations';
+import CreateItineraryItem from './createItineraryItem';
+import { create } from 'lodash';
 
-const Itinerary = ({ navigation }) => {
-  const [currentGroup, setCurrentGroup] = useState('');
-  const [selectedGroup, setSelectedGroup] = useState('');
-  const [groupDetails, setGroupDetails] = useState({}); // { name: '', id: '' }
-  const [headerValue, setHeaderValue] = useState('');
+const Itinerary = ({ navigation, route }) => {
+  const { currentGroup } = route.params;
   const [itineraryItems, setItineraryItems] = useState([
     {
       title: 'Visit Museum',
@@ -42,47 +37,32 @@ const Itinerary = ({ navigation }) => {
     },
     // Add more itinerary items as needed
   ]);
-  useEffect(() => {
-    console.log(currentGroup)
-    async function getGroupDetails() {
-      const details = await getGroupById(currentGroup);
-      console.log('details', details)
-      setGroupDetails(details);
-    }
-    getGroupDetails();
-  }, [currentGroup]);
 
-  const handleGroupSelection = (group) => {
-    setCurrentGroup(group);
-    setSelectedGroup(group);
-  };
+  const onItemCreate = (itineraryItem) => {
+    // Add navigation logic for creating a new itinerary item
+    // add itinerary item to itineraryItems array
+    //make a post to the firebase
 
-  const onItemCreate = (newItem) => {
-    // Update the itineraryItems state with the new item
-    createItineraryItem(currentGroup.id, newItem);
-    setItineraryItems((prevItems) => [...prevItems, newItem]);
+    console.log('onItemCreate', currentGroup, itineraryItem)
+    // CreateItineraryItem(groupId, itineraryItem);
 
+    setItineraryItems([...itineraryItems, itineraryItem]);
+    console.log('create item', itineraryItem, currentGroup)
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Header
-          leftIcon={() => <Ionicon name={'locate-outline'} size={normalize(30)} color={'white'} />}
-          title={
-            <View style={styles.titleContainer}>
-              <Text style={styles.titleText}>Frienzy</Text>
-            </View>
-          }
-          navigation={navigation}
-          headerButton
-          headerValue={currentGroup}
-          setHeaderValue={(value) => handleGroupSelection(value)}
-          rightIcon={currentGroup ? () => <Ionicon name={'add'} size={normalize(30)} color={'white'} /> : null}
-          onPressRight={() => navigation.navigate('CreateItineraryItem', { onItemCreate, currentGroup })}
-          noBackButton
-          containerStyle={styles.headerContainer}
-        />
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicon name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Itinerary</Text>
+        <TouchableOpacity onPress={() =>
+    navigation.navigate('CreateItineraryItem', { onItemCreate: onItemCreate })
+  }
+>
+          <Ionicon name="add" size={24} color="black" />
+        </TouchableOpacity>
       </View>
       <ScrollView style={styles.list}>
         {itineraryItems.map((item, index) => (
@@ -106,32 +86,22 @@ const Itinerary = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: '#f0f8ff', // Light blue background color
   },
   header: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 30,
-    backgroundColor: 'black',
-    zIndex: 1,
-  },
-  titleContainer: {
-    flex: 1,
-    marginLeft: 200,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 8,
+    marginTop: 50,
+    backgroundColor: 'white',
   },
-  titleText: {
-    marginBottom: 15,
-    color: 'white',
+  title: {
+    fontSize: 20,
     fontWeight: 'bold',
-    fontSize: normalize(28),
-  },
-  headerContainer: {
-    overflow: 'visible',
-    alignItems: 'center',
+    color: 'black', 
   },
   list: {
     marginTop: 10,

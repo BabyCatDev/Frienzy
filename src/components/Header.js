@@ -127,9 +127,11 @@ export const Header = ({
           <Text style={{ ...AppStyles.medium17, textAlign: 'center' }}>{friendsCounter}</Text>
         )}
       </View>
-      <Pressable style={AppStyles.headerRightIcon} onPress={onPressRight}>
-        {rightIcon && rightIcon()}
-      </Pressable>
+      {title && (
+        <Pressable style={AppStyles.headerRightIcon} onPress={onPressRight}>
+          {rightIcon ? rightIcon : null}
+        </Pressable>
+      )}
     </View>
   );
 };

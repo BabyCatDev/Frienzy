@@ -3,9 +3,11 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Dimens
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { useNavigation } from '@react-navigation/native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
+import Ionicon from 'react-native-vector-icons/Ionicons';
+import { AppStyles } from '../../utils/AppStyles';
 import Mapbox from '@rnmapbox/maps';
 
-const CreateItineraryItem = ({ route }) => {
+const CreateItineraryItem = ({ route, navigation }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [startTime, setStartTime] = useState(null);
@@ -92,22 +94,28 @@ const CreateItineraryItem = ({ route }) => {
       const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchQuery}.json?access_token=${token}&autocomplete=true&types=poi`;
       const response = await fetch(endpoint);
       const data = await response.json();
+      console.log('Search response:', data)
       const results = data.features.map((feature) => feature.place_name);
+      const centers = data.features.map((feature) => feature.center);
       setSearchResults(results);
+      console.log('centers', centers)
     } catch (error) {
       console.log('Error searching for location:', error);
     }
   };
 
   const handleSelectLocation = (location) => {
-    setSelectedLocation(location);
+   setSelectedLocation(location);
   };
 
   return (
-    <KeyboardAwareScrollView
+    <ScrollView style={{ flex: 1, padding: 10 }}
       contentContainerStyle={styles.container}
       keyboardShouldPersistTaps="handled"
     >
+       <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicon name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
       <Text style={styles.title}>Create New Itinerary Item</Text>
       <Text>{currentGroup}</Text>
       <TextInput
@@ -179,7 +187,7 @@ const CreateItineraryItem = ({ route }) => {
         onConfirm={handleDateChange}
         onCancel={() => setShowDatePicker(false)}
       />
-    </KeyboardAwareScrollView>
+    </ScrollView>
   );
 };
 

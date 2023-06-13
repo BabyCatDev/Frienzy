@@ -3,12 +3,15 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 // importing screens >>>>
 import Map from "../../screens/mapbox/Map";
 import ContactList from "../../screens/contactList";
-
+import Itinerary from "../../screens/itinerary/Itinerary";
+import CreateItineraryItem from "../../screens/itinerary/createItineraryItem";
 const HomeStack = createNativeStackNavigator();
 
 const HomeStackComponent = ({ navigation }) => (
   <HomeStack.Navigator>
     <HomeStack.Screen options={{ headerShown: false }} name={"Map"} component={Map} />
+    <HomeStack.Screen options={{ headerShown: false }} name={"Itinerary"} component={Itinerary} />
+    <HomeStack.Screen options={{ headerShown: false }} name={"CreateItineraryItem"} component={CreateItineraryItem} />
     <HomeStack.Screen options={{ headerShown: false }} name={"Contacts"} component={ContactList} />
   </HomeStack.Navigator>
 );

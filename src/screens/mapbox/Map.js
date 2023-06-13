@@ -211,7 +211,9 @@ const Map = ({ navigation, route }) => {
       >
         <Header
           onPressLeft={requestLocation}
-          leftIcon={() => <Ionicon name={'locate-outline'} size={normalize(30)} color={'white'} />}
+          leftIcon={() => <Ionicon name={'locate-outline'} size={normalize(25)} color={'white'} />}
+          rightIcon={() => <Ionicon name={'calendar-outline'} size={normalize(25)} color={'white'} />}
+          onPressRight={() => navigation.navigate('Itinerary', { currentGroup: currentGroup })}
           title={
             <View
               style={{

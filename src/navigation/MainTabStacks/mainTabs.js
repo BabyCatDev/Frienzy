@@ -129,7 +129,7 @@ export const MainAppTabs = () => {
         name={'Home'}
         component={HomeStackComponent}
       />
-      <MainApp.Screen
+      {/* <MainApp.Screen
         options={({ navigation, route }) => ({
           tabBarLabel: 'Itinerary',
           headerShown: false,
@@ -144,7 +144,7 @@ export const MainAppTabs = () => {
         })}
         name={'Itinerary'}
         component={ItineraryStackComponent}
-      />
+      /> */}
       <MainApp.Screen
         options={({ navigation, route }) => ({
           tabBarLabel: 'Profile',
