@@ -96,7 +96,8 @@ const Itinerary = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f8ff', // Light blue background color
+    padding: 5,
+    backgroundColor: 'black', // Light blue background color
   },
   header: {
     flexDirection: 'row',
