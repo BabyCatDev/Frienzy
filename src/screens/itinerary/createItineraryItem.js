@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert} from 'react-native';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-
+import { Colors } from '../../utils/Colors';
 const CreateItineraryItem = ({ route, navigation }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -58,7 +58,7 @@ const CreateItineraryItem = ({ route, navigation }) => {
   const handleCreateItem = () => {
     // Check if all required fields are filled
     if (!title || !description || !startTime || !endTime || !date || !selectedLocation) {
-      console.log('Please fill all the required fields.');
+     Alert.alert('Please fill all the required fields.');
       return;
     }
 
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
   searchButton: {
     marginBottom: 16,
     padding: 8,
-    backgroundColor: '#ccc',
+    backgroundColor: '',
     alignItems: 'center',
   },
   searchButtonText: {

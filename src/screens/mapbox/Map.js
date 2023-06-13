@@ -24,6 +24,7 @@ import Ionicon from 'react-native-vector-icons/Ionicons';
 import { saveUserLocation } from '../../services/location/geolocation';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import { getItineraryItemsForGroup } from '../../services/firebase/itineraryService';
 import { useSelector } from 'react-redux'
 import FriendMarker from './FriendMarker';
 import { getGroupById } from '../../services/firebase/conversations';
@@ -48,8 +49,10 @@ const Map = ({ navigation, route }) => {
   const [usersLocations, setUsersLocations] = useState([]);
   const [currentGroup, setCurrentGroup] = useState('');
   const [selectedGroup, setSelectedGroup] = useState('');
+  const [selectedItem, setSelectedItem] = useState('');
   const [groupDetails, setGroupDetails] = useState({});
   const [isCameraAdjusted, setIsCameraAdjusted] = useState(false);
+  const [itineraryItems, setItineraryItems] = useState([]);
 
   console.log('users', users);
 
@@ -80,7 +83,7 @@ const Map = ({ navigation, route }) => {
       .collection('users')
       .where('groups', 'array-contains', currentGroup)
       .onSnapshot((docSnap) => {
-        console.log('usersLocationsNew', docSnap.docs )
+        console.log('usersLocationsNew', docSnap.docs)
         const usersLocationsNew = docSnap.docs.map((item) => {
           const itemData = item.data();
           const location = itemData.currentLocation;
@@ -112,19 +115,19 @@ const Map = ({ navigation, route }) => {
           }
         });
 
-      
-  
+
+
         const filteredLocations = usersLocationsNew.filter((location) => location !== null);
         const bounds = getBoundingBoxCorners(
           usersLocationsNew.map((loc) => [loc.longitude, loc.latitude])
         );
         // after this, markers are no longer added to the center of the map
-        
+
         // setUsersLocations(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
         setUsers(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
-        
 
-        if ( currentGroup && usersLocationsNew.length > 0) {
+
+        if (currentGroup && usersLocationsNew.length > 0) {
           camera.current.fitBounds(bounds.sw, bounds.ne, 100, 100);
         }
       });
@@ -137,6 +140,12 @@ const Map = ({ navigation, route }) => {
       const details = await getGroupById(currentGroup);
       setGroupDetails(details);
     }
+    async function getItineraryItems() {
+      const tempDetails = await getItineraryItemsForGroup(currentGroup);
+      setItineraryItems(tempDetails);
+      console.log('temp Details', tempDetails)
+    }
+    getItineraryItems();
     getGroupDetails();
   }, [currentGroup]);
 
@@ -212,7 +221,7 @@ const Map = ({ navigation, route }) => {
         <Header
           onPressLeft={requestLocation}
           leftIcon={() => <Ionicon name={'locate-outline'} size={normalize(25)} color={'white'} />}
-          rightIcon={currentGroup ? () => <Ionicon name={'calendar-outline'} size={normalize(25)} color={'white'}  /> : null }
+          rightIcon={currentGroup ? () => <Ionicon name={'calendar-outline'} size={normalize(25)} color={'white'} /> : null}
           onPressRight={() => navigation.navigate('Itinerary', { currentGroup: currentGroup })}
           title={
             <View
@@ -292,23 +301,43 @@ const Map = ({ navigation, route }) => {
 
           {users.length > 0
             ? users.map((user, index) => (
-                <Mapbox.MarkerView
-                  coordinate={[user.longitude, user.latitude]}
-                  key={index}
-                  id={index}
-                >
-                  {/* <View style={{justifyContent: 'center', alignItems: 'center'}}> */}
-                  <FriendMarker
-                    contact={user}
-                    setUserToPush={setUserToPush}
-                    setVisible={setVisible}
-                  />
-                  {/* <Text>{user.date}</Text> */}
-                  {/* </View> */}
-                </Mapbox.MarkerView>
-              ))
+              <Mapbox.MarkerView
+                coordinate={[user.longitude, user.latitude]}
+                key={index}
+                id={index}
+              >
+                {/* <View style={{justifyContent: 'center', alignItems: 'center'}}> */}
+                <FriendMarker
+                  contact={user}
+                  setUserToPush={setUserToPush}
+                  setVisible={setVisible}
+                />
+                {/* <Text>{user.date}</Text> */}
+                {/* </View> */}
+              </Mapbox.MarkerView>
+            ))
             : null}
           <Mapbox.UserLocation showsUserHeadingIndicator={true} />
+          {itineraryItems.length > 0 ? (
+            itineraryItems.map((item, index) => (
+              <Mapbox.MarkerView
+                id={index.toString()}
+                key={index.toString()}
+                coordinate={[item.location.longitude, item.location.latitude]}
+                onPress={() => setSelectedItem(item)}
+              >
+                <View style={{ backgroundColor: 'blue', borderRadius: 10, padding: 5 }}>
+                  <Text style={{ color: 'white' }}>{item.title}</Text>
+                </View>
+              </Mapbox.MarkerView>
+            ))
+          ) : null}
+
+          {selectedItem && (
+            <Mapbox.Callout style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 10, backgroundColor: 'white' }}>
+              <Text>{selectedItem.description}</Text>
+            </Mapbox.Callout>
+          )}
         </Mapbox.MapView>
       </View>
       {/* <TouchableOpacity
@@ -322,7 +351,7 @@ const Map = ({ navigation, route }) => {
           alignItems: 'center',
         }}
       > */}
-        {/* <AssetImage
+      {/* <AssetImage
           asset={alarmDisabled ? Assets.emrgDisabled : Assets.emrgButton}
           width={normalize(90)}
           height={normalize(91)}

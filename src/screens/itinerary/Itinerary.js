@@ -4,6 +4,7 @@ import Ionicon from 'react-native-vector-icons/Ionicons';
 import { Divider } from 'react-native-elements';
 import normalize from 'react-native-normalize';
 import { createItineraryItem, getItineraryItemsForGroup } from '../../services/firebase/itineraryService';
+import { Colors } from '../../utils/Colors';
 import { create } from 'lodash';
 
 const Itinerary = ({ navigation, route }) => {
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 5,
-    backgroundColor: 'black', // Light blue background color
+    backgroundColor: Colors.backgroundGradient[0], // Light blue background color
   },
   header: {
     flexDirection: 'row',
@@ -107,6 +108,7 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 8,
     marginTop: 50,
+    borderRadius: 8,
     backgroundColor: 'white',
   },
   title: {
