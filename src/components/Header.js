@@ -78,10 +78,10 @@ export const Header = ({
             placeholder="Select A Frienzy"
             mode="BADGE"
             ArrowUpIconComponent={({ style }) => (
-              <Ionicon name={'chevron-up'} color={'white'} size={20} style={style} />
+              <Ionicon name={'chevron-up'} color={'black'} size={20} style={style} />
             )}
             ArrowDownIconComponent={({ style }) => (
-              <Ionicon name={'chevron-down'} color={'white'} size={20} style={style} />
+              <Ionicon name={'chevron-down'} color={'black'} size={20} style={style} />
             )}
             itemSeparator={true}
             itemSeparatorStyle={{
@@ -106,7 +106,7 @@ export const Header = ({
             placeholderStyle={{
               ...AppStyles.semibold20,
               textAlign: 'center',
-              color: 'white',
+              color: 'black',
               flex: 0,
             }}
             labelStyle={{

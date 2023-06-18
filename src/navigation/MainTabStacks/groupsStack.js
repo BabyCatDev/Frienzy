@@ -4,6 +4,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ContactList from '../../screens/contactList';
 import GroupsList from '../../screens/groups/GroupList';
 import GroupThread from '../../screens/groups/GroupThread';
+import { FrienzyList }  from '../../screens/frienzyList/frienzyList';
+import userProfile from '../../screens/profile/UserProfile';
 import { useConversations } from '../../hooks/useConversations';
 
 const GroupsStack = createNativeStackNavigator();
@@ -15,8 +17,13 @@ const GroupsStackComponent = ({ navigation }) => {
     <GroupsStack.Navigator>
       <GroupsStack.Screen
         options={{ headerShown: false }}
-        name="GroupsList"
-        component={GroupsList}
+        name="FrienzyList"
+        component={FrienzyList}
+      />
+      <GroupsStack.Screen
+        options={{ headerShown: false }}
+        name="UserProfile"
+        component={userProfile}
       />
       <GroupsStack.Screen
         options={{ headerShown: false }}

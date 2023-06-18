@@ -149,7 +149,7 @@ const GroupsList = ({ navigation, route }) => {
           noBackButton
           containerStyle={{ marginBottom: 15 }}
         />
-        <SearchField search={query} setSearch={setQuery} />
+        {/* <SearchField search={query} setSearch={setQuery} /> */}
       </View>
       <FlatList
         data={conversations}
