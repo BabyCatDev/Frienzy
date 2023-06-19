@@ -52,7 +52,7 @@ export const sendMessage = async (messageDetails, threadId) => {
     });
 };
 
-export const createNewGroup = async ({ name, pic, members, message = null }) => {
+export const createNewGroup = async ({ name, pic, startDate, endDate, members, message = null }) => {
   const currentId = auth().currentUser.uid;
   const time = firestore.FieldValue.serverTimestamp();
 

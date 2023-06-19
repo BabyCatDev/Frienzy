@@ -5,6 +5,7 @@ import ContactList from '../../screens/contactList';
 import GroupsList from '../../screens/groups/GroupList';
 import GroupThread from '../../screens/groups/GroupThread';
 import { FrienzyList }  from '../../screens/frienzyList/frienzyList';
+import { NewFrienzyCreation } from '../../screens/frienzyList/NewFrienzyCreation';
 import userProfile from '../../screens/profile/UserProfile';
 import { useConversations } from '../../hooks/useConversations';
 
@@ -19,6 +20,11 @@ const GroupsStackComponent = ({ navigation }) => {
         options={{ headerShown: false }}
         name="FrienzyList"
         component={FrienzyList}
+      />
+      <GroupsStack.Screen
+        options={{ headerShown: false }}
+        name="NewFrienzyCreation"
+        component={NewFrienzyCreation}
       />
       <GroupsStack.Screen
         options={{ headerShown: false }}

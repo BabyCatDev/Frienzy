@@ -17,6 +17,9 @@ export const FrienzyList = () => {
     setActiveTab(tab);
   };
  
+  const handleAddButtonPressed = () => {
+    navigation.navigate('NewFrienzyCreation');
+  };
 
   const filteredConversations = conversations.filter((conversation) => {
     if (activeTab === 'Active') {
@@ -64,7 +67,7 @@ export const FrienzyList = () => {
         ))}
       </ScrollView>
 
-      <TouchableOpacity style={styles.addButton}>
+      <TouchableOpacity style={styles.addButton} onPress={() => handleAddButtonPressed()}>
         <Ionicon name="add-circle" size={64} color="#FB5F2D" />
       </TouchableOpacity>
     </SafeAreaView>
@@ -138,7 +141,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     position: 'absolute',
-    bottom: 16,
+    bottom: 80,
     right: 16,
     zIndex: 1, // Ensure the button is above the ScrollView
   },

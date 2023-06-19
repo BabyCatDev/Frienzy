@@ -33,17 +33,10 @@ export const getPhoto = (response, setResponse, setImage) => {
           ]
         );
       } else if (res?.assets && res?.assets[0]?.fileSize === undefined) {
-        Toast.show({
-          type: 'denied',
-          position: 'top',
-          props: {
-            title: 'Failed to upload photo',
-          },
-        });
+        Alert.alert('Failed to upload photo', 'Please try again.');
       } else {
         setResponse(res);
         let data = res.assets?.map((el) => el.uri);
-        //console.log('Image', data);
         setImage(data[0]);
       }
     });
