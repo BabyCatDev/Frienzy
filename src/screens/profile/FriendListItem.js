@@ -7,7 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { useUser } from '../../hooks/useUser';
 
-const FriendListItem = ({ item, onPressHandler, index, selected, showChecks = false }) => {
+export const FriendListItem = ({ item, onPressHandler, index, selected, showChecks = false }) => {
   const { data: userData, isLoading } = useUser(item);
 
   const getInitials = (name) => {
@@ -20,11 +20,13 @@ const FriendListItem = ({ item, onPressHandler, index, selected, showChecks = fa
 
   if (isLoading) return null;
 
+  const handlePress = () => {
+    onPressHandler({ itemClicked: item });
+  };
+
   return (
     <Pressable
-      onPress={() => {
-        onPressHandler({ itemClicked: userData });
-      }}
+      onPress={handlePress}
       style={{
         ...AppStyles.contactItem,
         marginTop: !index ? normalize(6.56) : 0,
@@ -48,27 +50,19 @@ const FriendListItem = ({ item, onPressHandler, index, selected, showChecks = fa
           <Text style={{ ...AppStyles.semibold17, maxWidth: 300 }}>{userData.name}</Text>
           <Text style={AppStyles.medium13}>{userData.phone}</Text>
         </View>
-        {showChecks ? (
-          selected ? (
-            <LinearGradient
-              colors={Colors.mainGradient}
-              useAngle={true}
-              angle={132.35}
-              style={AppStyles.checkBoxContainer}
-            >
-              <Ionicon name={'checkmark-sharp'} size={normalize(13)} color={'white'} />
-            </LinearGradient>
-          ) : (
-            <View
-              style={{
-                ...AppStyles.checkBoxContainer,
-                backgroundColor: Colors.gray,
-              }}
-            />
-          )
-        ) : null}
+        {showChecks && (
+          <View
+            style={{
+              ...AppStyles.checkBoxContainer,
+              backgroundColor: selected ? Colors.primary : Colors.gray,
+            }}
+          >
+            {selected && (
+              <Ionicon name={'checkmark-sharp'} size={normalize(13)} color={'orange'} />
+            )}
+          </View>
+        )}
       </View>
     </Pressable>
   );
 };
-export default FriendListItem;

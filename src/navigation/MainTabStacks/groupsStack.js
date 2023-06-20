@@ -6,8 +6,10 @@ import GroupsList from '../../screens/groups/GroupList';
 import GroupThread from '../../screens/groups/GroupThread';
 import { FrienzyList }  from '../../screens/frienzyList/frienzyList';
 import { NewFrienzyCreation } from '../../screens/frienzyList/NewFrienzyCreation';
+import { InviteFriends } from '../../screens/frienzyList/InviteFriends';
 import userProfile from '../../screens/profile/UserProfile';
 import { useConversations } from '../../hooks/useConversations';
+import { ActiveFrienzy } from '../../screens/frienzyList/ActiveFrienzy';
 
 const GroupsStack = createNativeStackNavigator();
 
@@ -25,6 +27,16 @@ const GroupsStackComponent = ({ navigation }) => {
         options={{ headerShown: false }}
         name="NewFrienzyCreation"
         component={NewFrienzyCreation}
+      />
+      <GroupsStack.Screen
+        options={{ headerShown: false }}
+        name="InviteFriendsScreen"
+        component={InviteFriends}
+      />
+      <GroupsStack.Screen
+        options={{ headerShown: false }}
+        name="ActiveFrienzy"
+        component={ActiveFrienzy}
       />
       <GroupsStack.Screen
         options={{ headerShown: false }}

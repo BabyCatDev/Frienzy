@@ -1,16 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
+import { getGroupsForUser } from '../../services/firebase/user';
+import { getGroupById } from '../../services/firebase/conversations';
 
 export const FrienzyList = () => {
   const navigation = useNavigation();
-  const conversations = useSelector((state) => state.FrienzyData.conversations);
   const [activeTab, setActiveTab] = useState('Active');
 
+
+  const userDetails = useSelector((state) => state.FrienzyAuth.userDetails);
+  const [groupItems, setGroupItems] = useState([]);
+
+  useEffect(() => {
+    async function getUserGroups() {
+      const tempDetails = await getGroupsForUser(userDetails.groups);
+      const formattedData = tempDetails.map((td) => {
+        return { label: td.name, value: td.id };
+      });
+      console.log('formatted data frienzyList', formattedData);
+      setGroupItems(formattedData);
+    }
+    getUserGroups();
+  }, []);
+
   const handleFrienzyPress = (frienzyId) => {
+    
     navigation.push('GroupThread', { threadId: frienzyId });
+
+  };
+
+  const fetchGroupInfo = async (groupId) => {
+    const groupInfo = await getGroupById(groupId);
+    console.log('groupInfo', groupInfo);
+    navigation.navigate('ActiveFrienzy', { groupInfo: groupInfo })
+    return groupInfo;
+
+    //navigate to groupFrienzy
+    // pass in groupInfo
+    // 
   };
 
   const handleTabPress = (tab) => {
@@ -21,14 +51,6 @@ export const FrienzyList = () => {
     navigation.navigate('NewFrienzyCreation');
   };
 
-  const filteredConversations = conversations.filter((conversation) => {
-    if (activeTab === 'Active') {
-      return conversation.isActive;
-    } else if (activeTab === 'Completed') {
-      return !conversation.isActive;
-    }
-    return true;
-  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -55,13 +77,13 @@ export const FrienzyList = () => {
       </View>
 
       <ScrollView contentContainerStyle={styles.frienzyCardsContainer}>
-        {filteredConversations.map((conversation) => (
+        {groupItems.map((groupItem) => (
           <TouchableOpacity
-            key={conversation.id}
+            key={groupItem.value}
             style={styles.frienzyContainer}
-            onPress={() => handleFrienzyPress(conversation.id)}
+            onPress={() => fetchGroupInfo(groupItem.value)}
           >
-            <Text style={styles.frienzyTitle}>{conversation.name}</Text>
+            <Text style={styles.frienzyTitle}>{groupItem.label}</Text>
             {/* Render other conversation details */}
           </TouchableOpacity>
         ))}

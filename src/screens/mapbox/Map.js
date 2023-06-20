@@ -37,7 +37,7 @@ Mapbox.setAccessToken(
 );
 // Mapbox?.setConnected(true);
 
-const Map = ({ navigation, route }) => {
+export const Map = ({ navigation, route }) => {
   const camera = useRef(null);
   const { height } = useWindowDimensions();
   const [loading, setLoading] = useState(false);
@@ -393,4 +393,3 @@ useEffect(() => {
   );
 };
 
-export default Map;

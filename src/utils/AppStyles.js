@@ -234,6 +234,7 @@ export const AppStyles = {
     paddingVertical: normalize(18.44),
     width: '100%',
     justifyContent: 'space-between',
+    padding: 15,
     alignItems: 'center',
   },
   contactImageContainer: {

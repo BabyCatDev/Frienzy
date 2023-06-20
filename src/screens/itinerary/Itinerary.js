@@ -7,7 +7,7 @@ import { createItineraryItem, getItineraryItemsForGroup } from '../../services/f
 import { Colors } from '../../utils/Colors';
 import { create } from 'lodash';
 
-const Itinerary = ({ navigation, route }) => {
+export const Itinerary = ({ navigation, route }) => {
   const { currentGroup } = route.params;
   const [itineraryItems, setItineraryItems] = useState([
     {
@@ -62,10 +62,6 @@ const Itinerary = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicon name="arrow-back" size={24} color="black" />
-        </TouchableOpacity>
-        <Text style={styles.title}>Itinerary</Text>
         <TouchableOpacity onPress={() =>
     navigation.navigate('CreateItineraryItem', { onItemCreate: onItemCreate, currentGroup: currentGroup })
   }
@@ -102,12 +98,11 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     paddingHorizontal: 16,
     paddingTop: 12,
     paddingBottom: 8,
-    marginTop: 50,
+    // marginTop: 50,
     borderRadius: 8,
     backgroundColor: 'white',
   },
@@ -162,4 +157,3 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Itinerary;

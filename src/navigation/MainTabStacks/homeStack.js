@@ -1,9 +1,9 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 // importing screens >>>>
-import Map from "../../screens/mapbox/Map";
+import { Map } from "../../screens/mapbox/Map";
 import ContactList from "../../screens/contactList";
-import Itinerary from "../../screens/itinerary/Itinerary";
+import { Itinerary } from "../../screens/itinerary/Itinerary";
 import CreateItineraryItem from "../../screens/itinerary/createItineraryItem";
 const HomeStack = createNativeStackNavigator();
 

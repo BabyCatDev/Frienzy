@@ -3,13 +3,29 @@ import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 
 export const conversationListener = (listener, groupsIDS) => {
-  firestore()
-    .collection('groups')
-    .where('id', 'in', groupsIDS)
-    .orderBy('modifiedAt', 'desc')
-    .onSnapshot((res) => {
-      return listener(res);
-    });
+  const chunkSize = 10; // Maximum number of elements per query
+  const chunks = [];
+
+  // Divide the groupsIDS array into smaller chunks
+  for (let i = 0; i < groupsIDS.length; i += chunkSize) {
+    chunks.push(groupsIDS.slice(i, i + chunkSize));
+  }
+
+  // Perform multiple queries for each chunk of group IDs
+  const unsubscribeCallbacks = chunks.map((chunk) => {
+    return firestore()
+      .collection('groups')
+      .where('id', 'in', chunk)
+      .orderBy('modifiedAt', 'desc')
+      .onSnapshot((res) => {
+        return listener(res);
+      });
+  });
+
+  // Return an array of unsubscribe functions
+  return () => {
+    unsubscribeCallbacks.forEach((unsubscribe) => unsubscribe());
+  };
 };
 
 export const threadListener = (listener, threadId) => {
@@ -52,7 +68,7 @@ export const sendMessage = async (messageDetails, threadId) => {
     });
 };
 
-export const createNewGroup = async ({ name, pic, startDate, endDate, members, message = null }) => {
+export const createNewGroup = async ({ name, pic, startDate, endDate, description, location, members, message = null }) => {
   const currentId = auth().currentUser.uid;
   const time = firestore.FieldValue.serverTimestamp();
 
@@ -75,6 +91,10 @@ export const createNewGroup = async ({ name, pic, startDate, endDate, members, m
     .add({
       name: name,
       members: [...members, currentId],
+      startDate: startDate,
+      endDate: endDate,
+      description: description,
+      location: location,
       createdBy: currentId,
       createdAt: time,
       modifiedAt: time,
