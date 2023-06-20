@@ -27,7 +27,7 @@ export const FrienzyList = () => {
   }, []);
 
   const handleFrienzyPress = (frienzyId) => {
-    
+
     navigation.push('GroupThread', { threadId: frienzyId });
 
   };
@@ -46,7 +46,7 @@ export const FrienzyList = () => {
   const handleTabPress = (tab) => {
     setActiveTab(tab);
   };
- 
+
   const handleAddButtonPressed = () => {
     navigation.navigate('NewFrienzyCreation');
   };
@@ -56,7 +56,7 @@ export const FrienzyList = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Frienzy</Text>
-        <TouchableOpacity style={styles.profileButton} onPress={() => {navigation.navigate("UserProfile")}}>
+        <TouchableOpacity style={styles.profileButton} onPress={() => { navigation.navigate("UserProfile") }}>
           <Ionicon name="person-circle" size={32} color="black" />
         </TouchableOpacity>
       </View>
@@ -88,10 +88,9 @@ export const FrienzyList = () => {
           </TouchableOpacity>
         ))}
       </ScrollView>
-
-      <TouchableOpacity style={styles.addButton} onPress={() => handleAddButtonPressed()}>
-        <Ionicon name="add-circle" size={64} color="#FB5F2D" />
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.addButton} onPress={() => handleAddButtonPressed()}>
+          <Ionicon name="add-circle" size={64} color="#FB5F2D" />
+        </TouchableOpacity>
     </SafeAreaView>
   );
 };
