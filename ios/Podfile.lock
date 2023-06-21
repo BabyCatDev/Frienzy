@@ -1021,7 +1021,7 @@ PODS:
     - React-Core
   - react-native-geolocation (3.0.6):
     - React-Core
-  - react-native-image-picker (4.10.2):
+  - react-native-image-picker (4.10.3):
     - React-Core
   - react-native-onesignal (4.5.1):
     - OneSignalXCFramework (= 3.12.4)
@@ -1112,6 +1112,8 @@ PODS:
     - CocoaLumberjack (~> 3.7.2)
     - React-Core
   - RNCAsyncStorage (1.17.11):
+    - React-Core
+  - RNCClipboard (1.11.2):
     - React-Core
   - RNCMaskedView (0.2.8):
     - React-Core
@@ -1258,6 +1260,7 @@ DEPENDENCIES:
   - RNBackgroundFetch (from `../node_modules/react-native-background-fetch`)
   - RNBackgroundGeolocation (from `../node_modules/react-native-background-geolocation`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
+  - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
   - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
@@ -1415,6 +1418,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-background-geolocation"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
+  RNCClipboard:
+    :path: "../node_modules/@react-native-clipboard/clipboard"
   RNCMaskedView:
     :path: "../node_modules/@react-native-masked-view/masked-view"
   RNCPicker:
@@ -1513,7 +1518,7 @@ SPEC CHECKSUMS:
   react-native-contacts: 0aa99963d8f29099d4725cd0d2f8b6ef5f0d9a2d
   react-native-encrypted-storage: db300a3f2f0aba1e818417c1c0a6be549038deb7
   react-native-geolocation: 0f7fe8a4c2de477e278b0365cce27d089a8c5903
-  react-native-image-picker: bf34f3f516d139ed3e24c5f5a381a91819e349ea
+  react-native-image-picker: 60f4246eb5bb7187fc15638a8c1f13abd3820695
   react-native-onesignal: 7bd44dbd031d8d57110c0203836ffc37ddead526
   react-native-pager-view: 54bed894cecebe28cede54c01038d9d1e122de43
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
@@ -1535,6 +1540,7 @@ SPEC CHECKSUMS:
   RNBackgroundFetch: 642777e4e76435773c149d565a043d66f1781237
   RNBackgroundGeolocation: ef21c65ae80579fe06ce6f099fd186b74b44449c
   RNCAsyncStorage: 8616bd5a58af409453ea4e1b246521bb76578d60
+  RNCClipboard: 3f0451a8100393908bea5c5c5b16f96d45f30bfc
   RNCMaskedView: bc0170f389056201c82a55e242e5d90070e18e5a
   RNCPicker: 567de6dc0c6735cf249700d940c80b90b090e4db
   RNDateTimePicker: 7ecd54a97fc3749f38c3c89a171f6cbd52f3c142
@@ -1561,4 +1567,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: a6f9c9b85522cc488b8d4b6ea5dff358a2384824
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.1
