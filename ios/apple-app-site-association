@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+      "appID": "2T9STP6L28.com.frienzy-app",
+      "paths": [ "/*","/invite/*" ]
+      }
+    ]
+  }
+}
