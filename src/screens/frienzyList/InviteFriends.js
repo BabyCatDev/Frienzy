@@ -103,7 +103,7 @@ export const InviteFriends = ({ route }) => {
   };
 
   const handleCopyLink = () => {
-    const invitationLink = `https://www.frienzy.io/#${newFbGroupRef.id}`; // Replace with your actual invitation link
+    const invitationLink = `https://www.frienzy.io/invite/#${newFbGroupRef.id}`; // Replace with your actual invitation link
     Clipboard.setString(invitationLink);
     console.log('Invitation link copied to clipboard:', invitationLink);
   

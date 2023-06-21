@@ -20,7 +20,7 @@ export const sendInviteSMSToUsers = async (senderUser, groupId, toUsers) => {
       const message = `Dear ${toUser.name},\n` +
       `You are invited to be ${senderUser}'s friend on Frienzy, an app for group travel planning.\n` +
       `Please use this link to accept the invitation.\n` +
-      `https://www.frienzy.io/#${groupId}\n` +
+      `https://www.frienzy.io/invite/#${groupId}\n` +
       `Regards`;
       
       return axios.post(`https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`, qs.stringify({
