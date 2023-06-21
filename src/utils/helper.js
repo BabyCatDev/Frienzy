@@ -7,12 +7,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getUserById, getUserByPhone, getUsersByPhoneList } from '../services/firebase/user';
 
 export const getMobileNumber = (item) => {
+  let number = "";
   if (item?.phoneNumbers?.length == 1) {
-    return item?.phoneNumbers[0]?.number;
+    number = item?.phoneNumbers[0]?.number;
   } else {
     const mobile = item?.phoneNumbers.find((b) => b.label === 'mobile');
-    return mobile?.number ?? item?.phoneNumbers[0]?.number;
-  }
+    number = mobile?.number ?? item?.phoneNumbers[0]?.number;
+  }  
+  const num = number.replace(/\D/g, '');
+  return num.length == 11 ? `+${num}` : `+1${num}`;
 };
 
 export async function getContacts(
