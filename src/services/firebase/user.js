@@ -96,7 +96,8 @@ export const getGroupsForUser = async (groups) => {
     const groupsData = [];
     for (const group of groups) {
       const temp = await firestore().collection('groups').doc(group).get();
-      groupsData.push(temp.data());
+      if (temp.data() !== undefined)
+        groupsData.push(temp.data());
     }
     return groupsData;
   } catch (e) {
@@ -124,7 +125,7 @@ export const getAllMembersInUsersGroups = async (groupsIds, userId) => {
     const friends = [];
     for (const groupId of groupsIds) {
       const groupData = await firestore().collection('groups').doc(groupId).get();
-      const mems = groupData.data().members;
+      const mems = groupData.data()?.members??[];
       for (const mem of mems) {
         friends.indexOf(mem) === -1 && friends.push(mem);
       }

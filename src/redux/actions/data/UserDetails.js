@@ -81,7 +81,7 @@ export const getUserFriends = (userDetails) => async (dispatch) => {
   const friends = [];
   for (const groupId of userDetails.groups) {
     const groupData = await firestore().collection('groups').doc(groupId).get();
-    const mems = groupData.data().members;
+    const mems = groupData.data()?.members??[];
     for (const mem of mems) {
       friends.indexOf(mem) === -1 && friends.push(mem);
     }
