@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Pressable, Image } from 'react-native';
+import Toast from 'react-native-toast-message';
 import ImagePicker from 'react-native-image-picker';
 import { getPhoto } from '../../services/helpers/photoPicker';
 import { selectImage } from '../../services/helpers/selectImage';
@@ -49,7 +50,33 @@ export const NewFrienzyCreation = ({ navigation }) => {
         hideEndDatePicker();
     };
 
+    const isValidInputs = () => {
+        if (
+            photo == null ||
+            title === '' ||
+            location === '' ||
+            description === '' ||
+            startDate === null ||
+            endDate === null
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
     const handleNext = () => {
+        if (!isValidInputs()) {
+            // Show an error toast message 
+            Toast.show({
+                type: 'error',
+                text1: 'Please input all the fields',
+                visibilityTime: 2000, // Adjust the duration as per your preference
+                autoHide: true,
+            });
+            return;
+        }
+
         navigation.navigate('InviteFriendsScreen', {
             photo: photo,
             title,

@@ -1,38 +1,45 @@
 {
   "project_info": {
-    "project_number": "265603284892",
-    "firebase_url": "https://socialnav-15470-default-rtdb.firebaseio.com",
-    "project_id": "socialnav-15470",
-    "storage_bucket": "socialnav-15470.appspot.com"
+    "project_number": "855597315261",
+    "project_id": "frienzy-firestore",
+    "storage_bucket": "frienzy-firestore.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:265603284892:android:c8fbf5063a53a2db0f9259",
+        "mobilesdk_app_id": "1:855597315261:android:e422a37641e0a7783673d4",
         "android_client_info": {
           "package_name": "com.frienzy.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "265603284892-d5hqslahepql9hjob2o5div3qeln2r2v.apps.googleusercontent.com",
+          "client_id": "855597315261-junhbs5ofp3p4juechbq8uo2409rijhm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.frienzy.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "855597315261-l1bnd28kgsla98925i495mpaqutu9o53.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCxQtnEnO7M_4R3WIna4IW4f8rfSSlm1Dc"
+          "current_key": "AIzaSyB6Zhhw2-akT_l7JRJkPFvwARmVebPoxi8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "265603284892-d5hqslahepql9hjob2o5div3qeln2r2v.apps.googleusercontent.com",
+              "client_id": "855597315261-l1bnd28kgsla98925i495mpaqutu9o53.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "265603284892-15vk6u2ilgiqtsq52gkdaaedvh40lssh.apps.googleusercontent.com",
+              "client_id": "855597315261-n4pmi36dhl9q8gf7dv12plap50413sjq.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "com.frienzy-app"

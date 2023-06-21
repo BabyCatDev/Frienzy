@@ -7,7 +7,7 @@ import SearchField from '../../components/SearchField';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
 import normalize from 'react-native-normalize';
-import FriendListItem from './FriendListItem';
+import { FriendListItem } from './FriendListItem';
 import { getAllMembersInUsersGroups, getFriendsForUser } from '../../services/firebase/user';
 import { AppStyles } from '../../utils/AppStyles';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -83,7 +83,7 @@ const MyFriends = ({ navigation, setSelectedFriends, selectedFriends, isSelectin
           <FriendListItem
             item={item}
             index={index}
-            onPress={({ itemClicked }) => console.log(itemClicked)}
+            onPressHandler={({ itemClicked }) => console.log(itemClicked)}
           />
         )}
         ListEmptyComponent={

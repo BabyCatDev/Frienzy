@@ -10,6 +10,7 @@ import FGLocationRetriever from '../../services/FGLocationRetriever';
 import { getMobileNumber } from '../../utils/helper';
 
 const ContactItem = ({ item, onPress, index, check }) => {
+  console.log("item", item);
   const getInitials = (name, surname) => {
     const fullName = name + ' ' + surname;
     return fullName

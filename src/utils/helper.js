@@ -39,7 +39,7 @@ export async function getContacts(
       Contacts.getAll()
         .then(async (contacts) => {
           //await setSelectedContacts(selectedContactListPreload, setSelectedContactList, contacts);
-          setContactsList(contacts.sort(SortArray));
+          setContactList(contacts.sort(SortArray));
           storeObject('contacts', contacts);
         })
         .catch((e) => {
@@ -58,6 +58,7 @@ export async function getContacts(
 
       for (let contact of contacts) {
         const num = contact.phoneNumbers[0].number.replace(/\D/g, '');
+        console.log(contact, "contact")
         const numWithCC = num.length == 11 ? `+${num}` : `+1${num}`;
         const user = await getUserByPhone(numWithCC);
         if (user == null) {

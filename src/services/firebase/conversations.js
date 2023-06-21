@@ -67,10 +67,17 @@ export const sendMessage = async (messageDetails, threadId) => {
       },
     });
 };
-
-export const createNewGroup = async ({ name, pic, startDate, endDate, description, location, members, message = null }) => {
+export const getPreDefinedGroup = () => {
+  return firestore()
+    .collection('groups')
+    .doc();
+}
+export const createNewGroup = async ({ group, name, pic, startDate, endDate, description, location, members, message = null }) => {
   const currentId = auth().currentUser.uid;
   const time = firestore.FieldValue.serverTimestamp();
+
+  if (group === null)
+    group = getPreDefinedGroup();
 
   var messageToAdd = {};
 
@@ -86,9 +93,8 @@ export const createNewGroup = async ({ name, pic, startDate, endDate, descriptio
     messageToAdd.readBy = {};
   }
 
-  const group = await firestore()
-    .collection('groups')
-    .add({
+  await group
+    .set({
       name: name,
       members: [...members, currentId],
       startDate: startDate,
