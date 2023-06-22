@@ -18,7 +18,7 @@ export const sendInviteSMSToUsers = async (senderUser, groupId, toUsers) => {
   return Promise.all(
     toUsers.map(async (toUser) => {
       const message = `Dear ${toUser.name},\n` +
-      `You are invited to be ${senderUser}'s friend on Frienzy, an app for group travel planning.\n` +
+      `You are invited to ${senderUser}'s group on Frienzy, an app for group travel planning.\n` +
       `Please use this link to accept the invitation.\n` +
       `https://www.frienzy.io/invite/#${groupId}\n` +
       `Regards`;

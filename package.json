@@ -11,7 +11,8 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "type-check": "tsc"
+    "type-check": "tsc",
+    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^4.4.5",

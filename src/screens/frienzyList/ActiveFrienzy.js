@@ -36,7 +36,10 @@ export const ActiveFrienzy = ({ navigation, route }) => {
           </View>
           <View style={styles.tabContent}>
             <Tab.Navigator>
-              <Tab.Screen name="Photos" component={PhotosTab} />
+              <Tab.Screen 
+              name="Photos" 
+              component={PhotosTab} 
+              initialParams={{ currentGroup: groupInfo.id }}/>
               <Tab.Screen
                 name="Itinerary"
                 component={Itinerary}

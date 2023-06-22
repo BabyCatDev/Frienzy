@@ -52,6 +52,7 @@
 		B01174993BB64603B02EC22C /* NewOrder-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = F9B4362CA4654CA58B5577D7 /* NewOrder-Medium.otf */; };
 		BB2EF4D9C9924AB497350D69 /* NewOrder-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2B0070E71440418BA7E7021A /* NewOrder-Bold.otf */; };
 		BEB212DC7D0C4CA39A3366BF /* Poppins-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D5A3760DDE394209B019C494 /* Poppins-SemiBold.ttf */; };
+		BFA2019C2A4381840067DF8A /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 008F07F21AC5B25A0029DE68 /* main.jsbundle */; };
 		C9BD002504184155977DDCD2 /* NewOrder-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = E335F3566E9F4AA3B7E643A2 /* NewOrder-SemiBold.otf */; };
 		CD73D7DB314E440384D58255 /* Roboto-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C69C21CF2A2848D59FE84635 /* Roboto-MediumItalic.ttf */; };
 		DB0BCB6729D3146B0097DBFC /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0BCB6629D3146B0097DBFC /* RNBackgroundFetch+AppDelegate.m */; };
@@ -393,6 +394,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFA2019C2A4381840067DF8A /* main.jsbundle in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				363D3E4629FC90D500C4664F /* Zocial.ttf in Resources */,
 				363D3E3D29FC90D500C4664F /* Entypo.ttf in Resources */,
