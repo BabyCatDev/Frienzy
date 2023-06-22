@@ -31,7 +31,7 @@ Mapbox.setAccessToken(
 );
 // Mapbox?.setConnected(true);
 
-export const Map = ({ navigation, route }) => {
+export const Map = ({ navigation, params, route }) => {
   const camera = useRef(null);
   const { height } = useWindowDimensions();
   const [loading, setLoading] = useState(false);
@@ -41,14 +41,17 @@ export const Map = ({ navigation, route }) => {
   const [visible, setVisible] = useState(false);
   const [userToPush, setUserToPush] = useState('');
   const [usersLocations, setUsersLocations] = useState([]);
-  const [currentGroup, setCurrentGroup] = useState('');
+  const [currentGroup, setCurrentGroup] = useState(route.params.currentGroup);
   const [selectedGroup, setSelectedGroup] = useState('');
   const [selectedItem, setSelectedItem] = useState('');
   const [groupDetails, setGroupDetails] = useState({});
   const [isCameraAdjusted, setIsCameraAdjusted] = useState(false);
   const [itineraryItems, setItineraryItems] = useState([]);
 
-  console.log('users', users);
+  // const { currentGroup } = route.params;
+  console.log('groupinfo.id', users);
+
+
 
   const getBoundingBoxCorners = (coordinates) => {
     console.log('Getting bounds for coords', coordinates);
@@ -227,61 +230,6 @@ useEffect(() => {
         bottom: 0,
       }}
     >
-      <LinearGradient
-        style={{
-          height: height * 0.12,
-          width: '100%',
-          paddingTop: height * 0.055,
-          paddingHorizontal: 20,
-          overflow: 'visible',
-          zIndex: 2,
-        }}
-        colors={Colors.backgroundGradient}
-      >
-        <Header
-          onPressLeft={requestLocation}
-          leftIcon={() => <Ionicon name={'locate-outline'} size={normalize(25)} color={'white'} />}
-          rightIcon={currentGroup ? () => <Ionicon name={'calendar-outline'} size={normalize(25)} color={'white'} /> : null}
-          onPressRight={() => navigation.navigate('Itinerary', { currentGroup: currentGroup })}
-          title={
-            <View
-              style={{
-                flex: 1,
-                marginLeft: 200,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Text
-                style={{
-                  marginBottom: 15,
-                  color: 'white',
-                  fontWeight: 'bold',
-                  fontSize: normalize(28),
-                }}
-              >
-                Frienzy
-              </Text>
-              {/* <AssetImage
-                asset={Assets.logo}
-                width={normalize(40)}
-                height={normalize(30)}
-                style={{ marginLeft: 15 }}
-              /> */}
-            </View>
-          }
-          navigation={navigation}
-          headerButton
-          headerValue={currentGroup}
-          setHeaderValue={(value) => handleGroupSelection(value)}
-          noBackButton
-          containerStyle={{
-            overflow: 'visible',
-            alignItems: 'center',
-          }}
-        />
-      </LinearGradient>
       <View style={{ height: height * 0.88, width: '100%', zIndex: 1 }}>
         <Mapbox.MapView
           style={{ width: '100%', height: '100%' }}
