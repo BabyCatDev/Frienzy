@@ -68,18 +68,6 @@ const UserProfile = ({ navigation }) => {
     dispatch(setLocationEnabled(!enabled));
   };
 
-  // const [locationSharing, setLocationSharing] = useState(
-  //   FGLocationRetriever.getInstance().locationTrackingOn
-  // );
-
-  // useEffect(() => {
-  //   if (locationSharing) {
-  //     FGLocationRetriever.getInstance().startLocationTracking();
-  //   } else {
-  //     FGLocationRetriever.getInstance().stopLocationTracking();
-  //   }
-  // }, [locationSharing]);
-
   const onDeleteAccount = async () => {
     try {
       await AuthProvider.logoutUser();

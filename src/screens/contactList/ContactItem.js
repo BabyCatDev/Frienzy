@@ -6,7 +6,7 @@ import Assets from '../../assets';
 import { AssetImage } from '../../assets/asset_image';
 import normalize from 'react-native-normalize';
 import LinearGradient from 'react-native-linear-gradient';
-import FGLocationRetriever from '../../services/FGLocationRetriever';
+
 import { getMobileNumber } from '../../utils/helper';
 
 const ContactItem = ({ item, onPress, index, check }) => {
@@ -22,14 +22,7 @@ const ContactItem = ({ item, onPress, index, check }) => {
     <Pressable
       onPress={() => {
         onPress({ item: item, state: !check });
-        // if (check) {
-        //   FGLocationRetriever.getInstance().removePhoneToTrack(
-        //     getMobileNumber(item)
-        //   );
-        //   FGLocationRetriever.getInstance().disallowPhoneToTrackMe(
-        //     getMobileNumber(item)
-        //   );
-        // }
+     
       }}
       style={{
         ...AppStyles.contactItem,

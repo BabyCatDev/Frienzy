@@ -82,11 +82,6 @@ const AlarmOverlay = ({ setVisible, usersToPush, setAlarmDisabled }) => {
           onPress={async () => {
             await Promise.all(
               usersToPush.map((user) => {
-                // FGLocationRetriever.getInstance().sendNotiffication(
-                //   user?.phone,
-                //   name,
-                //   "Help me ASAP"
-                // );
               })
             );
             FBSaver.getInstance().updateAlarm(true);

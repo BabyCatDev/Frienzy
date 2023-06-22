@@ -7,7 +7,6 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { ToastConfig } from './src/components/toastConfig';
 import { StatusBar } from 'react-native';
 import AuthProvider from './src/utils/AuthProvider';
-import FGLocationRetriever from './src/services/FGLocationRetriever';
 import { QueryClientProvider, QueryClient } from 'react-query';
 //import OneSignal from 'react-native-onesignal';
 import FBSaver from './src/services/FBSaver';

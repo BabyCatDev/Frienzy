@@ -18,7 +18,6 @@ import SearchField from '../../components/SearchField';
 import ContactItem from './ContactItem';
 import { MainButton } from '../../components/MainButton';
 
-import FGLocationRetriever from '../../services/FGLocationRetriever';
 import Animated, {
   useSharedValue,
   useAnimatedScrollHandler,
@@ -237,12 +236,7 @@ const ContactList = ({ navigation }) => {
                 style={{ backgroundColor: 'green', padding: 10 }}
                 onPress={() => {
                   if (!selectedContactList[selectedContact.recordID] == true) {
-                    // FGLocationRetriever.getInstance().addPhoneToTrack(
-                    //   getMobileNumber(selectedContact)
-                    // );
-                    // FGLocationRetriever.getInstance().allowPhoneToTrackMe(
-                    //   getMobileNumber(selectedContact)
-                    // );
+                 
                   }
                   toggleModal();
                   sharePressed();
