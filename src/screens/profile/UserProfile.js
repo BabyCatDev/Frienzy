@@ -12,14 +12,13 @@ import normalize from 'react-native-normalize';
 import { Colors } from '../../utils/Colors';
 import { AppStyles } from '../../utils/AppStyles';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Avatar } from '../../components/Avatar';
-import { Header } from '../../components/Header';
+import { Avatar } from '../../components/profile/Avatar';
+import { Header } from '../../components/utils/Header';
 import { ProfileRow } from './ProfileRow';
 import AuthProvider from '../../utils/AuthProvider';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { useDispatch, useSelector } from 'react-redux';
-import FGLocationRetriever from '../../services/FGLocationRetriever';
 import QrOverlay from './QrOverlay';
 import FBSaver from '../../services/FBSaver';
 import { removeValue } from '../../utils/AsyncStore';
@@ -71,7 +70,7 @@ const UserProfile = ({ navigation }) => {
   const onDeleteAccount = async () => {
     try {
       await AuthProvider.logoutUser();
-      // FGLocationRetriever.getInstance().reset();
+
       await FBSaver.getInstance().reset();
       await removeValue('image');
       await removeValue('alarm');

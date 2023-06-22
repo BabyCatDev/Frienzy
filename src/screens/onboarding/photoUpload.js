@@ -14,7 +14,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { MainButton } from '../../components/MainButton';
+import { MainButton } from '../../components/utils/MainButton';
 import Toast from 'react-native-toast-message';
 import { AppStyles } from '../../utils/AppStyles';
 import { storeObject } from '../../utils/AsyncStore';

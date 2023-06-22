@@ -8,15 +8,15 @@ import {
   Text,
   Platform,
 } from "react-native";
-import { AssetImage } from "../assets/asset_image";
-import Assets from "../assets";
+import { AssetImage } from "../../assets/asset_image";
+import Assets from "../../assets";
 import normalize from "react-native-normalize";
 import { launchImageLibrary } from "react-native-image-picker";
 import Toast from "react-native-toast-message";
-import { Sizes } from "../utils/AppConstants";
-import { AppStyles } from "../utils/AppStyles";
-import { storeObject, getObject } from "../utils/AsyncStore";
-import FBSaver from "../services/FBSaver";
+import { Sizes } from "../../utils/AppConstants";
+import { AppStyles } from "../../utils/AppStyles";
+import { storeObject, getObject } from "../../utils/AsyncStore";
+import FBSaver from "../../services/FBSaver";
 
 export const Avatar = ({ username, profilePic, setProfilePic, isGroup=false }) => {
   const [response, setResponse] = useState(null);

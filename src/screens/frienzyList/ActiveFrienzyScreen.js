@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { Itinerary } from '../../screens/itinerary/Itinerary';
-import { Map } from '../../screens/mapbox/Map';
+import { Itinerary } from '../itinerary/Itinerary';
+import { Map } from '../mapbox/Map';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 // Placeholder components for the three tabs
 const PhotosTab = () => (

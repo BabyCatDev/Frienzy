@@ -1,7 +1,7 @@
 import React from "react";
 import LinearGradient from "react-native-linear-gradient";
-import { Colors } from "../utils/Colors";
-import { AppStyles } from "../utils/AppStyles";
+import { Colors } from "../../utils/Colors";
+import { AppStyles } from "../../utils/AppStyles";
 import {
   Text,
   Pressable,

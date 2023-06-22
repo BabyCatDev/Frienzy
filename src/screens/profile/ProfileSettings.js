@@ -4,7 +4,7 @@ import React, { useState, useDispatch, useEffect, useMemo } from 'react';
 import { View, Text, useWindowDimensions, Platform, TextInput } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors } from '../../utils/Colors';
-import { Header } from '../../components/Header';
+import { Header } from '../../components/utils/Header';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { AppStyles } from '../../utils/AppStyles';
 import normalize from 'react-native-normalize';

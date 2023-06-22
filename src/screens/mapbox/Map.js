@@ -9,23 +9,17 @@ import {
   Platform,
 } from 'react-native';
 import Mapbox from '@rnmapbox/maps';
-import { Header } from '../../components/Header';
-import { AssetImage } from '../../assets/asset_image';
-import Assets from '../../assets';
+import { Header } from '../../components/utils/Header';
 import normalize from 'react-native-normalize';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors } from '../../utils/Colors';
 import GetLocation, { LocationError } from 'react-native-get-location';
-import edcOverlayData from '../../assets/EDC.json'
 import OverlayScreen from './OverlayScreen';
-import AlarmOverlay from './AlarmOverlay';
-import CacheImage from '../../utils/CacheImage';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { saveUserLocation } from '../../services/location/geolocation';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import { getItineraryItemsForGroup } from '../../services/firebase/itineraryService';
-import { useSelector } from 'react-redux'
 import FriendMarker from './FriendMarker';
 import { getGroupById } from '../../services/firebase/conversations';
 import { set } from 'lodash';
@@ -300,30 +294,6 @@ useEffect(() => {
             centerCoordinate={location}
             animationDuration={1000}
           />
-          <Mapbox.ShapeSource id="coachellaOverlay" shape={edcOverlayData}>
-            <Mapbox.FillLayer
-              id="coachellaOverlayFill"
-              style={{ fillColor: '#ff6600', fillOpacity: 0.5 }}
-            />
-            <Mapbox.LineLayer
-              id="coachellaOverlayLine"
-              style={{ lineColor: '#ff6600', lineWidth: 2 }}
-            />
-            <Mapbox.SymbolLayer
-              id="coachellaOverlaySymbol"
-              style={{
-                textField: ['get', 'stageName'],
-                textSize: 8,
-                textOffset: [0, 1],
-                textJustify: 'center',
-                textAnchor: 'center',
-                textFont: ['Open Sans Bold'],
-                textPadding: 5,
-                textAllowOverlap: true,
-                textIgnorePlacement: true,
-              }}
-            />
-          </Mapbox.ShapeSource>
 
           {users.length > 0
             ? users.map((user, index) => (

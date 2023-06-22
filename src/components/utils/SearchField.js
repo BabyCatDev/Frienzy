@@ -1,9 +1,9 @@
 import React from "react";
 import { View, TextInput } from "react-native";
-import { Colors } from "../utils/Colors";
-import { AppStyles } from "../utils/AppStyles";
-import Assets from "../assets";
-import { AssetImage } from "../assets/asset_image";
+import { Colors } from "../../utils/Colors";
+import { AppStyles } from "../../utils/AppStyles";
+import Assets from "../../assets";
+import { AssetImage } from "../../assets/asset_image";
 import normalize from "react-native-normalize";
 
 const SearchField = ({ search, setSearch, containerStyle }) => {

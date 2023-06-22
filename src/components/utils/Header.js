@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import normalize from 'react-native-normalize';
-import { AppStyles } from '../utils/AppStyles';
+import { AppStyles } from '../../utils/AppStyles';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useSelector } from 'react-redux';
-import { getGroupsForUser } from '../services/firebase/user';
+import { getGroupsForUser } from '../../services/firebase/user';
 
 export const Header = ({
   title,

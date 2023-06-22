@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors } from '../../utils/Colors';
-import { MainButton } from '../../components/MainButton';
+import { MainButton } from '../../components/utils/MainButton';
 import { AppStyles } from '../../utils/AppStyles';
 import { useDispatch } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';

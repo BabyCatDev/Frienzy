@@ -1,8 +1,8 @@
 import React from "react";
 import { Platform, View, Text } from "react-native";
-import Assets from "../assets";
-import { AssetImage } from "../assets/asset_image";
-import { Colors } from "../utils/AppConstants";
+import Assets from "../../assets";
+import { AssetImage } from "../../assets/asset_image";
+import { Colors } from "../../utils/AppConstants";
 
 export const ToastConfig = {
   success: ({ props }) => (

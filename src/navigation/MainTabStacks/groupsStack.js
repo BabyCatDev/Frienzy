@@ -2,19 +2,103 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // importing screens >>>>
 import ContactList from '../../screens/contactList';
-import GroupsList from '../../screens/groups/GroupList';
 import GroupThread from '../../screens/groups/GroupThread';
-import { FrienzyList }  from '../../screens/frienzyList/frienzyList';
-import { NewFrienzyCreation } from '../../screens/frienzyList/NewFrienzyCreation';
-import { InviteFriends } from '../../screens/frienzyList/InviteFriends';
+import { FrienzyList }  from '../../screens/frienzyList/FrienzyListScreen';
+import { NewFrienzyCreation } from '../../screens/frienzyList/CreateFrienzyScreen';
+import { InviteFriends } from '../../screens/frienzyList/InviteFriendsScreen';
 import userProfile from '../../screens/profile/UserProfile';
 import { useConversations } from '../../hooks/useConversations';
-import { ActiveFrienzy } from '../../screens/frienzyList/ActiveFrienzy';
+import { ActiveFrienzy } from '../../screens/frienzyList/ActiveFrienzyScreen';
+import BackgroundGeolocation from 'react-native-background-geolocation';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { saveUserLocation } from '../../services/location/geolocation';
 
 const GroupsStack = createNativeStackNavigator();
 
 const GroupsStackComponent = ({ navigation }) => {
   useConversations();
+  const enabled = useSelector((state) => state.FrienzyData.isEnabled);
+  const bigState = useSelector((state) => state.FrienzyData);
+  console.log(bigState)
+  //const [enabled, setEnabled] = useState(false);
+  const [location, setLocation] = useState('');
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    //   /// 1.  Subscribe to events.
+    const onLocation = BackgroundGeolocation.onLocation((event) => {
+      console.log('[onLocation]', event.coords);
+      const location = event.coords;
+      const time = event.timestamp;
+      saveUserLocation(location, time);
+    });
+
+    const onHeartbeat = BackgroundGeolocation.onHeartbeat((event) => {
+      console.log('[onHeartbeat]', event);
+      const location = event.location.coords;
+      const time = event.location.timestamp;
+      saveUserLocation(location, time);
+    });
+
+    const onMotionChange = BackgroundGeolocation.onMotionChange((event) => {
+      // const location = event.coords;
+      // const time = event.timestamp;
+      // saveUserLocation(location, time);
+      console.log('[onMotionChange]', event);
+    });
+
+    const onActivityChange = BackgroundGeolocation.onActivityChange((event) => {
+      console.log('[onActivityChange]', event);
+      // const location = event.coords; 
+      // const time = event.timestamp;
+      // saveUserLocation(event.location, event.time);
+    });
+
+    const onProviderChange = BackgroundGeolocation.onProviderChange((event) => {
+      console.log('[onProviderChange]', event);
+    });
+
+    /// 2. ready the plugin.
+    BackgroundGeolocation.ready({
+      desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
+      heartbeatInterval: 60,
+      preventSuspend: true,
+      stopTimeout: 5,
+      debug: false,
+      logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
+      stopOnTerminate: false,
+      startOnBoot: true,
+      batchSync: false,
+      autoSync: true,
+    }).then((state) => {
+      //setEnabled(state.enabled);
+      dispatch(setLocationEnabled(state.enabled));
+      console.log('- BackgroundGeolocation is configured and ready: ', state.enabled);
+    });
+
+    return () => {
+      // Remove BackgroundGeolocation event-subscribers when the View is removed or refreshed
+      // during development live-reload.  Without this, event-listeners will accumulate with
+      // each refresh during live-reload.
+      onLocation.remove();
+      onMotionChange.remove();
+      onActivityChange.remove();
+      onProviderChange.remove();
+      onHeartbeat.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log('Enabled', enabled);
+    if (enabled) {
+      BackgroundGeolocation.start();
+    } else {
+      BackgroundGeolocation.stop();
+      setLocation('');
+    }
+  }, [enabled]);
 
   return (
     <GroupsStack.Navigator>

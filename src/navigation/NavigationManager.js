@@ -4,8 +4,8 @@ import SplashScreen from '../screens/splash/SplashScreen';
 import { useDispatch, useSelector } from 'react-redux';
 import { userAuthStateListener } from '../redux/actions/data/UserDetails';
 import { NavigationContainer } from '@react-navigation/native';
-import { GetAuthComponents } from './AuthStack';
-import { GetMainAppComponents } from './MainStack';
+import { GetAuthComponents } from './AuthStack/AuthStack';
+import { GetMainAppComponents } from './MainStack/MainStack';
 import { GetOnboardingComponents } from './OnboardingStack';
 
 const linking = {

@@ -10,7 +10,6 @@ import {
 import { BlurView } from '@react-native-community/blur';
 import LinearGradient from 'react-native-linear-gradient';
 import normalize from 'react-native-normalize';
-import FGLocationRetriever from '../../services/FGLocationRetriever';
 import { storeObject } from '../../utils/AsyncStore';
 import FBSaver from '../../services/FBSaver';
 import { AssetImage } from '../../assets/asset_image';

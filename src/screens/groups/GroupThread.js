@@ -9,7 +9,7 @@ import { useGroupById, useThread } from '../../hooks/useThread';
 import { Colors } from '../../utils/Colors';
 import MessageCard from './MessageCard';
 import LinearGradient from 'react-native-linear-gradient';
-import { Header } from '../../components/Header';
+import { Header } from '../../components/utils/Header';
 import { sendMessage } from '../../services/firebase/conversations';
 import normalize from 'react-native-normalize';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
