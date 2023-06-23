@@ -3,7 +3,9 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert}
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Colors } from '../../utils/Colors';
-const CreateItineraryItem = ({ route, navigation }) => {
+
+
+export const CreateItineraryItem = ({ route, navigation }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [startTime, setStartTime] = useState(null);

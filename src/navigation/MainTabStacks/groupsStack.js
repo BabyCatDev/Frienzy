@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ContactList from '../../screens/contactList';
 import GroupThread from '../../screens/groups/GroupThread';
 import { FrienzyList }  from '../../screens/frienzyList/FrienzyListScreen';
+import { Itinerary } from '../../screens/itinerary/Itinerary';
 import { NewFrienzyCreation } from '../../screens/frienzyList/CreateFrienzyScreen';
 import { InviteFriends } from '../../screens/frienzyList/InviteFriendsScreen';
 import userProfile from '../../screens/profile/UserProfile';
@@ -13,6 +14,7 @@ import BackgroundGeolocation from 'react-native-background-geolocation';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveUserLocation } from '../../services/location/geolocation';
+import CreateItineraryItem from '../../screens/itinerary/createItineraryItem';
 
 const GroupsStack = createNativeStackNavigator();
 
@@ -122,6 +124,17 @@ const GroupsStackComponent = ({ navigation }) => {
         name="ActiveFrienzy"
         component={ActiveFrienzy}
       />
+      <GroupsStack.Screen
+        options={{ headerShown: false }}
+        name="Itinerary"
+        component={Itinerary}
+      />
+      <GroupsStack.Screen
+        options={{ headerShown: false }}
+        name="CreateItineraryItem"
+        component={CreateItineraryItem}
+      />
+      
       <GroupsStack.Screen
         options={{ headerShown: false }}
         name="UserProfile"
