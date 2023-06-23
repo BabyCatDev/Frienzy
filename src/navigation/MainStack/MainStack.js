@@ -1,7 +1,6 @@
 import React from 'react';
-import { MainAppTabs } from '../MainTabStacks/mainTabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import GroupsStackComponent from '../MainTabStacks/groupsStack';
+import GroupsStackComponent from '../MainTabStacks/frienzyStack';
 
 const Stack = createNativeStackNavigator();
 

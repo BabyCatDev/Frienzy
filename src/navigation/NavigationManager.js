@@ -6,7 +6,7 @@ import { userAuthStateListener } from '../redux/actions/data/UserDetails';
 import { NavigationContainer } from '@react-navigation/native';
 import { GetAuthComponents } from './AuthStack/AuthStack';
 import { GetMainAppComponents } from './MainStack/MainStack';
-import { GetOnboardingComponents } from './OnboardingStack';
+import { GetOnboardingComponents } from './AuthStack/OnboardingStack';
 
 const linking = {
   prefixes: ['frienzy://'],
