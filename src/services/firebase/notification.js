@@ -12,7 +12,7 @@ export const sendNotification = async ({
           'Content-Type': 'application/json',
         },
       }).then((response) => {
-        console.log(`SMS fcm notification successfully:`, tokens, response.data);
+        console.log(`SMS fcm notification successfully:`, response.data);
       }).catch((error) => {
         console.log(`Error sending fcm:`, error);
       });
