@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   activeTab: {
-    borderBottomColor: 'darkorange',
+    borderBottomColor: '#FB5F2D',
   },
   tabText: {
     fontSize: 16,
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   activeTabText: {
-    color: 'black',
+    color: '#FB5F2D',
   },
   frienzyCardsContainer: {
     paddingHorizontal: 16,

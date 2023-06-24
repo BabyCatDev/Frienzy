@@ -63,7 +63,7 @@ export const Header = ({
           }}
           onPress={() => navigation.canGoBack() && navigation.pop()}
         >
-          <Ionicon name={'chevron-back-outline'} size={normalize(20)} color={'black'} />
+          <Ionicon name={'arrow-back'} size={normalize(24)} color={'black'} />
         </Pressable>
       )}
       <View style={{ width: '71%', flexGrow: 1, zIndex: 100 }}>
@@ -120,9 +120,8 @@ export const Header = ({
             }}
           />
         ) : (
-          <Text style={{ ...AppStyles.semibold22, textAlign: 'center' }}>{title}</Text>
+          <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'black', textAlign: 'center' }}>{title}</Text>
         )}
-
         {friendsCounter && (
           <Text style={{ ...AppStyles.medium17, textAlign: 'center' }}>{friendsCounter}</Text>
         )}
