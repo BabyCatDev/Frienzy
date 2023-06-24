@@ -16,6 +16,7 @@ import { useFriends } from '../../hooks/useFriends';
 import { MainButton } from '../../components/utils/MainButton';
 import { sendInviteSMSToUsers } from '../../services/twillioService';
 import { getMobileNumber } from '../../utils/helper';
+import { sendNotification } from '../../services/firebase/notification';
 
 export const InviteFriends = ({ route }) => {
   const [query, setQuery] = useState('');
@@ -94,6 +95,18 @@ export const InviteFriends = ({ route }) => {
         newFbGroupRef.id,
         phoneNumbers
       );
+      /** notification part */
+      const fcmTokens = friends?.filter(
+        item => selectedFriends.includes(item.uid) && !!item["fcm_token"]
+      ).map(
+        item => item["fcm_token"]
+      );      
+      await sendNotification({
+        tokens: fcmTokens,
+        title: "Invitation from Frienzy",
+        message: `You are invited to ${userDetails.name}'s group on Frienzy, an app for group travel planning.\nPlease check your SMS inbox.`
+      });
+      /////
       setLoading(false);
       navigation.navigate('FrienzyList');
     } catch ( error ) {

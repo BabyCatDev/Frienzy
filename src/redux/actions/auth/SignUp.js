@@ -1,5 +1,6 @@
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import messaging from '@react-native-firebase/messaging';
 import { Alert } from 'react-native';
 
 export function signInUpAction(user) {
@@ -9,7 +10,7 @@ export function signInUpAction(user) {
   };
 }
 
-async function createFirebaseUser(user) {
+async function createFirebaseUser(user, token) {
   const newData = {
     phone: user.phoneNumber,
     uid: user.uid,
@@ -21,6 +22,7 @@ async function createFirebaseUser(user) {
     groups: [],
     profilePic: '',
     name: '',
+    fcm_token: token
   };
   await firestore().collection('users').doc(auth().currentUser.uid).set(newData);
 }
@@ -31,16 +33,20 @@ export function signInUpWithPhone(confirmFunc, code) {
       await confirmFunc.confirm(code).then(async (userIn) => {
         const additionalUserDetails = userIn.additionalUserInfo;
         const userData = userIn.user;
+        const token = await messaging().getToken();
 
         if (additionalUserDetails.isNewUser) {
           console.log('New User');
-          createFirebaseUser(userData);
+          createFirebaseUser(userData, token);
         } else {
           console.log('Existing User');
           await firestore()
             .collection('users')
             .doc(auth().currentUser.uid)
-            .update({ loggedIn: true });
+            .update({ 
+              fcm_token: token,
+              loggedIn: true,
+            });
         }
         await dispatch(signInUpAction(userData.uid));
       });

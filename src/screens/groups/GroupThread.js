@@ -19,6 +19,8 @@ import {
   useBottomSheetDynamicSnapPoints,
 } from '@gorhom/bottom-sheet';
 import SettingsModal from './SettingsModal';
+import { getFriendsForUser } from '../../services/firebase/user';
+import { sendNotification } from '../../services/firebase/notification';
 
 const GroupThread = ({ navigation, route }) => {
   const { threadId } = route.params;
@@ -29,6 +31,7 @@ const GroupThread = ({ navigation, route }) => {
 
   const { thread } = useThread(threadId);
   const { data: threadData, isLoading } = useGroupById(threadId);
+  const [members, setMembers] = useState([]);
 
   const userDetails = useSelector((state) => state.FrienzyAuth.userDetails);
 
@@ -53,6 +56,11 @@ const GroupThread = ({ navigation, route }) => {
     if (!threadData) return;
     if (!threadData.members.includes(auth().currentUser.uid)) {
       setLocked(true);
+    } else {      
+      const fIds = threadData.members.filter((e) => e != auth().currentUser.uid);
+      getFriendsForUser(fIds).then((data) => {
+        setMembers(data ?? []);
+      });
     }
   }, [threadData]);
 
@@ -78,6 +86,12 @@ const GroupThread = ({ navigation, route }) => {
     setLoading(true);
     setMessage(null);
     await sendMessage(newMessage, threadId, userDetails);
+    const tokens = members.filter((e) => !!e["fcm_token"]).map((e) => e["fcm_token"]);
+    await sendNotification({
+      tokens: tokens,
+      title: "New Message from Frienzy",
+      message: message
+    })
     setLoading(false);
   };
 

@@ -115,6 +115,7 @@ export const getFriendsForUser = async (friendsIDS) => {
     return friends;
   } catch (e) {
     console.log(e);
+    return null;
   }
 };
 

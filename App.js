@@ -10,6 +10,7 @@ import AuthProvider from './src/utils/AuthProvider';
 import { QueryClientProvider, QueryClient } from 'react-query';
 //import OneSignal from 'react-native-onesignal';
 import FBSaver from './src/services/FBSaver';
+import messaging from '@react-native-firebase/messaging';
 // OneSignal Initialization
 // OneSignal.setAppId('146aaecb-a485-4ccd-82b7-5f154569d9c8');
 
@@ -46,6 +47,17 @@ const queryClient = new QueryClient({
   },
 });
 
+async function requestUserPermission() {
+  const authStatus = await messaging().requestPermission();
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  if (enabled) {
+    console.log('Authorization status:', authStatus);
+  }
+}
+
 const App = () => {
   const fetchCredentials = async () => {
     const key = FBSaver.getInstance().userKey;
@@ -57,6 +69,8 @@ const App = () => {
     async function appStart() {
       FBSaver.getInstance().init();
       fetchCredentials();
+      await requestUserPermission();
+      await messaging().registerDeviceForRemoteMessages();
     }
     appStart();
   }, []);
