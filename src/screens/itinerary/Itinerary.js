@@ -61,14 +61,6 @@ export const Itinerary = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() =>
-    navigation.navigate('CreateItineraryItem', { onItemCreate: onItemCreate, currentGroup: currentGroup })
-  }
->
-          <Ionicon name="add" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
       <ScrollView style={styles.list}>
         {itineraryItems.map((item, index) => (
           <View key={index} style={styles.itemContainer}>
@@ -86,6 +78,9 @@ export const Itinerary = ({ navigation, route }) => {
           </View>
         ))}
       </ScrollView>
+      <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('CreateItineraryItem', { onItemCreate: onItemCreate, currentGroup: currentGroup })}>
+      <Ionicon name="add-circle" size={64} color="#FB5F2D" />
+    </TouchableOpacity>
     </View>
   );
 };
@@ -94,6 +89,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 5,
+    paddingTop: 0,
     backgroundColor: Colors.backgroundGradient[0], // Light blue background color
   },
   header: {
@@ -150,6 +146,12 @@ const styles = StyleSheet.create({
     marginBottom: 2,
     fontWeight: 'bold',
     color: '#000', // Black item location color
+  },
+  addButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    zIndex: 1, // Ensure the button is above the ScrollView
   },
   itemAddress: {
     fontSize: 12,
