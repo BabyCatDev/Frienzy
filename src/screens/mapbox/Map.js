@@ -233,7 +233,7 @@ useEffect(() => {
       <View style={{ height: height * 0.88, width: '100%', zIndex: 1 }}>
         <Mapbox.MapView
           style={{ width: '100%', height: '100%' }}
-          styleURL={'mapbox://styles/mapbox/dark-v11'}
+          styleURL={'mapbox://styles/mapbox/light-v11'}
         >
           <Mapbox.Camera
             ref={camera}

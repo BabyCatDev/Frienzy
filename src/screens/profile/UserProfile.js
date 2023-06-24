@@ -117,6 +117,10 @@ const UserProfile = ({ navigation }) => {
             navigation={navigation}
             title={'Profile'}
             noBackButton={true}
+            leftIcon={() => (
+              <Ionicon name={'arrow-back-outline'} size={normalize(20)} color={'black'} />
+            )}
+            onPressLeft={() => navigation.goBack()}
             onPressRight={() => navigation.navigate('Settings')}
             rightIcon={() => (
               <Ionicon name={'settings-outline'} size={normalize(20)} color={'white'} />

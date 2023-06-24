@@ -18,13 +18,13 @@ export const FrienzyList = () => {
     async function getUserGroups() {
       const tempDetails = await getGroupsForUser(userDetails.groups);
       const formattedData = tempDetails.map((td) => {
-        return { label: td.name, value: td.id };
+        return { label: td.name, value: td.id, description: td.description, members: td.members, startDate: td.startDate, endDate: td.endDate };
       });
       console.log('formatted data frienzyList', formattedData);
       setGroupItems(formattedData);
     }
     getUserGroups();
-  }, []);
+  }, [userDetails.groups]);
 
   const handleFrienzyPress = (frienzyId) => {
 
@@ -84,6 +84,7 @@ export const FrienzyList = () => {
             onPress={() => fetchGroupInfo(groupItem.value)}
           >
             <Text style={styles.frienzyTitle}>{groupItem.label}</Text>
+            <Text style={styles.frienzyDescription}>{groupItem.description}</Text>
             {/* Render other conversation details */}
           </TouchableOpacity>
         ))}
