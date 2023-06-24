@@ -111,7 +111,6 @@ export const CreateItineraryItem = ({ route, navigation }) => {
           value={title}
           onChangeText={setTitle}
         />
-        <Text>{currentGroup}</Text>
         <TextInput
           style={styles.input}
           placeholder="Description"
@@ -119,13 +118,13 @@ export const CreateItineraryItem = ({ route, navigation }) => {
           onChangeText={setDescription}
         />
         <TouchableOpacity style={styles.timePickerButton} onPress={() => setShowStartTimePicker(true)}>
-          <Text style={styles.timePickerButtonText}>{startTime ? `Start Time: ${startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : 'Select Start Time'}</Text>
+          <Text style={styles.title}>{startTime ? `Start Time: ${startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : 'Select Start Time'}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.timePickerButton} onPress={() => setShowEndTimePicker(true)}>
-          <Text style={styles.timePickerButtonText}>{endTime ? `End Time: ${endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : 'Select End Time'}</Text>
+          <Text style={styles.title}>{endTime ? `End Time: ${endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : 'Select End Time'}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.timePickerButton} onPress={() => setShowDatePicker(true)}>
-          <Text style={styles.timePickerButtonText}>{date ? `Date: ${date.toDateString()}` : 'Select Date'}</Text>
+          <Text style={styles.title}>{date ? `Date: ${date.toDateString()}` : 'Select Date'}</Text>
         </TouchableOpacity>
         <TextInput
           style={styles.input}
@@ -253,7 +252,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   addButton: {
-    backgroundColor: 'blue',
+    backgroundColor: '#FB5F2D',
     padding: 12,
     alignItems: 'center',
     borderRadius: 8,

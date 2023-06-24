@@ -92,7 +92,7 @@ export const NewFrienzyCreation = ({ navigation }) => {
             <Pressable style={styles.backButton} onPress={() => navigation.goBack()}>
                 <Ionicon name="arrow-back" size={24} color="black" />
             </Pressable>
-            <Text style={styles.headerText}>Add Title & Date</Text>
+            <Text style={styles.headerText}>Create Frienzy</Text>
             <View style={styles.photoContainer}>
                 {photo ? (
                     <Image source={{ uri: photo }} style={styles.photo} />
