@@ -4,6 +4,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { Itinerary } from '../itinerary/Itinerary';
 import { Map } from '../mapbox/Map';
 import Ionicon from 'react-native-vector-icons/Ionicons';
+import { TouchableOpacity } from '@gorhom/bottom-sheet';
 // Placeholder components for the three tabs
 const PhotosTab = () => (
     <View style={styles.tabContainer}>
@@ -20,6 +21,10 @@ export const ActiveFrienzy = ({ navigation, route }) => {
     return (
         <View style={styles.container}>
           <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicon name="arrow-back" size={24} color="black" />
+            </TouchableOpacity>
+            <View style={styles.titleContainer}>
             <View style={styles.headerText}>
               <Text style={styles.title}>{groupInfo.name}</Text>
               <Text style={styles.subtitle}>Start Date - End Date</Text>
@@ -33,6 +38,7 @@ export const ActiveFrienzy = ({ navigation, route }) => {
                 navigation.push('GroupThread', { threadId: groupInfo.id })
               }
             />
+          </View>
           </View>
           <View style={styles.tabContent}>
             <Tab.Navigator>
@@ -68,23 +74,31 @@ export const ActiveFrienzy = ({ navigation, route }) => {
         alignItems: 'center',
         justifyContent: 'space-between',
       },
+      backIcon: {
+        marginTop: 20,
+      },
       headerText: {
         flex: 1,
         marginRight: 10,
+        alignItems: 'center',
       },
       title: {
         fontSize: 18,
         fontWeight: 'bold',
         color: 'black',
-        marginTop: 20,
+        marginTop: 10,
       },
       subtitle: {
         fontSize: 14,
         color: 'gray',
       },
+      titleContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+      },
       chatIcon: {
-        marginLeft: 10,
-        marginTop: 20,
+        marginTop: 10,
       },
       tabContent: {
         flex: 1,

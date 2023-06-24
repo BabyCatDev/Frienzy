@@ -63,7 +63,7 @@ export const Header = ({
           }}
           onPress={() => navigation.canGoBack() && navigation.pop()}
         >
-          <Ionicon name={'chevron-back-outline'} size={normalize(20)} color={'white'} />
+          <Ionicon name={'chevron-back-outline'} size={normalize(20)} color={'black'} />
         </Pressable>
       )}
       <View style={{ width: '71%', flexGrow: 1, zIndex: 100 }}>
