@@ -36,7 +36,7 @@ export const sendInviteSMSToUsers = async (senderUser, groupId, toUsers) => {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
       }).then((response) => {
-        console.log(`SMS sent successfully to ${toUser.phone}:`, response.data);
+        console.log(`SMS sent successfully to ${toUser.phone}:`);
       }).catch((error) => {
         console.log(`Error sending SMS to ${toUser.phone}:`, error);
       });
