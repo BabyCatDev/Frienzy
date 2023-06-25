@@ -68,11 +68,11 @@ export const ActiveFrienzy = ({ navigation, route }) => {
             }}
           />
           <Tab.Screen
-            name="Map"
+            name="Friends"
             component={Map}
             initialParams={{ currentGroup: groupInfo.id }}
             options={{
-              tabBarLabel: 'Map',
+              tabBarLabel: 'Friends',
               tabBarStyle: { fontSize: 16, fontWeight: 'bold' },
             }}
           />
