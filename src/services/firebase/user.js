@@ -1,6 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import auth from '@react-native-firebase/auth';
+import messaging from '@react-native-firebase/messaging';
 
 export const createUser = async (authResult) => {
   const additionalUserDetails = authResult.additionalUserInfo;
@@ -137,3 +138,20 @@ export const getAllMembersInUsersGroups = async (groupsIds, userId) => {
     console.log(e);
   }
 };
+
+export const updateFcmToken = async () => {
+  try {
+    if (auth().currentUser == null)
+      return;
+    
+    const token = await messaging().getToken();
+    await firestore()
+      .collection('users')
+      .doc(auth().currentUser.uid)
+      .update({ 
+        fcm_token: token,
+      });
+  } catch (error) {
+    console.error(error);
+  }
+}

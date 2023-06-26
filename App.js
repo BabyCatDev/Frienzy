@@ -11,6 +11,7 @@ import { QueryClientProvider, QueryClient } from 'react-query';
 //import OneSignal from 'react-native-onesignal';
 import FBSaver from './src/services/FBSaver';
 import messaging from '@react-native-firebase/messaging';
+import { updateFcmToken } from './src/services/firebase/user';
 // OneSignal Initialization
 // OneSignal.setAppId('146aaecb-a485-4ccd-82b7-5f154569d9c8');
 
@@ -70,7 +71,7 @@ const App = () => {
       FBSaver.getInstance().init();
       fetchCredentials();
       await requestUserPermission();
-      await messaging().registerDeviceForRemoteMessages();
+      await updateFcmToken();
     }
     appStart();
   }, []);
