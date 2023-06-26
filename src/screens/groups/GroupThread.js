@@ -89,7 +89,7 @@ const GroupThread = ({ navigation, route }) => {
     const tokens = members.filter((e) => !!e["fcm_token"]).map((e) => e["fcm_token"]);
     await sendNotification({
       tokens: tokens,
-      title: "New Message from Frienzy",
+      title: `New Message in ${threadData.name} from ${userDetails.name}`,
       message: message
     })
     setLoading(false);
@@ -134,16 +134,12 @@ const GroupThread = ({ navigation, route }) => {
   };
 
   const renderComposer = (props) => {
-    return <Composer textInputStyle={{ color: 'white' }} {...props} />;
+    return <Composer textInputStyle={{ color: 'black' }} {...props} />;
   };
 
   const renderInputToolbar = (props) => {
     return <InputToolbar containerStyle={styles.messageContainer} {...props} />;
   };
-
-  // const onSend = useCallback(async (messages = []) => {
-  //     setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
-  // }, [])
 
   if (locked) {
     return (
@@ -280,7 +276,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#303030',
     marginRight: 5,
     borderRadius: 10,
-    color: 'white',
+    color: 'black',
   },
   sendBtnContainer: {
     borderRadius: 10,

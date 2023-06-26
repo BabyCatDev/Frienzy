@@ -40,9 +40,8 @@ export const Map = ({ navigation, params, route }) => {
   const [users, setUsers] = useState([]);
   const [visible, setVisible] = useState(false);
   const [userToPush, setUserToPush] = useState('');
-  const [usersLocations, setUsersLocations] = useState([]);
+  const [viewMode, setViewMode] = useState('map');
   const [currentGroup, setCurrentGroup] = useState(route.params.currentGroup);
-  const [selectedGroup, setSelectedGroup] = useState('');
   const [selectedItem, setSelectedItem] = useState('');
   const [groupDetails, setGroupDetails] = useState({});
   const [isCameraAdjusted, setIsCameraAdjusted] = useState(false);
@@ -52,6 +51,10 @@ export const Map = ({ navigation, params, route }) => {
   console.log('groupinfo.id', users);
 
 
+
+  const handleToggle = (mode) => {
+    setViewMode(mode);
+  };
 
   const getBoundingBoxCorners = (coordinates) => {
     console.log('Getting bounds for coords', coordinates);
@@ -175,13 +178,8 @@ useEffect(() => {
   }, []);
 
 
-  const handleGroupSelection = (group) => {
-    setCurrentGroup(group);
-    setSelectedGroup(group);
-    setIsCameraAdjusted(false);
-  };
-
   const handleMarkerPress = (item) => {
+    
     setSelectedItem(item);
   };
 
@@ -218,18 +216,41 @@ useEffect(() => {
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-      }}
-    >
+    <View>
+      <View
+        style={{
+          flexDirection: 'row',
+          margin: 5,
+          paddingHorizontal: 10,
+          justifyContent: 'center',
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => handleToggle('list')}
+          style={{
+            backgroundColor: viewMode === 'list' ? '#FB5F2D' : '#ccc',
+            borderRadius: 10,
+            padding: 5,
+            width: 80,
+            alignItems: 'center',
+          }}
+        >
+          <Text style={{ color: 'white', fontWeight: 'bold' }}>List</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => handleToggle('map')}
+          style={{
+            backgroundColor: viewMode === 'map' ? '#FB5F2D' : '#ccc',
+            borderRadius: 10,
+            padding: 5,
+            width: 80,
+            alignItems: 'center',
+          }}
+        >
+          <Text style={{ color: 'white', fontWeight: 'bold' }}>Map</Text>
+        </TouchableOpacity>
+      </View>
+      
       <View style={{ height: height * 0.88, width: '100%', zIndex: 1 }}>
         <Mapbox.MapView
           style={{ width: '100%', height: '100%' }}
@@ -265,10 +286,10 @@ useEffect(() => {
           {itineraryItems.length > 0 &&
               itineraryItems.map((item, index) => (
                 <Mapbox.MarkerView key={index.toString()} id={index.toString()} coordinate={[item.location.longitude, item.location.latitude]}>
-                  <View style={{ backgroundColor: Colors.darkGray, borderRadius: 10, padding: 5 }}>
+                  <TouchableOpacity style={{ backgroundColor: '#FB5F2D', borderRadius: 10, padding: 5 }}>
                     <Text style={{ color: 'white', fontWeight: 'bold' }}>{item.title}</Text>
                     <Text style={{ color: 'white', fontWeight: 'bold' }}>Start Time: {item.startTime}</Text>
-                  </View>
+                  </TouchableOpacity>
                 </Mapbox.MarkerView>
               ))}
         </Mapbox.MapView>
