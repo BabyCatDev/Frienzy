@@ -14,6 +14,7 @@ export const FrienzyList = () => {
   const userDetails = useSelector((state) => state.FrienzyAuth.userDetails);
   const [groupItems, setGroupItems] = useState([]);
 
+
   useEffect(() => {
     async function getUserGroups() {
       const tempDetails = await getGroupsForUser(userDetails.groups);
@@ -26,11 +27,7 @@ export const FrienzyList = () => {
     getUserGroups();
   }, [userDetails.groups]);
 
-  const handleFrienzyPress = (frienzyId) => {
 
-    navigation.push('GroupThread', { threadId: frienzyId });
-
-  };
 
   const fetchGroupInfo = async (groupId) => {
     const groupInfo = await getGroupById(groupId);
@@ -42,6 +39,26 @@ export const FrienzyList = () => {
     // pass in groupInfo
     // 
   };
+
+  const formatDate = (date) => {
+    const options = { month: 'short', day: 'numeric' };
+    const formattedDate = date.toLocaleDateString('en-US', options);
+    return date.toLocaleDateString('en-US', options);
+  };
+
+  groupItems.map((groupItem) => {
+    if (!groupItem.startDate || !groupItem.endDate) {
+      return null; // Skip over items with undefined start or end dates
+    }
+    const startDate = new Date(groupItem.startDate.seconds * 1000);
+    const endDate = new Date(groupItem.endDate.seconds * 1000);
+
+    const formattedStartDate = formatDate(startDate);
+    const formattedEndDate = formatDate(endDate);
+
+    console.log('Formatted Start Date:', formattedStartDate);
+    console.log('Formatted End Date:', formattedEndDate);
+  });
 
   const handleTabPress = (tab) => {
     setActiveTab(tab);
@@ -77,21 +94,35 @@ export const FrienzyList = () => {
       </View>
 
       <ScrollView contentContainerStyle={styles.frienzyCardsContainer}>
-        {groupItems.map((groupItem) => (
-          <TouchableOpacity
-            key={groupItem.value}
-            style={styles.frienzyContainer}
-            onPress={() => fetchGroupInfo(groupItem.value)}
-          >
-            <Text style={styles.frienzyTitle}>{groupItem.label}</Text>
-            <Text style={styles.frienzyDescription}>{groupItem.description}</Text>
-            {/* Render other conversation details */}
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-        <TouchableOpacity style={styles.addButton} onPress={() => handleAddButtonPressed()}>
-          <Ionicon name="add-circle" size={64} color="#FB5F2D" />
-        </TouchableOpacity>
+  {groupItems.map((groupItem) => (
+    <TouchableOpacity
+      key={groupItem.value}
+      style={styles.frienzyContainer}
+      onPress={() => fetchGroupInfo(groupItem.value)}
+    >
+      <View style={styles.frienzyContentContainer}>
+        <View style={styles.frienzyTextContainer}>
+          <Text style={styles.frienzyTitle}>{groupItem.label}</Text>
+          <Text style={styles.frienzyDescription}>{groupItem.description}</Text>
+        </View>
+        <View style={styles.dateContainer}>
+          {groupItem.startDate && (
+            <Text style={styles.dateText}>
+              {formatDate(new Date(groupItem.startDate.seconds * 1000))}
+              {' - '}
+              {formatDate(new Date(groupItem.endDate.seconds * 1000))}
+            </Text>
+          )}
+        </View>
+      </View>
+      {/* Render other conversation details */}
+    </TouchableOpacity>
+  ))}
+</ScrollView>
+
+      <TouchableOpacity style={styles.addButton} onPress={() => handleAddButtonPressed()}>
+        <Ionicon name="add-circle" size={64} color="#FB5F2D" />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -108,6 +139,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
+  },
+  frienzyContentContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  frienzyTextContainer: {
+    flex: 1,
+    marginRight: 8,
+  },
+  startDate: {
+    fontSize: 14,
+    color: 'grey',
+    textAlign: 'right',
+  },
+  endDate: {
+    fontSize: 14,
+    color: 'grey',
+    textAlign: 'right',
+    marginTop: 4,
   },
   header: {
     fontSize: 32,
@@ -165,7 +215,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 80,
     right: 16,
-    zIndex: 1, // Ensure the button is above the ScrollView
-  },
+  zIndex: 1, // Ensure the button is above the ScrollViee button's size and shape
+},
 });
 

@@ -176,13 +176,13 @@ const UserProfile = ({ navigation }) => {
               }}
             >
               <TouchableOpacity
-                onPress={() => navigation.push('MyFriends')}
+                // onPress={() => navigation.push('Contacts')}
                 style={{
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginBottom: 20,
                   marginHorizontal: 10,
-                  backgroundColor: '#1A1822',
+                  backgroundColor: 'white',
                   borderWidth: 0.25,
                   borderColor: '#313132',
                   borderRadius: 10,
@@ -190,7 +190,7 @@ const UserProfile = ({ navigation }) => {
                   width: '45%',
                 }}
               >
-                <Text style={{ ...AppStyles.semibold22, color: 'white', fontSize: 20 }}>
+                <Text style={{ ...AppStyles.semibold22, color: 'black', fontSize: 20 }}>
                   {userFriends?.length}
                 </Text>
                 <Text style={{ ...AppStyles.medium17, fontSize: 16, fontWeight: 'normal' }}>
@@ -198,13 +198,13 @@ const UserProfile = ({ navigation }) => {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigation.navigate('Groups')}
+                onPress={() => navigation.navigate('FrienzyList')}
                 style={{
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginBottom: 20,
                   marginHorizontal: 10,
-                  backgroundColor: '#1A1822',
+                  backgroundColor: 'white',
                   borderWidth: 0.25,
                   borderColor: '#313132',
                   borderRadius: 10,
@@ -212,7 +212,7 @@ const UserProfile = ({ navigation }) => {
                   width: '45%',
                 }}
               >
-                <Text style={{ ...AppStyles.semibold22, color: 'white', fontSize: 20 }}>
+                <Text style={{ ...AppStyles.semibold22, color: 'black', fontSize: 20 }}>
                   {userGroups?.length}
                 </Text>
                 <Text style={{ ...AppStyles.medium17, fontSize: 16, fontWeight: 'normal' }}>
@@ -232,7 +232,7 @@ const UserProfile = ({ navigation }) => {
             />
             {/* PROFILE ROW */}
             <ProfileRow title={'Change Name'} onPress={() => setIsChange(!isChange)} />
-            <ProfileRow title={'My QR code'} onPress={() => setVisible(true)} qrCode />
+            {/* <ProfileRow title={'My QR code'} onPress={() => setVisible(true)} qrCode /> */}
           </View>
         </View>
       </KeyboardAwareScrollView>

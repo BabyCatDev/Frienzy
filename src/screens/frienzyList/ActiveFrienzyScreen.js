@@ -2,15 +2,12 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Itinerary } from '../itinerary/Itinerary';
+import { SharedPhotosScreen } from '../sharedPhotos/sharedPhotosScreen';
 import { Map } from '../map/Map';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { TouchableOpacity } from '@gorhom/bottom-sheet';
 // Placeholder components for the three tabs
-const PhotosTab = () => (
-  <View style={styles.tabContainer}>
-    <Text>Photos</Text>
-  </View>
-);
+
 
 export const ActiveFrienzy = ({ navigation, route }) => {
   const Tab = createMaterialTopTabNavigator();
@@ -51,7 +48,7 @@ export const ActiveFrienzy = ({ navigation, route }) => {
         >
           <Tab.Screen
             name="Photos"
-            component={PhotosTab}
+            component={SharedPhotosScreen}
             initialParams={{ currentGroup: groupInfo.id }}
             options={{
               tabBarLabel: 'Photos',

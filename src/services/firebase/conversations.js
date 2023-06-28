@@ -72,6 +72,7 @@ export const getPreDefinedGroup = () => {
     .collection('groups')
     .doc();
 }
+
 export const createNewGroup = async ({ group, name, pic, startDate, endDate, description, location, members, message = null }) => {
   const currentId = auth().currentUser.uid;
   const time = firestore.FieldValue.serverTimestamp();
@@ -129,6 +130,23 @@ export const createNewGroup = async ({ group, name, pic, startDate, endDate, des
       .update({
         groups: firestore.FieldValue.arrayUnion(group.id),
       });
+  }
+};
+
+export const addPhotoToAlbum = async (groupId, photoFile) => {
+  try {
+    const filename = photoFile.substring(photoFile.lastIndexOf('/') + 1);
+    const reference = storage().ref(`SharedPhotos/${groupId}/${filename}`);
+    await reference.putFile(photoFile);
+    const photoUrl = await reference.getDownloadURL();
+
+    // Save the photo URL to the album collection in the group document
+    await firestore().collection('groups').doc(groupId).collection('sharedPhotos').add({ url: photoUrl, createdAt: firestore.FieldValue.serverTimestamp()});
+
+    return true; // Indicate successful addition of the photo to the album
+  } catch (error) {
+    console.log('Error adding photo to album:', error);
+    return false; // Indicate failure in adding the photo to the album
   }
 };
 
