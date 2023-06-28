@@ -42,7 +42,7 @@ export const FrienzyList = () => {
     // 
   };
 
-  
+
   groupItems.map((groupItem) => {
     if (!groupItem.startDate || !groupItem.endDate) {
       return null; // Skip over items with undefined start or end dates
@@ -52,9 +52,6 @@ export const FrienzyList = () => {
 
     const formattedStartDate = formatDate(startDate);
     const formattedEndDate = formatDate(endDate);
-
-    console.log('Formatted Start Date:', formattedStartDate);
-    console.log('Formatted End Date:', formattedEndDate);
   });
 
   const handleTabPress = (tab) => {
@@ -69,12 +66,12 @@ export const FrienzyList = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={{...AppStyles.semibold40}}>Frienzy</Text>
+        <Text style={{ ...AppStyles.semibold40 }}>Frienzy</Text>
         <TouchableOpacity style={styles.profileButton} onPress={() => { navigation.navigate("UserProfile") }}>
           <Ionicon name="person-circle" size={32} color="black" />
         </TouchableOpacity>
       </View>
-
+  
       <View style={styles.tabsContainer}>
         <TouchableOpacity
           style={[styles.tab, activeTab === 'Active' && styles.activeTab]}
@@ -89,34 +86,33 @@ export const FrienzyList = () => {
           <Text style={[AppStyles.semibold20, activeTab === 'Completed' && AppStyles.semibold22]}>Completed</Text>
         </TouchableOpacity>
       </View>
-
+  
       <ScrollView contentContainerStyle={styles.frienzyCardsContainer}>
-  {groupItems.map((groupItem) => (
-    <TouchableOpacity
-      key={groupItem.value}
-      style={styles.frienzyContainer}
-      onPress={() => fetchGroupInfo(groupItem.value)}
-    >
-      <View style={styles.frienzyContentContainer}>
-        <View style={styles.frienzyTextContainer}>
-          <Text style={{...AppStyles.semibold17}}>{groupItem.label}</Text>
-          <Text style={{...AppStyles.medium13}}>{groupItem.description}</Text>
-        </View>
-        <View style={styles.dateContainer}>
-          {groupItem.startDate && (
-            <Text style={{...AppStyles.medium13}}>
-              {formatDate(new Date(groupItem.startDate.seconds * 1000))}
-              {' - '}
-              {formatDate(new Date(groupItem.endDate.seconds * 1000))}
-            </Text>
-          )}
-        </View>
-      </View>
-      {/* Render other conversation details */}
-    </TouchableOpacity>
-  ))}
-</ScrollView>
-
+        {groupItems.map((groupItem) => (
+          <TouchableOpacity
+            key={groupItem.value}
+            style={styles.frienzyContainer}
+            onPress={() => fetchGroupInfo(groupItem.value)}
+          >
+            <View style={styles.frienzyContentContainer}>
+              <View style={styles.frienzyTextContainer}>
+                <Text style={{ ...AppStyles.semibold17 }}>{groupItem.label}</Text>
+                <Text style={{ ...AppStyles.medium13 }}>{groupItem.description}</Text>
+              </View>
+              <View style={styles.detailsContainer}>
+                <View>
+                  <Text style={{ ...AppStyles.semibold13 }}>
+                    {groupItem.startDate && groupItem.endDate && `${formatDate(new Date(groupItem.startDate.seconds * 1000))} - ${formatDate(new Date(groupItem.endDate.seconds * 1000))}`}
+                  </Text>
+                  <Text style={{ ...AppStyles.medium13, textAlign: 'right', marginTop: 10 }}>{groupItem.members.length} friends</Text>
+                </View>
+                {/* Render other conversation details */}
+              </View>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+  
       <TouchableOpacity style={styles.addButton} onPress={() => handleAddButtonPressed()}>
         <Ionicon name="add-circle" size={64} color="#FB5F2D" />
       </TouchableOpacity>
@@ -138,7 +134,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   frienzyContentContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
   },
   frienzyTextContainer: {
@@ -211,7 +207,34 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 80,
     right: 16,
-  zIndex: 1, // Ensure the button is above the ScrollViee button's size and shape
-},
+    zIndex: 1, // Ensure the button is above the ScrollViee button's size and shape
+  },
+  detailsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 8,
+  },
+  detailsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 8,
+  },
+  frienzyContainer: {
+    borderRadius: 8,
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 4,
+    padding: 16,
+    marginBottom: 16,
+    marginLeft: 8,
+    marginRight: 8,
+  },
+  frienzyContentContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
 });
 

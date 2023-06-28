@@ -33,6 +33,12 @@ export const AppStyles = {
     lineHeight: normalize(24.5),
     fontFamily: 'Poppins-Semibold',
   },
+  semibold13: {
+    color: Colors.lightText,
+    fontSize: normalize(13),
+    lineHeight: normalize(15.81),
+    fontFamily: 'Poppins-Semibold',
+  },
   semibold17: {
     color: Colors.lightText,
     fontSize: normalize(17),

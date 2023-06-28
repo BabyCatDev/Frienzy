@@ -14,7 +14,6 @@ export const ActiveFrienzy = ({ navigation, route }) => {
   const Tab = createMaterialTopTabNavigator();
   const { groupInfo } = route.params;
 
-  console.log('groupInfo in activeFrienzy', groupInfo)
 
   return (
     <View style={styles.container}>
