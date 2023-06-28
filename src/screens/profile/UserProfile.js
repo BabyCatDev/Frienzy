@@ -121,10 +121,6 @@ const UserProfile = ({ navigation }) => {
               <Ionicon name={'arrow-back-outline'} size={normalize(20)} color={'black'} />
             )}
             onPressLeft={() => navigation.goBack()}
-            onPressRight={() => navigation.navigate('Settings')}
-            rightIcon={() => (
-              <Ionicon name={'settings-outline'} size={normalize(20)} color={'white'} />
-            )}
           />
           {/* PROFILE */}
           <View style={{ alignItems: 'center', width: '100%', transform: [{ scale: 1 }] }}>

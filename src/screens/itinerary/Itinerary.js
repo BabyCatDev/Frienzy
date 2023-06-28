@@ -6,38 +6,11 @@ import normalize from 'react-native-normalize';
 import { createItineraryItem, getItineraryItemsForGroup } from '../../services/firebase/itineraryService';
 import { Colors } from '../../utils/Colors';
 import { create } from 'lodash';
+import { AppStyles } from '../../utils/AppStyles';
 
 export const Itinerary = ({ navigation, route }) => {
   const { currentGroup } = route.params;
-  const [itineraryItems, setItineraryItems] = useState([
-    {
-      title: 'Visit Museum',
-      description: 'Explore the local art and history at the museum',
-      startTime: '10:00 AM',
-      endTime: '12:00 PM',
-      date: 'May 20, 2023',
-      location: {
-        name: 'Museum of Art',
-        address: '123 Main St, Anytown, USA',
-        latitude: 37.785834,
-        longitude: -122.406417,
-      },
-    },
-    {
-      title: 'Hiking Adventure',
-      description: 'Enjoy a scenic hike in the mountains',
-      startTime: '2:00 PM',
-      endTime: '5:00 PM',
-      date: 'May 21, 2023',
-      location: {
-        name: 'Mountain Trail',
-        address: '456 Mountain Rd, Anytown, USA',
-        latitude: 37.785834,
-        longitude: -122.406417,
-      },
-    },
-    // Add more itinerary items as needed
-  ]);
+  const [itineraryItems, setItineraryItems] = useState([]);
 
   useEffect(() => { 
     async function getItineraryItems() {
@@ -64,17 +37,15 @@ export const Itinerary = ({ navigation, route }) => {
       <ScrollView style={styles.list}>
         {itineraryItems.map((item, index) => (
           <View key={index} style={styles.itemContainer}>
-            <Text style={styles.itemTitle}>{item.title}</Text>
+            <Text style={{...AppStyles.semibold20}}>{item.title}</Text>
             <Divider style={styles.itemDivider} />
-            <Text style={styles.itemDescription}>{item.description.substring(0, 50)}...</Text>
-            <Text style={styles.itemTime}>
+            <Text style={{...AppStyles.medium13}}>{item.description.substring(0, 50)}...</Text>
+            <Text style={{...AppStyles.medium13}}>
               {item.startTime} - {item.endTime}
             </Text>
-            <Text style={styles.itemDate}>{item.date}</Text>
+            <Text style={{...AppStyles.medium13}}>{item.date}</Text>
             <Text style={styles.itemLocation}>{item.location.name}</Text>
             <Text style={styles.itemAddress}>{item.location.address}</Text>
-            <Text style={styles.itemAddress}>{item.location.latitude}</Text>
-            <Text style={styles.itemAddress}>{item.location.longitude}</Text>
           </View>
         ))}
       </ScrollView>
@@ -113,7 +84,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     backgroundColor: '#fff', // White background color for each itinerary item
     padding: 10,
-    marginBottom: 10,
+    marginBottom: 5,
     borderRadius: 8,
     elevation: 2, // Add a slight elevation for a card-like effect
   },
@@ -143,7 +114,6 @@ const styles = StyleSheet.create({
   },
   itemLocation: {
     fontSize: 12,
-    marginBottom: 2,
     fontWeight: 'bold',
     color: '#000', // Black item location color
   },

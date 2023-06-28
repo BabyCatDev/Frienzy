@@ -22,9 +22,9 @@ export const AppStyles = {
   },
   ////////////////////////////
   semibold40: {
-    color: Colors.lightText,
-    fontSize: normalize(40),
-    lineHeight: normalize(49),
+    color: 'black',
+    fontSize: normalize(35),
+    lineHeight: normalize(45),
     fontFamily: 'Poppins-Semibold',
   },
   semibold20: {

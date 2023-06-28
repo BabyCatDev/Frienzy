@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import Ionicon from 'react-native-vector-icons/Ionicons';
+import { AppStyles } from '../../utils/AppStyles';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { getGroupsForUser } from '../../services/firebase/user';
@@ -68,7 +69,7 @@ export const FrienzyList = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.header}>Frienzy</Text>
+        <Text style={{...AppStyles.semibold40}}>Frienzy</Text>
         <TouchableOpacity style={styles.profileButton} onPress={() => { navigation.navigate("UserProfile") }}>
           <Ionicon name="person-circle" size={32} color="black" />
         </TouchableOpacity>
@@ -79,13 +80,13 @@ export const FrienzyList = () => {
           style={[styles.tab, activeTab === 'Active' && styles.activeTab]}
           onPress={() => handleTabPress('Active')}
         >
-          <Text style={[styles.tabText, activeTab === 'Active' && styles.activeTabText]}>Active</Text>
+          <Text style={[AppStyles.semibold20, activeTab === 'Active' && AppStyles.semibold22]}>Active</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.tab, activeTab === 'Completed' && styles.activeTab]}
           onPress={() => handleTabPress('Completed')}
         >
-          <Text style={[styles.tabText, activeTab === 'Completed' && styles.activeTabText]}>Completed</Text>
+          <Text style={[AppStyles.semibold20, activeTab === 'Completed' && AppStyles.semibold22]}>Completed</Text>
         </TouchableOpacity>
       </View>
 
@@ -98,12 +99,12 @@ export const FrienzyList = () => {
     >
       <View style={styles.frienzyContentContainer}>
         <View style={styles.frienzyTextContainer}>
-          <Text style={styles.frienzyTitle}>{groupItem.label}</Text>
-          <Text style={styles.frienzyDescription}>{groupItem.description}</Text>
+          <Text style={{...AppStyles.semibold17}}>{groupItem.label}</Text>
+          <Text style={{...AppStyles.medium13}}>{groupItem.description}</Text>
         </View>
         <View style={styles.dateContainer}>
           {groupItem.startDate && (
-            <Text style={styles.dateText}>
+            <Text style={{...AppStyles.medium13}}>
               {formatDate(new Date(groupItem.startDate.seconds * 1000))}
               {' - '}
               {formatDate(new Date(groupItem.endDate.seconds * 1000))}
@@ -164,7 +165,6 @@ const styles = StyleSheet.create({
   },
   tabsContainer: {
     flexDirection: 'row',
-    marginBottom: 16,
   },
   tab: {
     flex: 1,
@@ -194,8 +194,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    shadowOpacity: .4,
+    shadowRadius: 10,
     elevation: 4,
     padding: 16,
     marginBottom: 16,

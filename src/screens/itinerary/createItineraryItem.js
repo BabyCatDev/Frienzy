@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert}
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Colors } from '../../utils/Colors';
+import { AppStyles } from '../../utils/AppStyles';
 
 
 export const CreateItineraryItem = ({ route, navigation }) => {
@@ -101,7 +102,7 @@ export const CreateItineraryItem = ({ route, navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicon name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        <Text style={styles.title}>Create New Itinerary Item</Text>
+        <Text style={{...AppStyles.semibold20, marginLeft: 15 }}>Create New Itinerary Item</Text>
       </View>
 
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">

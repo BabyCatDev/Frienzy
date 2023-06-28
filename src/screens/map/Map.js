@@ -217,7 +217,21 @@ useEffect(() => {
 
   return (
     <View>
-      <View
+      
+      <View style={{ height: height * 0.88, width: '100%', zIndex: 1 }}>
+        
+        <Mapbox.MapView
+          style={{ width: '100%', height: '100%' }}
+          styleURL={'mapbox://styles/mapbox/light-v11'}
+        >
+          <Mapbox.Camera
+            ref={camera}
+            followZoomLevel={5}
+            zoomLevel={17}
+            centerCoordinate={location}
+            animationDuration={1000}
+          />
+          <View
         style={{
           flexDirection: 'row',
           margin: 5,
@@ -231,7 +245,7 @@ useEffect(() => {
             backgroundColor: viewMode === 'list' ? '#FB5F2D' : '#ccc',
             borderRadius: 10,
             padding: 5,
-            width: 80,
+            width: 50,
             alignItems: 'center',
           }}
         >
@@ -243,26 +257,13 @@ useEffect(() => {
             backgroundColor: viewMode === 'map' ? '#FB5F2D' : '#ccc',
             borderRadius: 10,
             padding: 5,
-            width: 80,
+            width: 50,
             alignItems: 'center',
           }}
         >
           <Text style={{ color: 'white', fontWeight: 'bold' }}>Map</Text>
         </TouchableOpacity>
       </View>
-      
-      <View style={{ height: height * 0.88, width: '100%', zIndex: 1 }}>
-        <Mapbox.MapView
-          style={{ width: '100%', height: '100%' }}
-          styleURL={'mapbox://styles/mapbox/light-v11'}
-        >
-          <Mapbox.Camera
-            ref={camera}
-            followZoomLevel={5}
-            zoomLevel={17}
-            centerCoordinate={location}
-            animationDuration={1000}
-          />
 
           {users.length > 0
             ? users.map((user, index) => (
