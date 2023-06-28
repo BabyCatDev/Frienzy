@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { getGroupsForUser } from '../../services/firebase/user';
 import { getGroupById } from '../../services/firebase/conversations';
+import { formatDate } from '../../utils/FormatDate';
 
 export const FrienzyList = () => {
   const navigation = useNavigation();
@@ -40,12 +41,7 @@ export const FrienzyList = () => {
     // 
   };
 
-  const formatDate = (date) => {
-    const options = { month: 'short', day: 'numeric' };
-    const formattedDate = date.toLocaleDateString('en-US', options);
-    return date.toLocaleDateString('en-US', options);
-  };
-
+  
   groupItems.map((groupItem) => {
     if (!groupItem.startDate || !groupItem.endDate) {
       return null; // Skip over items with undefined start or end dates

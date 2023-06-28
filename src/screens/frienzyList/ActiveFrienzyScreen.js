@@ -6,6 +6,7 @@ import { SharedPhotosScreen } from '../sharedPhotos/sharedPhotosScreen';
 import { Map } from '../map/Map';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { TouchableOpacity } from '@gorhom/bottom-sheet';
+import { formatDate } from '../../utils/FormatDate';
 // Placeholder components for the three tabs
 
 
@@ -24,7 +25,11 @@ export const ActiveFrienzy = ({ navigation, route }) => {
         <View style={styles.titleContainer}>
           <View style={styles.headerText}>
             <Text style={styles.title}>{groupInfo.name}</Text>
-            <Text style={styles.subtitle}>Start Date - End Date</Text>
+            <Text style={styles.subtitle}>
+              {groupInfo.startDate && groupInfo.endDate
+                ? `${formatDate(new Date(groupInfo.startDate.seconds * 1000))} - ${formatDate(new Date(groupInfo.endDate.seconds * 1000))}`
+                : 'N/A'}
+            </Text>
           </View>
           <Ionicon
             name="chatbox"
@@ -39,12 +44,12 @@ export const ActiveFrienzy = ({ navigation, route }) => {
       </View>
       <View style={styles.tabContent}>
         <Tab.Navigator
-        tabBarOptions={{
-          labelStyle: { fontSize: 16, fontWeight: 'bold' },
-          indicatorStyle: { backgroundColor: '#FB5F2D' },
-          activeTintColor: '#FB5F2D',
-          inactiveTintColor: 'gray',
-        }}
+          tabBarOptions={{
+            labelStyle: { fontSize: 16, fontWeight: 'bold' },
+            indicatorStyle: { backgroundColor: '#FB5F2D' },
+            activeTintColor: '#FB5F2D',
+            inactiveTintColor: 'gray',
+          }}
         >
           <Tab.Screen
             name="Photos"
