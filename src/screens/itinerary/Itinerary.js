@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking, Platform } from 'react-native';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { Divider } from 'react-native-elements';
 import normalize from 'react-native-normalize';
@@ -20,6 +20,14 @@ export const Itinerary = ({ navigation, route }) => {
     getItineraryItems();
   }, [currentGroup]);
 
+  const openMaps = (address) => {
+    const mapUrl = Platform.select({
+      ios: `http://maps.apple.com/?address=${address}`,
+      android: `http://maps.google.com/?q=${address}`,
+    });
+  
+    Linking.openURL(mapUrl);
+  };
   const onItemCreate = (itineraryItem) => {
     // Add navigation logic for creating a new itinerary item
     // add itinerary item to itineraryItems array
@@ -44,8 +52,9 @@ export const Itinerary = ({ navigation, route }) => {
               {item.startTime} - {item.endTime}
             </Text>
             <Text style={{...AppStyles.medium13}}>{item.date}</Text>
+            <TouchableOpacity onPress={() => openMaps(item.location.name)}>
             <Text style={styles.itemLocation}>{item.location.name}</Text>
-            <Text style={styles.itemAddress}>{item.location.address}</Text>
+            </TouchableOpacity>
           </View>
         ))}
       </ScrollView>
@@ -116,6 +125,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
     color: '#000', // Black item location color
+    textDecorationLine: 'underline',
   },
   addButton: {
     position: 'absolute',
