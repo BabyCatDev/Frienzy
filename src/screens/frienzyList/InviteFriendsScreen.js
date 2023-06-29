@@ -54,7 +54,7 @@ export const InviteFriends = ({ route }) => {
   };
   const toggleContactSelection = (item) => {
     if (selectedContacts.includes(item)) {
-      setSelectedContacts(selectedContacts.filter((item) => item.recordID !== item.recordID));
+      setSelectedContacts(selectedContacts.filter((e) => e.recordID !== item.recordID));
     } else {
       setSelectedContacts([...selectedContacts, item]);
     }
@@ -176,7 +176,7 @@ export const InviteFriends = ({ route }) => {
                 item={item.uid}
                 index={index}
                 showChecks={true}
-                selected={selectedFriends.includes(item)}
+                selected={selectedFriends.includes(item.uid)}
                 onPressHandler={({ itemClicked }) => toggleFriendSelection(itemClicked)}
                 actionButton={
                   <Pressable onPress={() => handleInvite(item.uid)}>
@@ -187,8 +187,11 @@ export const InviteFriends = ({ route }) => {
               />
             )
           )}
+          stickySectionHeadersEnabled={false}
           renderSectionHeader={({section: {title}}) => (
-            <Text style={styles.sectionHeader}>{title}</Text>
+            <View style={styles.sectionHeaderWrapper}>
+              <Text style={styles.sectionHeader}>{title}</Text>
+            </View>
           )}
           ListEmptyComponent={
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 40 }}>
@@ -252,6 +255,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 5,
+  },
+  sectionHeaderWrapper: {
   },
   sectionHeader: {
     paddingHorizontal: 10,
