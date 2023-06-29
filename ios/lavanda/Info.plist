@@ -21,7 +21,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.8.0</string>
+	<string>1.8.2</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -83,7 +83,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like access to your camera</string>
 	<key>NSContactsUsageDescription</key>
-	<string></string>
+	<string>Frienzy needs to access contacts so you can add members to your group</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>App needs access to location to share it with other users</string>
 	<key>NSLocationAlwaysUsageDescription</key>

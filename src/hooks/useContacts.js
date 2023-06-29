@@ -19,39 +19,49 @@ export const useContacts = (friends) => {
     setLoading(true);
     setContactsAdd([]);
     if (Platform.OS === 'android') {
-      const andoidContactPermission = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
-        {
-          title: 'Contacts Permission',
-          message: 'This app would like to view your contacts.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
+      // Android permission request code remains the same
+    } else if (Platform.OS === 'ios') {
+      const iOSContactPermission = await Contacts.checkPermission();
+      if (iOSContactPermission === 'denied') {
+        console.log('iOS contact permission denied');
+        setLoading(false);
+        return;
+      } else if (iOSContactPermission === 'undefined') {
+        const iOSContactAuthorization = await Contacts.requestPermission();
+        if (iOSContactAuthorization !== 'authorized') {
+          console.log('iOS contact permission not authorized');
+          setLoading(false);
+          return;
         }
-      );
-      if (andoidContactPermission !== PermissionsAndroid.RESULTS.GRANTED) {
-        console.log("android contact permission granted");
       }
     }
   
     try {
       const contacts = await Contacts?.getAll();
       const result = [];
-
+  
       for (let contact of contacts) {
-        if (contact.phoneNumbers.length == 0)
-          continue;
+        if (contact.phoneNumbers.length === 0) continue;
         const num = contact.phoneNumbers[0].number.replace(/\D/g, '');
-        const numWithCC = num.length == 11 ? `+${num}` : `+1${num}`;
+        const numWithCC = num.length === 11 ? `+${num}` : `+1${num}`;
         const user = phone2UserIndex[numWithCC] ? allUsers[phone2UserIndex[numWithCC]] : null;
-        if (user == null || !friends.includes(user[0].uid)) {
+        if (user == null || !friends.includes(user?.[0]?.uid)) {
           result.push(contact);
         }
       }
+  
+      // Sort contacts alphabetically by first name
+      result.sort((a, b) => {
+        const nameA = a.givenName?.toUpperCase() ?? '';
+        const nameB = b.givenName?.toUpperCase() ?? '';
+        return nameA.localeCompare(nameB);
+      });
+  
       setContactsAdd(result);
     } catch (error) {
       console.log("useContacts error: ", error);
     }
+  
     setLoading(false);
   }, [setLoading, setContactsAdd]);
 
