@@ -1,7 +1,12 @@
-import { useQuery } from "react-query";
-import { keys } from "./queryKeys";
-import { getFriendsForUser } from "../services/firebase/user";
+import { useSelector } from "react-redux";
 
 export const useFriends = (friends, options={}) => {
-  return useQuery(keys.friends(friends), () => getFriendsForUser(friends), options);
+  const allUsers = useSelector((state) => state.FrienzyData.allUsers);
+  if (!allUsers)
+    return { isLoading: true };
+  const data =  allUsers ? allUsers.filter((user) => friends.includes(user.uid)) : [];
+  return {
+    isLoading: false,
+    data
+  };
 }

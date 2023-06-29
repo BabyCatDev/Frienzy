@@ -4,6 +4,7 @@ const initialState = {
   isEnabled: true,
   location: {},
   groupLocations: [],
+  allUsers: [],
 };
 
 const dataReducer = (state = initialState, action) => {
@@ -33,6 +34,12 @@ const dataReducer = (state = initialState, action) => {
       return {
         ...state,
         groupLocations: action.groupLocations,
+      };
+    case 'GetAllUsers':
+      return {
+        ...state,
+        allUsers: action.payload,
+        dataLoading: false,
       };
     default:
       return state;

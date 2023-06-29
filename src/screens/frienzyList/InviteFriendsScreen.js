@@ -30,13 +30,14 @@ export const InviteFriends = ({ route }) => {
   const { data: friends, isLoading } = useFriends(userFriends);
   const { contactsToAdd, contactsLoading } = useContacts(userFriends);
   const newFbGroupRef = getPreDefinedGroup();
-
-  console.log('photo', photo);
-  console.log('title', title);
-  console.log('description', description);
-  console.log('startDate', startDate);
-  console.log('endDate', endDate);
-  console.log('location', location);
+  const [suggestions, setSuggestions] = useState([{
+      title: "Friends on Frienzy",
+      data: []
+    }, {
+      title: "From your contactlist",
+      data: []
+    },
+  ]);
   
 
   const handleInvite = (friend) => {
@@ -129,14 +130,20 @@ export const InviteFriends = ({ route }) => {
     });
   };
 
-  const suggestions = [{
-      title: "Friends on Frienzy",
-      data: userFriends ?? []
-    }, {
-      title: "From your contactlist",
-      data: contactsToAdd 
-    },
-  ];
+  useEffect(() => {
+    const filteredFriends = friends ?
+      friends.filter((e) => e.name?.toUpperCase().includes(query.toUpperCase())) : [];
+    const filteredContacts = contactsToAdd.filter((e) => 
+        e.familyName?.toUpperCase().includes(query.toUpperCase()) || e.givenName?.toUpperCase().includes(query.toUpperCase()));
+    setSuggestions([{
+        title: "Friends on Frienzy",
+        data: filteredFriends
+      }, {
+        title: "From your contactlist",
+        data: filteredContacts 
+      },
+    ])
+  }, [userFriends, contactsToAdd, query]);
 
   return (
     <View style={{ flex: 1, paddingHorizontal: 8 }}>
@@ -145,10 +152,17 @@ export const InviteFriends = ({ route }) => {
       </Pressable>
       <Text style={styles.headerText}>Invite Friends</Text>
       <View style={styles.container}>
-        <SearchField search={query} setSearch={setQuery} containerStyle={{ width: '100%' }} />
+        <SearchField
+          search={query}
+          setSearch={setQuery}
+          containerStyle={{ width: '100%' }}
+          backgroundColor={Colors.inputBackground}
+          textColor={Colors.black}
+          placeholderColor={Colors.moreBlack}
+        />
         <SectionList
           sections={suggestions}
-          keyExtractor={(item, index) => item.recordID !== undefined ? item.recordID : item}
+          keyExtractor={(item, index) => item.recordID !== undefined ? item.recordID : item.uid}
           renderItem={({item, index}) => (
             item.recordID !== undefined ? (
               <ContactItem
@@ -159,13 +173,13 @@ export const InviteFriends = ({ route }) => {
                 />
             ) : (
               <FriendListItem
-                item={item}
+                item={item.uid}
                 index={index}
                 showChecks={true}
                 selected={selectedFriends.includes(item)}
                 onPressHandler={({ itemClicked }) => toggleFriendSelection(itemClicked)}
                 actionButton={
-                  <Pressable onPress={() => handleInvite(item)}>
+                  <Pressable onPress={() => handleInvite(item.uid)}>
                     <Text style={{ color: Colors.primary }}>Invite</Text>
                   </Pressable>
                 }
@@ -231,7 +245,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     paddingVertical: 10,
     borderRadius: 10,
-    marginBottom: 80,
+    marginBottom: 20,
   },
   copyButtonText: {
     color: 'black',

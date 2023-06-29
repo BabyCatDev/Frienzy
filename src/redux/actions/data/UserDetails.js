@@ -8,13 +8,19 @@ export function userDetailsAction(details) {
   };
 }
 
-const getAllUsers = async () => {
-  const snapshot = await firestore().collection('users').get();
-  const usersArray = snapshot.docs.map((doc) => doc.data());
-  const usersWithMobile = usersArray.filter((user) => user.mobile !== undefined);
-  return usersWithMobile.map((user) => {
-    return { mobile: user.mobile, uid: user.uid };
-  });
+export const getAllUsers = () => (dispatch) => {
+  firestore()
+    .collection('users')
+    .get()
+    .then((snapshot) => {
+      const usersArray = snapshot.docs.map((doc) => doc.data());
+      const usersWithMobile = usersArray.filter((user) => user.phone !== undefined);
+
+      return dispatch({
+        type: 'GetAllUsers',
+        payload: usersWithMobile,
+      });
+    });
 };
 
 export function getUserProfileCompletedLevel(details) {

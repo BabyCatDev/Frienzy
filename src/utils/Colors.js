@@ -9,5 +9,6 @@ export const Colors = {
     darkGray: "#7E7E7E",
     darkText: "#4D4D4D",
     someGray: "#AAAAAA",
+    inputBackground: '#DDDDDD'
   };
   

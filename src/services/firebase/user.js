@@ -155,3 +155,20 @@ export const updateFcmToken = async () => {
     console.error(error);
   }
 }
+
+export const loadAllUsers = async () => {  
+  try {
+    if (auth().currentUser == null)
+      return null;
+
+    const querySnapshot = await firestore()
+      .collection('users')
+      .get({
+        source: 'server'
+      });
+    return querySnapshot.docs.map((doc) => doc.data());
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}

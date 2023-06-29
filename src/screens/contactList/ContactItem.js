@@ -10,7 +10,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import { getMobileNumber } from '../../utils/helper';
 
 const ContactItem = ({ item, onPress, index, check }) => {
-  console.log("item", item);
   const getInitials = (name, surname) => {
     const fullName = name + ' ' + surname;
     return fullName

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Text } from 'react-native';
 import SplashScreen from '../screens/splash/SplashScreen';
 import { useDispatch, useSelector } from 'react-redux';
-import { userAuthStateListener } from '../redux/actions/data/UserDetails';
+import { getAllUsers, userAuthStateListener } from '../redux/actions/data/UserDetails';
 import { NavigationContainer } from '@react-navigation/native';
 import { GetAuthComponents } from './AuthStack/AuthStack';
 import { GetMainAppComponents } from './MainStack/MainStack';
@@ -32,6 +32,7 @@ const NavigationManager = (props) => {
 
   useEffect(() => {
     dispatch(userAuthStateListener());
+    dispatch(getAllUsers());
   }, [currentUserObj.userDetails?.loggedIn]);
 
   if (!currentUserObj.loaded) {

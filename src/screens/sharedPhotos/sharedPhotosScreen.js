@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { View, ScrollView, Image, StyleSheet, Button, Dimensions, TouchableOpacity, Modal, Linking } from 'react-native';
-import { RNCamera } from 'react-native-camera';
+// import { RNCamera } from 'react-native-camera';
 
 export const SharedPhotosScreen = () => {
   const [sharedPhotos, setSharedPhotos] = useState([
@@ -69,12 +69,13 @@ export const SharedPhotosScreen = () => {
         <Button title="+" onPress={handleOpenCamera} />
       </View>
       {isCameraOpen ? (
-        <RNCamera
-          ref={cameraRef}
-          style={styles.cameraPreview}
-          type={RNCamera.Constants.Type.back}
-          captureAudio={false}
-        />
+        // <RNCamera
+        //   ref={cameraRef}
+        //   style={styles.cameraPreview}
+        //   type={RNCamera.Constants.Type.back}
+        //   captureAudio={false}
+        // />
+        <View/>
       ) : (
         <ScrollView contentContainerStyle={styles.photoGrid}>
           {sharedPhotos.map((photo) => (

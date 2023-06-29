@@ -6,19 +6,23 @@ import Assets from "../../assets";
 import { AssetImage } from "../../assets/asset_image";
 import normalize from "react-native-normalize";
 
-const SearchField = ({ search, setSearch, containerStyle }) => {
+const SearchField = ({ search, setSearch, containerStyle, 
+  backgroundColor = Colors.moreBlack, textColor = Colors.lightText,
+  placeholderColor = Colors.someGray
+}) => {
   return (
     <View style={containerStyle}>
-      <View style={AppStyles.searchFieldContainer}>
+      <View style={[AppStyles.searchFieldContainer, {backgroundColor}]}>
         <TextInput
           placeholder="Name"
-          placeholderTextColor={Colors.someGray}
+          placeholderTextColor={placeholderColor ?? Colors.someGray}
           value={search}
           onChangeText={(text) => setSearch(text)}
           style={{
             ...AppStyles.medium15,
-            color: Colors.lightText,
+            color: textColor ?? Colors.lightText,
             ...AppStyles.searchField,
+            backgroundColor: backgroundColor
           }}
         />
         <AssetImage

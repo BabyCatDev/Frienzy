@@ -1,12 +1,19 @@
 import { Platform, PermissionsAndroid } from 'react-native';
 import Contacts from 'react-native-contacts';
-import { useCallback, useState, useEffect } from 'react';
-
-import { getUserByPhone } from '../services/firebase/user';
+import { useCallback, useState, useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 export const useContacts = (friends) => {
   const [contactsToAdd, setContactsAdd] = useState([]);
   const [loading, setLoading] = useState(false);
+  const allUsers = useSelector((state) => state.FrienzyData.allUsers);
+  const phone2UserIndex = useMemo(() => {
+    const map = {};
+    allUsers && allUsers.forEach((u, index) => {
+      map[u.phone] = index;
+    });
+    return map;
+  }, [allUsers]);
 
   const loadContacts = useCallback( async () => {
     setLoading(true);
@@ -36,8 +43,7 @@ export const useContacts = (friends) => {
           continue;
         const num = contact.phoneNumbers[0].number.replace(/\D/g, '');
         const numWithCC = num.length == 11 ? `+${num}` : `+1${num}`;
-        const user = await getUserByPhone(numWithCC);
-        console.log("user", user);
+        const user = phone2UserIndex[numWithCC] ? allUsers[phone2UserIndex[numWithCC]] : null;
         if (user == null || !friends.includes(user[0].uid)) {
           result.push(contact);
         }
