@@ -1,13 +1,16 @@
 import React, { useState, useRef } from 'react';
-import { View, ScrollView, Image, StyleSheet, Button, Dimensions, TouchableOpacity, Modal, Text } from 'react-native';
+import { View, ActionSheetIOS, Image, StyleSheet, Button, Dimensions, TouchableOpacity, Modal, Text } from 'react-native';
 import { FlatGrid } from 'react-native-super-grid';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { useActionSheet } from '@expo/react-native-action-sheet';
+import ImageView from "react-native-image-viewing";
 
 import { PlusButton } from './PlusButton';
 import { useGroup } from '../../hooks/useGroup';
 import { addPhotoToItinerary } from '../../services/firebase/itineraryService';
 import { useSelector } from 'react-redux';
 import { PhotoItem } from './PhotoItem';
+import { setSelectedContacts } from '../../utils/helper';
 
 const pickerOptions = {
   mediaType: "photo",
@@ -17,32 +20,61 @@ const pickerOptions = {
 const screenWidth = Dimensions.get('window').width;
 
 export const SharedPhotosScreen = ({ route }) => {
+  const { showActionSheetWithOptions } = useActionSheet();
   const { currentGroup } = route.params;
   const { groupInfo } = useGroup(currentGroup);
   const userDetails = useSelector((state) => state.FrienzyAuth.userDetails);
-  console.log("groupInfo", groupInfo, userDetails);
+  const [loading, setLoading] = useState(false);
+  const [selectedImages, setsSelectedImages] = useState([]);
+  const [visible, setIsVisible] = useState(false);
 
-  const handlePlusClick = async () => {    
-    const result = await launchCamera(pickerOptions);
-    if (result.assets) {
-      addPhotoToItinerary(userDetails.uid, groupInfo, result.assets[0].uri);
-    }    
+  const handlePlusClick = async () => {
+    const options = ['Open Camera', 'Open Library', 'Cancel'];
+    const cancelButtonIndex = 2;
+
+    showActionSheetWithOptions({
+      options,
+      cancelButtonIndex,
+    }, async (selectedIndex) => {
+      try {
+        let result = null;
+        setLoading(true);
+        switch (selectedIndex) {
+          case 0:          
+            result = await launchCamera(pickerOptions);
+            break;
+          case 1:          
+            result = await launchImageLibrary(pickerOptions);
+            break;
+        }
+        if (result && result.assets) {
+          await addPhotoToItinerary(userDetails.uid, groupInfo, result.assets[0].uri);
+        }
+        setLoading(false);
+      } catch (e) {
+        console.log("photo upload failed", e);
+        setLoading(false);
+      }
+    }); 
   }
 
   const photos = [
     "+",
-    ...(groupInfo?.photos ?? [])
+    ...(groupInfo?.photos ?? []),
   ];
 
   return (
     <View style={styles.container}>
       <FlatGrid
-        itemDimension={120}
+        itemDimension={100}
         maxItemsPerRow={3}
+        spacing={0}
         data={photos}
         renderItem={({ item }) => (
           item == "+" ? (
             <PlusButton
+              isLoading={loading}
+              isDisabled={loading}
               onPress={() => {
                 handlePlusClick();
               }}
@@ -50,12 +82,21 @@ export const SharedPhotosScreen = ({ route }) => {
           ) : (
             <PhotoItem
               onPress={() => {
-
+                setsSelectedImages([{
+                  uri: item.url
+                }]);
+                setIsVisible(true);
               }}              
               photo={item}
             />
           )
         )}
+      />
+      <ImageView
+        images={selectedImages}
+        imageIndex={0}
+        visible={visible}
+        onRequestClose={() => setIsVisible(false)}
       />
     </View>
   );

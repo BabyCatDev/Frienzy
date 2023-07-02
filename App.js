@@ -12,6 +12,7 @@ import { QueryClientProvider, QueryClient } from 'react-query';
 import FBSaver from './src/services/FBSaver';
 import messaging from '@react-native-firebase/messaging';
 import { updateFcmToken } from './src/services/firebase/user';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 // OneSignal Initialization
 // OneSignal.setAppId('146aaecb-a485-4ccd-82b7-5f154569d9c8');
 
@@ -80,8 +81,10 @@ const App = () => {
     <Provider store={store2}>
       <QueryClientProvider client={queryClient}>
         <StatusBar barStyle="light-content" backgroundColor={'#1A1822'} />
-        <BottomSheetModalProvider>
-          <NavigationManager />
+        <BottomSheetModalProvider>          
+          <ActionSheetProvider>
+            <NavigationManager />
+          </ActionSheetProvider>
         </BottomSheetModalProvider>
         <Toast config={ToastConfig} />
       </QueryClientProvider>

@@ -7,7 +7,6 @@ import {
 } from "react-native";
 
 export const PhotoItem = ({ onPress, photo, isDisabled=false}) => {
-  console.log("photo", photo)
   return (
     <View style={styles.containerStyle}>
       <TouchableOpacity onPress={onPress} disabled={isDisabled}>
@@ -28,7 +27,7 @@ const styles = StyleSheet.create({
   containerStyle: {
     width: 120,
     height: 120,
-    backgroundColor: "#FB5F2D",
+    backgroundColor: "white",
   },
   imageStyle: {
     resizeMode: "cover",
