@@ -88,6 +88,7 @@
     "react-native-skeleton-placeholder": "^5.2.4",
     "react-native-splash-screen": "^3.3.0",
     "react-native-static-safe-area-insets": "^2.2.0",
+    "react-native-super-grid": "^5.0.0",
     "react-native-svg": "^13.6.0",
     "react-native-svg-app-icon": "^0.6.1",
     "react-native-swiper": "^1.6.0",

@@ -40,6 +40,20 @@ export const threadListener = (listener, threadId) => {
     });
 };
 
+export const groupListener = (listener, groupId) => {
+  firestore()
+    .collection('groups')
+    .doc(groupId)
+    .onSnapshot((documentSnapshot) => {
+      if (documentSnapshot.exists)
+        return listener(documentSnapshot.data());
+      return listener(null);
+    }, (error) => {
+      console.log("groupListener error", error);
+      return listener(null);
+    })
+};
+
 export const getGroupById = (threadId) =>
   new Promise((resolve, reject) => {
     firestore()

@@ -43,11 +43,16 @@ export const ActiveFrienzy = ({ navigation, route }) => {
       </View>
       <View style={styles.tabContent}>
         <Tab.Navigator
-          tabBarOptions={{
-            labelStyle: { fontSize: 16, fontWeight: 'bold' },
-            indicatorStyle: { backgroundColor: '#FB5F2D' },
-            activeTintColor: '#FB5F2D',
-            inactiveTintColor: 'gray',
+          screenOptions={{
+            "tabBarActiveTintColor": "#FB5F2D",
+            "tabBarInactiveTintColor": "gray",
+            "tabBarLabelStyle": {
+              "fontSize": 16,
+              "fontWeight": "bold"
+            },
+            "tabBarIndicatorStyle": {
+              "backgroundColor": "#FB5F2D"
+            }
           }}
         >
           <Tab.Screen

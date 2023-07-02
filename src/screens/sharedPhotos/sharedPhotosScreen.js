@@ -1,121 +1,65 @@
 import React, { useState, useRef } from 'react';
-import { View, ScrollView, Image, StyleSheet, Button, Dimensions, TouchableOpacity, Modal, Linking } from 'react-native';
-// import { RNCamera } from 'react-native-camera';
+import { View, ScrollView, Image, StyleSheet, Button, Dimensions, TouchableOpacity, Modal, Text } from 'react-native';
+import { FlatGrid } from 'react-native-super-grid';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
-export const SharedPhotosScreen = () => {
-  const [sharedPhotos, setSharedPhotos] = useState([
-    {
-      id: 1,
-      imageUrl: 'https://dummyimage.com/300x200/000000/ffffff&text=Photo+1',
-    },
-    {
-      id: 2,
-      imageUrl: 'https://dummyimage.com/300x200/000000/ffffff&text=Photo+2',
-    },
-    {
-      id: 3,
-      imageUrl: 'https://dummyimage.com/300x200/000000/ffffff&text=Photo+3',
-    },
-    {
-      id: 4,
-      imageUrl: 'https://dummyimage.com/300x200/000000/ffffff&text=Photo+4',
-    },
-    // Add more photos here
-  ]);
+import { PlusButton } from './PlusButton';
+import { useGroup } from '../../hooks/useGroup';
+import { addPhotoToItinerary } from '../../services/firebase/itineraryService';
+import { useSelector } from 'react-redux';
+import { PhotoItem } from './PhotoItem';
 
-  const [selectedPhoto, setSelectedPhoto] = useState(null);
-  const [isCameraOpen, setCameraOpen] = useState(false);
-  const cameraRef = useRef(null);
+const pickerOptions = {
+  mediaType: "photo",
+  quality: 0.8,
+  includeBase64: false,
+};
+const screenWidth = Dimensions.get('window').width;
 
-  const handleTakePhoto = async () => {
-    if (cameraRef.current) {
-      const options = { quality: 0.5, base64: true };
-      const data = await cameraRef.current.takePictureAsync(options);
+export const SharedPhotosScreen = ({ route }) => {
+  const { currentGroup } = route.params;
+  const { groupInfo } = useGroup(currentGroup);
+  const userDetails = useSelector((state) => state.FrienzyAuth.userDetails);
+  console.log("groupInfo", groupInfo, userDetails);
 
-      const newPhoto = {
-        id: sharedPhotos.length + 1,
-        imageUrl: data.uri,
-      };
-      setSharedPhotos([...sharedPhotos, newPhoto]);
-      setCameraOpen(false);
-    }
-  };
+  const handlePlusClick = async () => {    
+    const result = await launchCamera(pickerOptions);
+    if (result.assets) {
+      addPhotoToItinerary(userDetails.uid, groupInfo, result.assets[0].uri);
+    }    
+  }
 
-  const handleOpenCamera = () => {
-    setCameraOpen(true);
-  };
-
-  const handleCloseCamera = () => {
-    setCameraOpen(false);
-  };
-
-  const handlePhotoPress = (photo) => {
-    setSelectedPhoto(photo);
-  };
-
-  const handleModalClose = () => {
-    setSelectedPhoto(null);
-  };
-
-  // const handleDownloadAlbum = () => {
-  //   const albumUrls = sharedPhotos.map((photo) => photo.imageUrl);
-  //   const albumUrlString = albumUrls.join('\n');
-  //   Linking.openURL(`data:text/plain;charset=utf-8,${encodeURIComponent(albumUrlString)}`);
-  // };
+  const photos = [
+    "+",
+    ...(groupInfo?.photos ?? [])
+  ];
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Button title="+" onPress={handleOpenCamera} />
-      </View>
-      {isCameraOpen ? (
-        // <RNCamera
-        //   ref={cameraRef}
-        //   style={styles.cameraPreview}
-        //   type={RNCamera.Constants.Type.back}
-        //   captureAudio={false}
-        // />
-        <View/>
-      ) : (
-        <ScrollView contentContainerStyle={styles.photoGrid}>
-          {sharedPhotos.map((photo) => (
-            <TouchableOpacity
-              key={photo.id}
-              onPress={() => handlePhotoPress(photo)}
-            >
-              <Image
-                source={{ uri: photo.imageUrl }}
-                style={styles.photo}
-              />
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      )}
-      {isCameraOpen && (
-        <Button title="Take Photo" onPress={handleTakePhoto} />
-      )}
-      <Modal
-        visible={!!selectedPhoto}
-        transparent={true}
-        onRequestClose={handleModalClose}
-      >
-        <TouchableOpacity
-          style={styles.modalContainer}
-          activeOpacity={1}
-          onPress={handleModalClose}
-        >
-          <Image
-            source={{ uri: selectedPhoto?.imageUrl }}
-            style={styles.modalImage}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
-      </Modal>
+      <FlatGrid
+        itemDimension={120}
+        maxItemsPerRow={3}
+        data={photos}
+        renderItem={({ item }) => (
+          item == "+" ? (
+            <PlusButton
+              onPress={() => {
+                handlePlusClick();
+              }}
+            />
+          ) : (
+            <PhotoItem
+              onPress={() => {
+
+              }}              
+              photo={item}
+            />
+          )
+        )}
+      />
     </View>
   );
 };
-
-const screenWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   container: {

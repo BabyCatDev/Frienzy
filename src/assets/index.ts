@@ -95,5 +95,6 @@ export default class Assets {
   static userMarker = Assets.getBitmap(require("../../assets/imgs/userMarker.png"));
   static emrgUserMarker = Assets.getBitmap(require("../../assets/imgs/emrgUserMarker.png"));
   static splash = Assets.getBitmap(require("../../assets/imgs/splash.png"));
+  static plusIcon = Assets.getBitmap(require("../../assets/imgs/Plus.png"));
 
 }
