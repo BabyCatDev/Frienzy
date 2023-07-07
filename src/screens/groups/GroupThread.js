@@ -89,7 +89,7 @@ const GroupThread = ({ navigation, route }) => {
     const tokens = members.filter((e) => !!e["fcm_token"]).map((e) => e["fcm_token"]);
     await sendNotification({
       tokens: tokens,
-      title: `New Message in ${threadData.name} from ${userDetails.name}`,
+      title: `${userDetails.name}`,
       message: message
     })
     setLoading(false);

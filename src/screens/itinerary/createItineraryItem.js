@@ -38,6 +38,7 @@ export const CreateItineraryItem = ({ route, navigation }) => {
     try {
       const token = 'pk.eyJ1Ijoibm9sYW5kb25sZXkxNCIsImEiOiJjazJta2dqNmowaXR2M25uM3RyNzl4bmU1In0.IG-7dVSFafe9cSEpQJoU2A';
       const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchQuery}.json?access_token=${token}&types=address&types=poi&types=poi&limit=10&fuzzyMatch=true`;
+
       const response = await fetch(endpoint);
       const data = await response.json();
       console.log('Search response:', data);
@@ -82,7 +83,7 @@ export const CreateItineraryItem = ({ route, navigation }) => {
     // Call the onItemCreate function to handle the item creation
     onItemCreate(newItem);
 
-    navigation.navigate('Itinerary', { currentGroup });
+    navigation.goBack();
     // Reset the form fields
     setTitle('');
     setDescription('');
