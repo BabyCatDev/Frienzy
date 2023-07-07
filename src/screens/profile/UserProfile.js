@@ -23,8 +23,6 @@ import QrOverlay from './QrOverlay';
 import FBSaver from '../../services/FBSaver';
 import { removeValue } from '../../utils/AsyncStore';
 import DeleteAccountOverlay from './DeleteAccountOverlay';
-import { useLocation } from '../../hooks/useLocation';
-import BackgroundGeolocation from 'react-native-background-geolocation';
 import { setLocationEnabled } from '../../redux/actions/data/UserLocation';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 
