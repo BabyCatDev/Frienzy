@@ -201,7 +201,7 @@ const PhotoUpload = ({
       <SafeAreaView style={localStyles.container}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{ flex: 1}}
+          style={{ flex: 1, paddingBottom: Platform.OS === 'android' ? 20 : 0}}
           keyboardVerticalOffset={20}
         >
           <View style={[localStyles.pageContainer]}>
