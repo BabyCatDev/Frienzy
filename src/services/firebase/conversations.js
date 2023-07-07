@@ -87,7 +87,7 @@ export const getPreDefinedGroup = () => {
     .doc();
 }
 
-export const createNewGroup = async ({ group, name, pic, startDate, endDate, description, location, members, message = null }) => {
+export const createNewGroup = async ({ group, name, pic, startDate, endDate, description, location, members, message = null, pending=[] }) => {
   const currentId = auth().currentUser.uid;
   const time = firestore.FieldValue.serverTimestamp();
 
@@ -120,6 +120,7 @@ export const createNewGroup = async ({ group, name, pic, startDate, endDate, des
       createdAt: time,
       modifiedAt: time,
       recentMessage: messageToAdd,
+      pending: pending
     });
 
   const filename = pic?.substring(pic?.lastIndexOf('/') + 1);

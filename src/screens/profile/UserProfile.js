@@ -90,6 +90,18 @@ const UserProfile = ({ navigation }) => {
     setName(user ? user : { username: 'Frienzy Nickname', profile_pic: '' });
     setPhone(phone ? phone : '+12345678901');
   }
+
+  const onLogout = async () => {
+    try {
+      await firestore().collection('users').doc(auth().currentUser.uid).update({ loggedIn: false });
+      auth()
+        .signOut()
+        .then(() => console.log('User signed out!'));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  
   useEffect(() => {
     fetchData();
   }, []);
@@ -228,6 +240,7 @@ const UserProfile = ({ navigation }) => {
             />
             {/* PROFILE ROW */}
             <ProfileRow title={'Change Name'} onPress={() => setIsChange(!isChange)} />
+            <ProfileRow title={'Log out'} onPress={async () => await onLogout()} />
             {/* <ProfileRow title={'My QR code'} onPress={() => setVisible(true)} qrCode /> */}
           </View>
         </View>

@@ -2,6 +2,7 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
 import { Alert } from 'react-native';
+import { updateMyPendingGroups } from '../../../services/firebase/user';
 
 export function signInUpAction(user) {
   return {
@@ -25,6 +26,7 @@ async function createFirebaseUser(user, token) {
     fcm_token: token
   };
   await firestore().collection('users').doc(auth().currentUser.uid).set(newData);
+  await updateMyPendingGroups(user.phoneNumber);
 }
 
 export function signInUpWithPhone(confirmFunc, code) {
@@ -37,7 +39,7 @@ export function signInUpWithPhone(confirmFunc, code) {
 
         if (additionalUserDetails.isNewUser) {
           console.log('New User');
-          createFirebaseUser(userData, token);
+          await createFirebaseUser(userData, token);
         } else {
           console.log('Existing User');
           await firestore()

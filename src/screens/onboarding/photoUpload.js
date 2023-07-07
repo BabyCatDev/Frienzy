@@ -198,13 +198,13 @@ const PhotoUpload = ({
 
   return (
     <LinearGradient colors={Colors.backgroundGradient} style={{ flex: 1 }}>
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={localStyles.container}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{ flex: 1 }}
+          style={{ flex: 1}}
           keyboardVerticalOffset={20}
         >
-          <View style={[localStyles.pageContainer, { height: '100%' }]}>
+          <View style={[localStyles.pageContainer]}>
             <View style={localStyles.headerContainer}>
               <Text style={localStyles.titleText}>Profile Setup</Text>
             </View>
@@ -287,10 +287,15 @@ const PhotoUpload = ({
 };
 
 const localStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingVertical: 15,
+  },
   pageContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+    flex: 1,
   },
   nameHelper: {
     marginBottom: 10,

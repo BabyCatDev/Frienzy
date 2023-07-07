@@ -21,11 +21,40 @@ export const createUser = async (authResult) => {
       name: '',
     };
     await firestore().collection('users').doc(auth().currentUser.uid).set(newData);
+    await updateMyPendingGroups(user.phoneNumber);
   } else {
     //const userData = await getUserDetails()
     await firestore().collection('users').doc(auth().currentUser.uid).update({ loggedIn: true });
   }
 };
+
+export const updateMyPendingGroups = (phoneNumber) => 
+  new Promise((resolve, reject) => {
+    const uid = auth().currentUser.uid;
+    var groups = [];
+    firestore()
+      .collection('groups')
+      .where('pending', 'array-contains', phoneNumber)
+      .get()
+      .then(async (querySnapshot) => {
+        querySnapshot.forEach((documentSnapshot) => {
+          groups.push(documentSnapshot.data());
+        });
+        let groupIds = groups.map(g => g.id);
+        groups.forEach(async (group) => {
+          await firestore().collection('groups').doc(group.id).update({
+            members: firestore.FieldValue.arrayUnion(uid)
+          });
+        });
+        await firestore()
+          .collection('users')
+          .doc(uid)
+          .update({
+            groups: groupIds
+          });
+      })
+      .catch(() => reject());
+  });
 
 export const getUserDetails = async () => {
   const details = await firestore().collection('users').doc(auth().currentUser.uid).get();

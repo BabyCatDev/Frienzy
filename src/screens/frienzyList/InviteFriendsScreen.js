@@ -75,6 +75,7 @@ export const InviteFriends = ({ route }) => {
         description: description,
         startDate: startDate,
         endDate: endDate,
+        pending: selectedContacts.map(item => getMobileNumber(item))
       });
       
       const phoneNumbers = [
