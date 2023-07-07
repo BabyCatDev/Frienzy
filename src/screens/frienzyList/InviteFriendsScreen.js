@@ -106,7 +106,7 @@ export const InviteFriends = ({ route }) => {
       await sendNotification({
         tokens: fcmTokens,
         title: "Invitation from Frienzy",
-        message: `You are invited to ${userDetails.name}'s group on Frienzy, an app for group travel planning.\nPlease check your SMS inbox.`
+        message: `You are invited to ${userDetails.name}'s group, ${title}, on Frienzy, an app for group travel planning.\nPlease check your SMS inbox.`
       });
       /////
       setLoading(false);

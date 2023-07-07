@@ -21,7 +21,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.8.2</string>
+	<string>1.8.5</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -85,11 +85,11 @@
 	<key>NSContactsUsageDescription</key>
 	<string>Frienzy needs to access contacts so you can add members to your group</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>App needs access to location to share it with other users</string>
+	<string>App needs access to location to share it with other users only for the duration of a planned event</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>App needs access to location to share it with others</string>
+	<string>App needs access to location to share it with others only for the duration of a planned event </string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Frienzy shares your location with other users during the duration of a frienzy. You can turn off location sharing in the profile screen</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like access to your microphone</string>
 	<key>NSMotionUsageDescription</key>
