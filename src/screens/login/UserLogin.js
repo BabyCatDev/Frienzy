@@ -40,7 +40,7 @@ const UserLogin = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      setPhoneNumber('');
+      setPhoneNumber('650-555-1234');
     }, [])
   );
 

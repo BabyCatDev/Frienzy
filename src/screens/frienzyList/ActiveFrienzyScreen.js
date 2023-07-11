@@ -9,11 +9,9 @@ import { TouchableOpacity } from '@gorhom/bottom-sheet';
 import { formatDate } from '../../utils/FormatDate';
 // Placeholder components for the three tabs
 
-
 export const ActiveFrienzy = ({ navigation, route }) => {
   const Tab = createMaterialTopTabNavigator();
   const { groupInfo } = route.params;
-
 
   return (
     <View style={styles.container}>
@@ -26,7 +24,9 @@ export const ActiveFrienzy = ({ navigation, route }) => {
             <Text style={styles.title}>{groupInfo.name}</Text>
             <Text style={styles.subtitle}>
               {groupInfo.startDate && groupInfo.endDate
-                ? `${formatDate(new Date(groupInfo.startDate.seconds * 1000))} - ${formatDate(new Date(groupInfo.endDate.seconds * 1000))}`
+                ? `${formatDate(new Date(groupInfo.startDate.seconds * 1000))} - ${formatDate(
+                    new Date(groupInfo.endDate.seconds * 1000)
+                  )}`
                 : 'N/A'}
             </Text>
           </View>
@@ -35,24 +35,22 @@ export const ActiveFrienzy = ({ navigation, route }) => {
             size={24}
             color="black"
             style={styles.chatIcon}
-            onPress={() =>
-              navigation.push('GroupThread', { threadId: groupInfo.id })
-            }
+            onPress={() => navigation.push('GroupThread', { threadId: groupInfo.id })}
           />
         </View>
       </View>
       <View style={styles.tabContent}>
         <Tab.Navigator
           screenOptions={{
-            "tabBarActiveTintColor": "#FB5F2D",
-            "tabBarInactiveTintColor": "gray",
-            "tabBarLabelStyle": {
-              "fontSize": 16,
-              "fontWeight": "bold"
+            tabBarActiveTintColor: '#FB5F2D',
+            tabBarInactiveTintColor: 'gray',
+            tabBarLabelStyle: {
+              fontSize: 16,
+              fontWeight: 'bold',
             },
-            "tabBarIndicatorStyle": {
-              "backgroundColor": "#FB5F2D"
-            }
+            tabBarIndicatorStyle: {
+              backgroundColor: '#FB5F2D',
+            },
           }}
         >
           <Tab.Screen
@@ -73,7 +71,7 @@ export const ActiveFrienzy = ({ navigation, route }) => {
               tabBarStyle: { fontSize: 16, fontWeight: 'bold' },
             }}
           />
-          <Tab.Screen
+          {/* <Tab.Screen
             name="Friends"
             component={Map}
             initialParams={{ currentGroup: groupInfo.id }}
@@ -81,7 +79,7 @@ export const ActiveFrienzy = ({ navigation, route }) => {
               tabBarLabel: 'Friends',
               tabBarStyle: { fontSize: 16, fontWeight: 'bold' },
             }}
-          />
+          /> */}
         </Tab.Navigator>
       </View>
     </View>
