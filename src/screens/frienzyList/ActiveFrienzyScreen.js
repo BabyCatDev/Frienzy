@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Itinerary } from '../itinerary/Itinerary';
 import { SharedPhotosScreen } from '../sharedPhotos/sharedPhotosScreen';
@@ -16,9 +16,9 @@ export const ActiveFrienzy = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Pressable onPress={() => navigation.goBack()}>
           <Ionicon name="arrow-back" size={24} color="black" />
-        </TouchableOpacity>
+        </Pressable>
         <View style={styles.titleContainer}>
           <View style={styles.headerText}>
             <Text style={styles.title}>{groupInfo.name}</Text>

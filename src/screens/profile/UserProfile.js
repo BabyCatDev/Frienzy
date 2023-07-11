@@ -25,6 +25,7 @@ import { removeValue } from '../../utils/AsyncStore';
 import DeleteAccountOverlay from './DeleteAccountOverlay';
 import { setLocationEnabled } from '../../redux/actions/data/UserLocation';
 import Ionicon from 'react-native-vector-icons/Ionicons';
+import { updateUserName } from '../../services/firebase/user';
 
 const UserProfile = ({ navigation }) => {
   const { height } = useWindowDimensions();
@@ -41,8 +42,6 @@ const UserProfile = ({ navigation }) => {
   const userGroups = useSelector((state) => userDetails.groups || []);
   const enabled = useSelector((state) => state.FrienzyData.isEnabled);
 
-  console.log('userDetails', userDetails);
-  console.log('userFriends', userFriends);
   const firstName = useMemo(() => {
     const nameArr = name?.username?.split(' ');
     if (nameArr?.length > 1) {
@@ -85,7 +84,8 @@ const UserProfile = ({ navigation }) => {
     const key = FBSaver.getInstance().userKey;
     const phone = FBSaver.getInstance().keyToPhone[key];
     const user = await FBSaver.getInstance().getUserData();
-    setName(user ? user : { username: 'Frienzy Nickname', profile_pic: '' });
+    console.log('-----------user----------', user);
+    // setName(user ? user : { username: 'Frienzy Nickname', profile_pic: '' });
     setPhone(phone ? phone : '+12345678901');
   }
 
@@ -99,9 +99,10 @@ const UserProfile = ({ navigation }) => {
       console.log(e);
     }
   };
-  
+
   useEffect(() => {
-    fetchData();
+    setName({ username: userDetails.name });
+    // fetchData();
   }, []);
 
   return (
@@ -163,12 +164,13 @@ const UserProfile = ({ navigation }) => {
                 returnKeyType="done"
                 autoFocus={true}
                 textAlign="center"
-                value={userDetails?.name}
+                value={name.username}
                 onChangeText={(text) => setName({ ...name, username: text })}
                 style={AppStyles.profileInput}
                 placeholderTextColor={Colors.darkText}
                 onBlur={async () => {
-                  await FBSaver.getInstance().saveUsername(name?.username);
+                  // await FBSaver.getInstance().saveUsername(name?.username);
+                  updateUserName(name?.username);
                 }}
               />
             )}

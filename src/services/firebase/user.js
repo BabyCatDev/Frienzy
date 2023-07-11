@@ -28,7 +28,7 @@ export const createUser = async (authResult) => {
   }
 };
 
-export const updateMyPendingGroups = (phoneNumber) => 
+export const updateMyPendingGroups = (phoneNumber) =>
   new Promise((resolve, reject) => {
     const uid = auth().currentUser.uid;
     var groups = [];
@@ -40,18 +40,18 @@ export const updateMyPendingGroups = (phoneNumber) =>
         querySnapshot.forEach((documentSnapshot) => {
           groups.push(documentSnapshot.data());
         });
-        let groupIds = groups.map(g => g.id);
+        let groupIds = groups.map((g) => g.id);
         groups.forEach(async (group) => {
-          await firestore().collection('groups').doc(group.id).update({
-            members: firestore.FieldValue.arrayUnion(uid)
-          });
+          await firestore()
+            .collection('groups')
+            .doc(group.id)
+            .update({
+              members: firestore.FieldValue.arrayUnion(uid),
+            });
         });
-        await firestore()
-          .collection('users')
-          .doc(uid)
-          .update({
-            groups: groupIds
-          });
+        await firestore().collection('users').doc(uid).update({
+          groups: groupIds,
+        });
       })
       .catch(() => reject());
   });
@@ -59,6 +59,13 @@ export const updateMyPendingGroups = (phoneNumber) =>
 export const getUserDetails = async () => {
   const details = await firestore().collection('users').doc(auth().currentUser.uid).get();
   return details;
+};
+
+export const updateUserName = async (name) => {
+  const userref = await firestore().collection('users').doc(auth().currentUser.uid);
+  userref.update({
+    name: name,
+  });
 };
 
 export const getUserById = (docID) =>
@@ -126,8 +133,7 @@ export const getGroupsForUser = async (groups) => {
     const groupsData = [];
     for (const group of groups) {
       const temp = await firestore().collection('groups').doc(group).get();
-      if (temp.data() !== undefined)
-        groupsData.push(temp.data());
+      if (temp.data() !== undefined) groupsData.push(temp.data());
     }
     return groupsData;
   } catch (e) {
@@ -156,7 +162,7 @@ export const getAllMembersInUsersGroups = async (groupsIds, userId) => {
     const friends = [];
     for (const groupId of groupsIds) {
       const groupData = await firestore().collection('groups').doc(groupId).get();
-      const mems = groupData.data()?.members??[];
+      const mems = groupData.data()?.members ?? [];
       for (const mem of mems) {
         friends.indexOf(mem) === -1 && friends.push(mem);
       }
@@ -170,34 +176,27 @@ export const getAllMembersInUsersGroups = async (groupsIds, userId) => {
 
 export const updateFcmToken = async () => {
   try {
-    if (auth().currentUser == null)
-      return;
-    
+    if (auth().currentUser == null) return;
+
     const token = await messaging().getToken();
-    await firestore()
-      .collection('users')
-      .doc(auth().currentUser.uid)
-      .update({ 
-        fcm_token: token,
-      });
+    await firestore().collection('users').doc(auth().currentUser.uid).update({
+      fcm_token: token,
+    });
   } catch (error) {
     console.error(error);
   }
-}
+};
 
-export const loadAllUsers = async () => {  
+export const loadAllUsers = async () => {
   try {
-    if (auth().currentUser == null)
-      return null;
+    if (auth().currentUser == null) return null;
 
-    const querySnapshot = await firestore()
-      .collection('users')
-      .get({
-        source: 'server'
-      });
+    const querySnapshot = await firestore().collection('users').get({
+      source: 'server',
+    });
     return querySnapshot.docs.map((doc) => doc.data());
   } catch (error) {
     console.error(error);
     return null;
   }
-}
+};

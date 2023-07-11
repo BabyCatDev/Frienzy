@@ -75,8 +75,9 @@ export default class FBSaver {
 
   saveUsername(name) {
     try {
+      alert(this.userKey);
       database().ref(`users/${this.userKey}`).update({
-        username: name,
+        name: name,
       });
     } catch (error) {
       console.log(error);

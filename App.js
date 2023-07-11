@@ -81,7 +81,7 @@ const App = () => {
     <Provider store={store2}>
       <QueryClientProvider client={queryClient}>
         <StatusBar barStyle="light-content" backgroundColor={'#1A1822'} />
-        <BottomSheetModalProvider>          
+        <BottomSheetModalProvider>
           <ActionSheetProvider>
             <NavigationManager />
           </ActionSheetProvider>
