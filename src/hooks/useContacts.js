@@ -20,6 +20,20 @@ export const useContacts = (friends) => {
     setContactsAdd([]);
     if (Platform.OS === 'android') {
       // Android permission request code remains the same
+      await Contacts.requestPermission();
+      const iOSContactPermission = await Contacts.checkPermission();
+      if (iOSContactPermission === 'denied') {
+        console.log('iOS contact permission denied');
+        setLoading(false);
+        return;
+      } else if (iOSContactPermission === 'undefined') {
+        const iOSContactAuthorization = await Contacts.requestPermission();
+        if (iOSContactAuthorization !== 'authorized') {
+          console.log('iOS contact permission not authorized');
+          setLoading(false);
+          return;
+        }
+      }
     } else if (Platform.OS === 'ios') {
       const iOSContactPermission = await Contacts.checkPermission();
       if (iOSContactPermission === 'denied') {

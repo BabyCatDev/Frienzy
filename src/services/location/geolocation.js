@@ -27,14 +27,7 @@ export const saveUserLocation = async (location, time) => {
   const updatedLocation = {
     ...location,
     time: time,
-  }
-  await firestore()
-    .collection('users')
-    .doc(auth().currentUser.uid)
-    .collection('location')
-    .add({
-      ...location,
-    });
+  }  
   await firestore().collection('users').doc(auth().currentUser.uid).update({
     currentLocation: updatedLocation
   });

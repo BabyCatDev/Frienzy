@@ -31,11 +31,11 @@ export const SharedPhotosScreen = ({ route }) => {
   const handlePlusClick = async () => {
     const options = ['Open Camera', 'Open Library', 'Cancel'];
     const cancelButtonIndex = 2;
-
-    showActionSheetWithOptions({
-      options,
-      cancelButtonIndex,
-    }, async (selectedIndex) => {
+    let selectedIndex = 1;
+    // showActionSheetWithOptions({
+    //   options,
+    //   cancelButtonIndex,
+    // }, async (selectedIndex) => {
       try {
         let result = null;
         setLoading(true);
@@ -55,7 +55,7 @@ export const SharedPhotosScreen = ({ route }) => {
         console.log("photo upload failed", e);
         setLoading(false);
       }
-    }); 
+    //}); 
   }
 
   const photos = [
