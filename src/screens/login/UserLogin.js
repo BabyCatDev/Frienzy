@@ -56,7 +56,7 @@ const UserLogin = ({ navigation }) => {
     try {
       console.log('Verifying');
       setIsLoading(true);
-      await dispatch(signInUpWithPhone(confirm, code));
+      dispatch(signInUpWithPhone(confirm, code));
       setIsLoading(false);
     } catch (error) {
       console.log('Invalid code', error);
@@ -161,7 +161,7 @@ const UserLogin = ({ navigation }) => {
                         alignItems: 'center',
                       }}
                       prompt="Select Country"
-                      dropdownIconColor={'#EEF0FF'}
+                      dropdownIconColor={'black'}
                       selectedValue={selectedPrefix}
                       onFocus={() => {
                         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -181,7 +181,7 @@ const UserLogin = ({ navigation }) => {
                           label={selectedPrefix}
                           value={selectedPrefix}
                           key={selectedPrefix}
-                          color={'#EEF0FF'}
+                          color={'black'}
                         />
                       ) : (
                         countries.map((c) => {
@@ -191,8 +191,8 @@ const UserLogin = ({ navigation }) => {
                               label={c.country + ' ' + c.code}
                               value={c.code}
                               key={c.country}
-                              color={'#EEF0FF'}
-                              style={{ backgroundColor: 'black' }}
+                              color={'black'}
+                              style={{ backgroundColor: '#EEF0FF' }}
                             />
                           );
                         })
