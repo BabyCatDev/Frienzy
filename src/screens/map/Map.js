@@ -79,82 +79,82 @@ export const Map = ({ navigation, params, route }) => {
   };
 
   const [mapBounds, setMapBounds] = useState(null);
-const [isInitialMount, setIsInitialMount] = useState(true);
+  const [isInitialMount, setIsInitialMount] = useState(true);
 
-useEffect(() => {
-  let unsubscribe;
+  useEffect(() => {
+    let unsubscribe;
 
-  const getUsersLocations = async () => {
-    const querySnapshot = await firestore()
-      .collection('users')
-      .where('groups', 'array-contains', currentGroup)
-      .get();
+    const getUsersLocations = async () => {
+      const querySnapshot = await firestore()
+        .collection('users')
+        .where('groups', 'array-contains', currentGroup)
+        .get();
 
-    const usersLocationsNew = querySnapshot.docs.map((item) => {
-      const itemData = item.data();
-      const location = itemData.currentLocation;
+      const usersLocationsNew = querySnapshot.docs.map((item) => {
+        const itemData = item.data();
+        const location = itemData.currentLocation;
 
-      if ('latitude' in location && 'longitude' in location) {
-        return {
-          latitude: location.latitude,
-          longitude: location.longitude,
-          name: itemData.name,
-          profilePic: itemData.profilePic,
-          id: itemData.uid,
-          time: location.time,
-        };
-      } else if ('coords' in location && 'latitude' in location.coords && 'longitude' in location.coords) {
-        return {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          name: itemData.name,
-          profilePic: itemData.profilePic,
-          id: itemData.uid,
-          time: location.time,
-        };
-      } else {
-        return null;
-      }
-    });
-
-    const filteredLocations = usersLocationsNew.filter((location) => location !== null);
-
-    // Update the users or usersLocations state here
-    // setUsersLocations(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
-    setUsers(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
-
-    if (currentGroup && usersLocationsNew.length > 0) {
-      const bounds = getBoundingBoxCorners(usersLocationsNew.map((loc) => [loc.longitude, loc.latitude]));
-
-      // Only update the mapBounds if it's not already set
-      if (!mapBounds) {
-        setMapBounds(bounds);
-      }
-    }
-  };
-
-  if (currentGroup) {
-    unsubscribe = firestore()
-      .collection('users')
-      .where('groups', 'array-contains', currentGroup)
-      .onSnapshot(() => {
-        getUsersLocations();
+        if ('latitude' in location && 'longitude' in location) {
+          return {
+            latitude: location.latitude,
+            longitude: location.longitude,
+            name: itemData.name,
+            profilePic: itemData.profilePic,
+            id: itemData.uid,
+            time: location.time,
+          };
+        } else if ('coords' in location && 'latitude' in location.coords && 'longitude' in location.coords) {
+          return {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            name: itemData.name,
+            profilePic: itemData.profilePic,
+            id: itemData.uid,
+            time: location.time,
+          };
+        } else {
+          return null;
+        }
       });
-  }
 
-  return () => {
-    if (unsubscribe) {
-      unsubscribe();
+      const filteredLocations = usersLocationsNew.filter((location) => location !== null);
+
+      // Update the users or usersLocations state here
+      // setUsersLocations(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
+      setUsers(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
+
+      if (currentGroup && usersLocationsNew.length > 0) {
+        const bounds = getBoundingBoxCorners(usersLocationsNew.map((loc) => [loc.longitude, loc.latitude]));
+
+        // Only update the mapBounds if it's not already set
+        if (!mapBounds) {
+          setMapBounds(bounds);
+        }
+      }
+    };
+
+    if (currentGroup) {
+      unsubscribe = firestore()
+        .collection('users')
+        .where('groups', 'array-contains', currentGroup)
+        .onSnapshot(() => {
+          getUsersLocations();
+        });
     }
-  };
-}, [currentGroup]);
 
-useEffect(() => {
-  if (isInitialMount && mapBounds) {
-    camera.current.fitBounds(mapBounds.sw, mapBounds.ne, 100, 100);
-    setIsInitialMount(false);
-  }
-}, [mapBounds, isInitialMount]);
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [currentGroup]);
+
+  useEffect(() => {
+    if (isInitialMount && mapBounds) {
+      camera.current.fitBounds(mapBounds.sw, mapBounds.ne, 100, 100);
+      setIsInitialMount(false);
+    }
+  }, [mapBounds, isInitialMount]);
 
 
   useEffect(() => {
@@ -179,7 +179,7 @@ useEffect(() => {
 
 
   const handleMarkerPress = (item) => {
-    
+
     setSelectedItem(item);
   };
 
@@ -199,7 +199,7 @@ useEffect(() => {
     })
       .then((newLocation) => {
         setLoading(false);
-        saveUserLocation(newLocation);
+        saveUserLocation(newLocation, new Date().toISOString());
         setLocation([newLocation.longitude, newLocation.latitude]);
       })
       .catch((ex) => {
@@ -216,12 +216,42 @@ useEffect(() => {
   };
 
   return (
-    <View>
-      
-      <View style={{ height: height * 0.88, width: '100%', zIndex: 1 }}>
-        
+    <View style={styles.page}>        
+      <View
+        style={{
+          position: 'absolute',
+          zIndex: 10000,
+          top: 50,
+          left: 0,
+          width: '100%',
+          flexDirection: 'row',
+          margin: 5,
+          paddingHorizontal: 10,
+          justifyContent: 'center',
+        }}
+      >
+        <View style={styles.toggleWrapper}>
+          <TouchableOpacity
+            onPress={() => handleToggle('list')}
+            style={[styles.toggleButton, {
+              backgroundColor: viewMode === 'list' ? '#FB5F2D' : 'transparent',
+            }]}
+          >
+            <Text style={{ color: viewMode === 'list' ? 'white' : 'black', fontWeight: 'bold' }}>List</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => handleToggle('map')}
+            style={[styles.toggleButton, {
+              backgroundColor: viewMode === 'map' ? '#FB5F2D' : 'transparent',
+            }]}
+          >
+            <Text style={{ color:  viewMode === 'map' ? 'white' : 'black', fontWeight: 'bold' }}>Map</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View style={{height: '100%', width: '100%'}}>
         <Mapbox.MapView
-          style={{ width: '100%', height: '100%' }}
+          style={styles.map}
           styleURL={'mapbox://styles/mapbox/light-v11'}
         >
           <Mapbox.Camera
@@ -231,39 +261,6 @@ useEffect(() => {
             centerCoordinate={location}
             animationDuration={1000}
           />
-          <View
-        style={{
-          flexDirection: 'row',
-          margin: 5,
-          paddingHorizontal: 10,
-          justifyContent: 'center',
-        }}
-      >
-        <TouchableOpacity
-          onPress={() => handleToggle('list')}
-          style={{
-            backgroundColor: viewMode === 'list' ? '#FB5F2D' : '#ccc',
-            borderRadius: 10,
-            padding: 5,
-            width: 50,
-            alignItems: 'center',
-          }}
-        >
-          <Text style={{ color: 'white', fontWeight: 'bold' }}>List</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => handleToggle('map')}
-          style={{
-            backgroundColor: viewMode === 'map' ? '#FB5F2D' : '#ccc',
-            borderRadius: 10,
-            padding: 5,
-            width: 50,
-            alignItems: 'center',
-          }}
-        >
-          <Text style={{ color: 'white', fontWeight: 'bold' }}>Map</Text>
-        </TouchableOpacity>
-      </View>
 
           {users.length > 0
             ? users.map((user, index) => (
@@ -272,64 +269,55 @@ useEffect(() => {
                 key={index}
                 id={index}
               >
-                {/* <View style={{justifyContent: 'center', alignItems: 'center'}}> */}
                 <FriendMarker
                   contact={user}
                   setUserToPush={setUserToPush}
                   setVisible={setVisible}
                 />
-                {/* <Text>{user.date}</Text> */}
-                {/* </View> */}
               </Mapbox.MarkerView>
             ))
             : null}
           <Mapbox.UserLocation showsUserHeadingIndicator={true} />
           {itineraryItems.length > 0 &&
-              itineraryItems.map((item, index) => (
-                <Mapbox.MarkerView key={index.toString()} id={index.toString()} coordinate={[item.location.longitude, item.location.latitude]}>
-                  <TouchableOpacity style={{ backgroundColor: '#FB5F2D', borderRadius: 10, padding: 5 }}>
-                    <Text style={{ color: 'white', fontWeight: 'bold' }}>{item.title}</Text>
-                    <Text style={{ color: 'white', fontWeight: 'bold' }}>Start Time: {item.startTime}</Text>
-                  </TouchableOpacity>
-                </Mapbox.MarkerView>
-              ))}
+            itineraryItems.map((item, index) => (
+              <Mapbox.MarkerView key={index.toString()} id={index.toString()} coordinate={[item.location.longitude, item.location.latitude]}>
+                <TouchableOpacity style={{ backgroundColor: '#FB5F2D', borderRadius: 10, padding: 5 }}>
+                  <Text style={{ color: 'white', fontWeight: 'bold' }}>{item.title}</Text>
+                  <Text style={{ color: 'white', fontWeight: 'bold' }}>Start Time: {item.startTime}</Text>
+                </TouchableOpacity>
+              </Mapbox.MarkerView>
+            ))}
         </Mapbox.MapView>
-      </View>
-      {/* <TouchableOpacity
-        onPress={() => setAlarm(true)}
-        disabled={alarmDisabled}
-        style={{
-          position: 'absolute',
-          right: 10,
-          bottom: 80,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      > */}
-      {/* <AssetImage
-          asset={alarmDisabled ? Assets.emrgDisabled : Assets.emrgButton}
-          width={normalize(90)}
-          height={normalize(91)}
-        />
-        {Platform.OS === 'android' && (
-          <AssetImage
-            asset={Assets.whiteBell}
-            stroke={'black'}
-            containerStyle={{ position: 'absolute' }}
-            width={normalize(32)}
-            height={normalize(32)}
-          />
-        )}
-      </TouchableOpacity> */}
+      </View>      
       {visible && <OverlayScreen setVisible={setVisible} userToPush={userToPush} />}
-      {/* {alarm && (
-        <AlarmOverlay
-          setVisible={setAlarm}
-          usersToPush={users}
-          setAlarmDisabled={setAlarmDisabled}
-        />
-      )} */}
     </View>
   );
 };
 
+const styles = StyleSheet.create({
+  page: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative'
+  },
+  container: {
+    height: 300,
+    width: 300,
+  },
+  map: {
+    flex: 1,
+    width: '100%'
+  },
+  toggleWrapper: {
+    backgroundColor: '#EBEBEB',
+    flexDirection: 'row',
+    borderRadius: 43,
+  },
+  toggleButton: {    
+    borderRadius: 43,
+    padding: 5,
+    width: 50,
+    alignItems: 'center',
+  }
+});

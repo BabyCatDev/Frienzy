@@ -44,6 +44,13 @@ export async function cacheImage(uri, cacheUri, callback) {
   }
 }
 
+const getPlatformURI = (uri) => {
+  return Platform.select({
+    ios: uri,
+    android: 'file://' + uri,
+  })
+}
+
 const CacheImage = (props) => {
   const {
     source: { uri },

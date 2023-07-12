@@ -74,8 +74,8 @@ export const ActiveFrienzy = ({ navigation, route }) => {
           />
           <Tab.Screen
             name="Friends"
-            // component={Map}
-            component={FrienzyFriends}
+            component={Map}
+            //component={FrienzyFriends}
             initialParams={{ currentGroup: groupInfo.id, groupMembers: groupInfo.members }}
             options={{
               tabBarLabel: 'Friends',

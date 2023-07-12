@@ -17,6 +17,7 @@ import { saveUserLocation } from '../../services/location/geolocation';
 import { MyFriends } from '../../screens/profile/MyFriends';
 import { AddFriend } from '../../screens/group_friends/AddFriend';
 import CreateItineraryItem from '../../screens/itinerary/createItineraryItem';
+import { setLocationEnabled } from '../../redux/actions/data/UserLocation';
 
 const GroupsStack = createNativeStackNavigator();
 
