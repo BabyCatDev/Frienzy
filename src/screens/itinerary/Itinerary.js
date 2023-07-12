@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Linking,
+  Platform,
+} from 'react-native';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { Divider } from 'react-native-elements';
 import normalize from 'react-native-normalize';
-import { createItineraryItem, getItineraryItemsForGroup } from '../../services/firebase/itineraryService';
+import {
+  createItineraryItem,
+  getItineraryItemsForGroup,
+} from '../../services/firebase/itineraryService';
 import { Colors } from '../../utils/Colors';
 import { create } from 'lodash';
 import { AppStyles } from '../../utils/AppStyles';
@@ -12,7 +23,7 @@ export const Itinerary = ({ navigation, route }) => {
   const { currentGroup } = route.params;
   const [itineraryItems, setItineraryItems] = useState([]);
 
-  useEffect(() => { 
+  useEffect(() => {
     async function getItineraryItems() {
       const tempDetails = await getItineraryItemsForGroup(currentGroup);
       setItineraryItems(tempDetails);
@@ -25,7 +36,7 @@ export const Itinerary = ({ navigation, route }) => {
       ios: `http://maps.apple.com/?address=${address}`,
       android: `http://maps.google.com/?q=${address}`,
     });
-  
+
     Linking.openURL(mapUrl);
   };
   const onItemCreate = (itineraryItem) => {
@@ -33,11 +44,11 @@ export const Itinerary = ({ navigation, route }) => {
     // add itinerary item to itineraryItems array
     //make a post to the firebase
 
-    console.log('onItemCreate', currentGroup, itineraryItem)
+    console.log('onItemCreate', currentGroup, itineraryItem);
     createItineraryItem(currentGroup, itineraryItem);
 
     setItineraryItems([...itineraryItems, itineraryItem]);
-    console.log('create item', itineraryItem, currentGroup)
+    console.log('create item', itineraryItem, currentGroup);
   };
 
   return (
@@ -45,22 +56,30 @@ export const Itinerary = ({ navigation, route }) => {
       <ScrollView style={styles.list}>
         {itineraryItems.map((item, index) => (
           <View key={index} style={styles.itemContainer}>
-            <Text style={{...AppStyles.semibold20}}>{item.title}</Text>
+            <Text style={{ ...AppStyles.semibold20 }}>{item.title}</Text>
             <Divider style={styles.itemDivider} />
-            <Text style={{...AppStyles.medium13}}>{item.description.substring(0, 50)}...</Text>
-            <Text style={{...AppStyles.medium13}}>
+            <Text style={{ ...AppStyles.medium13 }}>{item.description.substring(0, 50)}...</Text>
+            <Text style={{ ...AppStyles.medium13 }}>
               {item.startTime} - {item.endTime}
             </Text>
-            <Text style={{...AppStyles.medium13}}>{item.date}</Text>
+            <Text style={{ ...AppStyles.medium13 }}>{item.date}</Text>
             <TouchableOpacity onPress={() => openMaps(item.location.name)}>
-            <Text style={styles.itemLocation}>{item.location.name}</Text>
+              <Text style={styles.itemLocation}>{item.location.name}</Text>
             </TouchableOpacity>
           </View>
         ))}
       </ScrollView>
-      <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('CreateItineraryItem', { onItemCreate: onItemCreate, currentGroup: currentGroup })}>
-      <Ionicon name="add-circle" size={64} color="#FB5F2D" />
-    </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() =>
+          navigation.navigate('CreateItineraryItem', {
+            onItemCreate: onItemCreate,
+            currentGroup: currentGroup,
+          })
+        }
+      >
+        <Ionicon name="add-circle" size={64} color="#FB5F2D" />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -85,7 +104,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'black', 
+    color: 'black',
   },
   list: {
     marginTop: 10,
@@ -138,4 +157,3 @@ const styles = StyleSheet.create({
     color: '#666', // Medium gray item address color
   },
 });
-

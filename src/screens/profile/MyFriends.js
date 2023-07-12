@@ -12,7 +12,7 @@ import { getAllMembersInUsersGroups, getFriendsForUser } from '../../services/fi
 import { AppStyles } from '../../utils/AppStyles';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
-const MyFriends = ({ navigation, setSelectedFriends, selectedFriends, isSelecting }) => {
+export const MyFriends = ({ navigation, setSelectedFriends, selectedFriends, isSelecting }) => {
   const { height } = useWindowDimensions();
   const [friendList, setFriendList] = useState([]);
   const [query, setQuery] = useState('');
@@ -41,7 +41,7 @@ const MyFriends = ({ navigation, setSelectedFriends, selectedFriends, isSelectin
               selected={selectedFriends.includes(item)}
               onPressHandler={({ itemClicked }) => {
                 console.log(itemClicked);
-                console.log('item 44', item)
+                console.log('item 44', item);
                 if (selectedFriends.includes(itemClicked.uid)) {
                   setSelectedFriends(selectedFriends.filter((sf) => sf != itemClicked.uid));
                 } else {

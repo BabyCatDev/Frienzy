@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Itinerary } from '../itinerary/Itinerary';
+import { FrienzyFriends } from '../group_friends/FrienzyFriends';
 import { SharedPhotosScreen } from '../sharedPhotos/sharedPhotosScreen';
 import { Map } from '../map/Map';
 import Ionicon from 'react-native-vector-icons/Ionicons';
@@ -71,15 +72,16 @@ export const ActiveFrienzy = ({ navigation, route }) => {
               tabBarStyle: { fontSize: 16, fontWeight: 'bold' },
             }}
           />
-          {/* <Tab.Screen
+          <Tab.Screen
             name="Friends"
-            component={Map}
-            initialParams={{ currentGroup: groupInfo.id }}
+            // component={Map}
+            component={FrienzyFriends}
+            initialParams={{ currentGroup: groupInfo.id, groupMembers: groupInfo.members }}
             options={{
               tabBarLabel: 'Friends',
               tabBarStyle: { fontSize: 16, fontWeight: 'bold' },
             }}
-          /> */}
+          />
         </Tab.Navigator>
       </View>
     </View>

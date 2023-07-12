@@ -26,6 +26,7 @@ import DeleteAccountOverlay from './DeleteAccountOverlay';
 import { setLocationEnabled } from '../../redux/actions/data/UserLocation';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { updateUserName } from '../../services/firebase/user';
+import MyFriends from './MyFriends';
 
 const UserProfile = ({ navigation }) => {
   const { height } = useWindowDimensions();
@@ -184,7 +185,7 @@ const UserProfile = ({ navigation }) => {
               }}
             >
               <TouchableOpacity
-                // onPress={() => navigation.push('Contacts')}
+                onPress={() => navigation.navigate('MyFriends')}
                 style={{
                   alignItems: 'center',
                   justifyContent: 'center',

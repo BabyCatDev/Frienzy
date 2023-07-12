@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // importing screens >>>>
 import ContactList from '../../screens/contactList';
 import GroupThread from '../../screens/groups/GroupThread';
-import { FrienzyList }  from '../../screens/frienzyList/FrienzyListScreen';
+import { FrienzyList } from '../../screens/frienzyList/FrienzyListScreen';
 import { Itinerary } from '../../screens/itinerary/Itinerary';
 import { NewFrienzyCreation } from '../../screens/frienzyList/CreateFrienzyScreen';
 import { InviteFriends } from '../../screens/frienzyList/InviteFriendsScreen';
@@ -14,6 +14,8 @@ import BackgroundGeolocation from 'react-native-background-geolocation';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveUserLocation } from '../../services/location/geolocation';
+import { MyFriends } from '../../screens/profile/MyFriends';
+import { AddFriend } from '../../screens/group_friends/AddFriend';
 import CreateItineraryItem from '../../screens/itinerary/createItineraryItem';
 
 const GroupsStack = createNativeStackNavigator();
@@ -22,7 +24,7 @@ const GroupsStackComponent = ({ navigation }) => {
   useConversations();
   const enabled = useSelector((state) => state.FrienzyData.isEnabled);
   const bigState = useSelector((state) => state.FrienzyData);
-  console.log(bigState)
+  console.log(bigState);
   //const [enabled, setEnabled] = useState(false);
   const [location, setLocation] = useState('');
 
@@ -53,7 +55,7 @@ const GroupsStackComponent = ({ navigation }) => {
 
     const onActivityChange = BackgroundGeolocation.onActivityChange((event) => {
       console.log('[onActivityChange]', event);
-      // const location = event.coords; 
+      // const location = event.coords;
       // const time = event.timestamp;
       // saveUserLocation(event.location, event.time);
     });
@@ -124,17 +126,13 @@ const GroupsStackComponent = ({ navigation }) => {
         name="ActiveFrienzy"
         component={ActiveFrienzy}
       />
-      <GroupsStack.Screen
-        options={{ headerShown: false }}
-        name="Itinerary"
-        component={Itinerary}
-      />
+      <GroupsStack.Screen options={{ headerShown: false }} name="Itinerary" component={Itinerary} />
       <GroupsStack.Screen
         options={{ headerShown: false }}
         name="CreateItineraryItem"
         component={CreateItineraryItem}
       />
-      
+
       <GroupsStack.Screen
         options={{ headerShown: false }}
         name="UserProfile"
@@ -145,11 +143,9 @@ const GroupsStackComponent = ({ navigation }) => {
         name="GroupThread"
         component={GroupThread}
       />
-      <GroupsStack.Screen
-        options={{ headerShown: false }}
-        name="Contacts"
-        component={ContactList}
-      />
+      <GroupsStack.Screen options={{ headerShown: false }} name="AddFriend" component={AddFriend} />
+      <GroupsStack.Screen options={{ headerShown: false }} name="MyFriends" component={MyFriends} />
+      <GroupsStack.Screen options={{ headerShown: false }} name="Friends" component={ContactList} />
     </GroupsStack.Navigator>
   );
 };
