@@ -1177,6 +1177,15 @@ PODS:
     - React-Core
   - RNGestureHandler (2.8.0):
     - React-Core
+  - RNImageCropPicker (0.40.0):
+    - React-Core
+    - React-RCTImage
+    - RNImageCropPicker/QBImagePickerController (= 0.40.0)
+    - TOCropViewController
+  - RNImageCropPicker/QBImagePickerController (0.40.0):
+    - React-Core
+    - React-RCTImage
+    - TOCropViewController
   - rnmapbox-maps (10.0.8-rc.1):
     - MapboxMaps (~> 10.13.1)
     - React
@@ -1233,6 +1242,7 @@ PODS:
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.10)
   - SimpleKeychain (1.0.1)
+  - TOCropViewController (2.6.1)
   - Turf (2.6.1)
   - Yoga (1.14.0)
 
@@ -1301,6 +1311,7 @@ DEPENDENCIES:
   - "RNFBStorage (from `../node_modules/@react-native-firebase/storage`)"
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - "rnmapbox-maps (from `../node_modules/@rnmapbox/maps`)"
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -1349,6 +1360,7 @@ SPEC REPOS:
     - SDWebImage
     - SDWebImageWebPCoder
     - SimpleKeychain
+    - TOCropViewController
     - Turf
 
 EXTERNAL SOURCES:
@@ -1476,6 +1488,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNImageCropPicker:
+    :path: "../node_modules/react-native-image-crop-picker"
   rnmapbox-maps:
     :path: "../node_modules/@rnmapbox/maps"
   RNReanimated:
@@ -1590,6 +1604,7 @@ SPEC CHECKSUMS:
   RNFBStorage: 83ac3f2b388cdba567f7a39f59b5a895de8e38e4
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 62232ba8f562f7dea5ba1b3383494eb5bf97a4d3
+  RNImageCropPicker: 486e2f7e2b0461ce24321f751410dce1b3b49e6d
   rnmapbox-maps: 505547e44fe713b076b39fc24bacf382cf5e5b33
   RNReanimated: ce445c233a6ff5600223484a88ad5704945d972a
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
@@ -1600,6 +1615,7 @@ SPEC CHECKSUMS:
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
   SimpleKeychain: 130211269f88f038d7dc5254cf0b1b9ce978c398
+  TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   Turf: 469ce2c3d22e5e8e4818d5a3b254699a5c89efa4
   Yoga: 99caf8d5ab45e9d637ee6e0174ec16fbbb01bcfc
 
