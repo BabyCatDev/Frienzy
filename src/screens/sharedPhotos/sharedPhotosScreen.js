@@ -38,7 +38,7 @@ export const SharedPhotosScreen = ({ route }) => {
   const { groupInfo } = useGroup(currentGroup);
   const userDetails = useSelector((state) => state.FrienzyAuth.userDetails);
   const [loading, setLoading] = useState(false);
-  const [selectedImages, setsSelectedImages] = useState([]);
+  const [selectedItem, setsSelectedItem] = useState([]);
   const [visible, setIsVisible] = useState(false);
 
   const handlePlusClick = async () => {
@@ -82,7 +82,10 @@ export const SharedPhotosScreen = ({ route }) => {
   };
 
   const photos = ['+', ...(groupInfo?.photos ?? [])];
-
+  // const images = [...(groupInfo?.photos ?? [])];
+  let images = [];
+  (groupInfo?.photos ?? []).map((item, key) => (images = [...images, { uri: item.url }]));
+  console.log('----------images----------', images);
   return (
     <View style={styles.container}>
       <FlatGrid
@@ -90,7 +93,7 @@ export const SharedPhotosScreen = ({ route }) => {
         maxItemsPerRow={3}
         spacing={0}
         data={photos}
-        renderItem={({ item }) =>
+        renderItem={({ item, index }) =>
           item == '+' ? (
             <PlusButton
               isLoading={loading}
@@ -102,11 +105,7 @@ export const SharedPhotosScreen = ({ route }) => {
           ) : (
             <PhotoItem
               onPress={() => {
-                setsSelectedImages([
-                  {
-                    uri: item.url,
-                  },
-                ]);
+                setsSelectedItem(index);
                 setIsVisible(true);
               }}
               photo={item}
@@ -117,8 +116,8 @@ export const SharedPhotosScreen = ({ route }) => {
         }
       />
       <ImageView
-        images={selectedImages}
-        imageIndex={0}
+        images={images}
+        imageIndex={selectedItem - 1}
         visible={visible}
         onRequestClose={() => setIsVisible(false)}
       />
