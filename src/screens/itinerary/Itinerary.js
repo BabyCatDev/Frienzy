@@ -11,6 +11,8 @@ import {
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { Divider } from 'react-native-elements';
 import normalize from 'react-native-normalize';
+import SearchField from '../../components/utils/SearchField';
+
 import {
   createItineraryItem,
   getItineraryItemsForGroup,
@@ -20,8 +22,10 @@ import { create } from 'lodash';
 import { AppStyles } from '../../utils/AppStyles';
 
 export const Itinerary = ({ navigation, route }) => {
+  const [query, setQuery] = useState('');
   const { currentGroup } = route.params;
   const [itineraryItems, setItineraryItems] = useState([]);
+  const [searchedItems, setSearchedItems] = useState([]);
 
   useEffect(() => {
     async function getItineraryItems() {
@@ -39,6 +43,20 @@ export const Itinerary = ({ navigation, route }) => {
 
     Linking.openURL(mapUrl);
   };
+  const searchItineraryItems = (criteria) => {
+    // Assuming you have stored the itinerary items in an array called 'itineraryItems'
+    // Perform the search based on the provided criteria
+    const searchResults = itineraryItems.filter((item) => {
+      // Customize the conditions as per your desired search criteria
+      return (
+        item.title.toLowerCase().includes(criteria.toLowerCase()) ||
+        item.description.toLowerCase().includes(criteria.toLowerCase()) ||
+        item.location.name.toLowerCase().includes(criteria.toLowerCase())
+      );
+    });
+
+    return searchResults;
+  };
   const onItemCreate = (itineraryItem) => {
     // Add navigation logic for creating a new itinerary item
     // add itinerary item to itineraryItems array
@@ -50,11 +68,22 @@ export const Itinerary = ({ navigation, route }) => {
     setItineraryItems([...itineraryItems, itineraryItem]);
     console.log('create item', itineraryItem, currentGroup);
   };
+  useEffect(() => {
+    let resultItems = searchItineraryItems(query);
+    setSearchedItems(resultItems);
+    console.log(resultItems);
+  }, [query]);
 
   return (
     <View style={styles.container}>
+      <SearchField
+        search={query}
+        setSearch={setQuery}
+        containerStyle={{ width: '100%', color: Colors.gray }}
+      />
+
       <ScrollView style={styles.list}>
-        {itineraryItems.map((item, index) => (
+        {searchedItems.map((item, index) => (
           <View key={index} style={styles.itemContainer}>
             <Text style={{ ...AppStyles.semibold20 }}>{item.title}</Text>
             <Divider style={styles.itemDivider} />
