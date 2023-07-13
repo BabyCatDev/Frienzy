@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Itinerary } from '../itinerary/Itinerary';
@@ -13,6 +14,11 @@ import { formatDate } from '../../utils/FormatDate';
 export const ActiveFrienzy = ({ navigation, route }) => {
   const Tab = createMaterialTopTabNavigator();
   const { groupInfo } = route.params;
+  const [viewMode, setViewMode] = useState('list');
+  const handleToggle = (mode) => {
+    alert('123123');
+    setViewMode(mode);
+  };
 
   return (
     <View style={styles.container}>
@@ -74,14 +80,13 @@ export const ActiveFrienzy = ({ navigation, route }) => {
           />
           <Tab.Screen
             name="Friends"
-            component={Map}
-            //component={FrienzyFriends}
-            initialParams={{ currentGroup: groupInfo.id, groupMembers: groupInfo.members }}
             options={{
               tabBarLabel: 'Friends',
               tabBarStyle: { fontSize: 16, fontWeight: 'bold' },
             }}
-          />
+            component={FrienzyFriends}
+            initialParams={{ currentGroup: groupInfo.id, groupMembers: groupInfo.members }}
+          ></Tab.Screen>
         </Tab.Navigator>
       </View>
     </View>
@@ -129,5 +134,16 @@ const styles = StyleSheet.create({
   tabContent: {
     flex: 1,
     marginTop: 20,
+  },
+  toggleWrapper: {
+    backgroundColor: '#EBEBEB',
+    flexDirection: 'row',
+    borderRadius: 43,
+  },
+  toggleButton: {
+    borderRadius: 43,
+    padding: 5,
+    width: 50,
+    alignItems: 'center',
   },
 });

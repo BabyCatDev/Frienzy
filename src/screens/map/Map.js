@@ -24,14 +24,13 @@ import FriendMarker from './FriendMarker';
 import { getGroupById } from '../../services/firebase/conversations';
 import { set } from 'lodash';
 
-
 //this is my personal access token, you can use your own, I think it's tied to my secret token which is hardcoded to my environment
 Mapbox.setAccessToken(
   'pk.eyJ1Ijoibm9sYW5kb25sZXkxNCIsImEiOiJjazJta2dqNmowaXR2M25uM3RyNzl4bmU1In0.IG-7dVSFafe9cSEpQJoU2A'
 );
 // Mapbox?.setConnected(true);
 
-export const Map = ({ navigation, params, route }) => {
+export const Map = ({ navigation, route }) => {
   const camera = useRef(null);
   const { height } = useWindowDimensions();
   const [loading, setLoading] = useState(false);
@@ -49,8 +48,6 @@ export const Map = ({ navigation, params, route }) => {
 
   // const { currentGroup } = route.params;
   console.log('groupinfo.id', users);
-
-
 
   const handleToggle = (mode) => {
     setViewMode(mode);
@@ -103,7 +100,11 @@ export const Map = ({ navigation, params, route }) => {
             id: itemData.uid,
             time: location.time,
           };
-        } else if ('coords' in location && 'latitude' in location.coords && 'longitude' in location.coords) {
+        } else if (
+          'coords' in location &&
+          'latitude' in location.coords &&
+          'longitude' in location.coords
+        ) {
           return {
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
@@ -124,7 +125,9 @@ export const Map = ({ navigation, params, route }) => {
       setUsers(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
 
       if (currentGroup && usersLocationsNew.length > 0) {
-        const bounds = getBoundingBoxCorners(usersLocationsNew.map((loc) => [loc.longitude, loc.latitude]));
+        const bounds = getBoundingBoxCorners(
+          usersLocationsNew.map((loc) => [loc.longitude, loc.latitude])
+        );
 
         // Only update the mapBounds if it's not already set
         if (!mapBounds) {
@@ -156,7 +159,6 @@ export const Map = ({ navigation, params, route }) => {
     }
   }, [mapBounds, isInitialMount]);
 
-
   useEffect(() => {
     async function getGroupDetails() {
       const details = await getGroupById(currentGroup);
@@ -165,7 +167,7 @@ export const Map = ({ navigation, params, route }) => {
     async function getItineraryItems() {
       const tempDetails = await getItineraryItemsForGroup(currentGroup);
       setItineraryItems(tempDetails);
-      console.log('temp Details', tempDetails)
+      console.log('temp Details', tempDetails);
     }
     getItineraryItems();
     getGroupDetails();
@@ -177,9 +179,7 @@ export const Map = ({ navigation, params, route }) => {
     requestLocation();
   }, []);
 
-
   const handleMarkerPress = (item) => {
-
     setSelectedItem(item);
   };
 
@@ -216,8 +216,8 @@ export const Map = ({ navigation, params, route }) => {
   };
 
   return (
-    <View style={styles.page}>        
-      <View
+    <View style={styles.page}>
+      {/* <View
         style={{
           position: 'absolute',
           zIndex: 10000,
@@ -233,27 +233,34 @@ export const Map = ({ navigation, params, route }) => {
         <View style={styles.toggleWrapper}>
           <TouchableOpacity
             onPress={() => handleToggle('list')}
-            style={[styles.toggleButton, {
-              backgroundColor: viewMode === 'list' ? '#FB5F2D' : 'transparent',
-            }]}
+            style={[
+              styles.toggleButton,
+              {
+                backgroundColor: viewMode === 'list' ? '#FB5F2D' : 'transparent',
+              },
+            ]}
           >
-            <Text style={{ color: viewMode === 'list' ? 'white' : 'black', fontWeight: 'bold' }}>List</Text>
+            <Text style={{ color: viewMode === 'list' ? 'white' : 'black', fontWeight: 'bold' }}>
+              List
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => handleToggle('map')}
-            style={[styles.toggleButton, {
-              backgroundColor: viewMode === 'map' ? '#FB5F2D' : 'transparent',
-            }]}
+            style={[
+              styles.toggleButton,
+              {
+                backgroundColor: viewMode === 'map' ? '#FB5F2D' : 'transparent',
+              },
+            ]}
           >
-            <Text style={{ color:  viewMode === 'map' ? 'white' : 'black', fontWeight: 'bold' }}>Map</Text>
+            <Text style={{ color: viewMode === 'map' ? 'white' : 'black', fontWeight: 'bold' }}>
+              Map
+            </Text>
           </TouchableOpacity>
         </View>
-      </View>
-      <View style={{height: '100%', width: '100%'}}>
-        <Mapbox.MapView
-          style={styles.map}
-          styleURL={'mapbox://styles/mapbox/light-v11'}
-        >
+      </View> */}
+      <View style={{ height: '100%', width: '100%' }}>
+        <Mapbox.MapView style={styles.map} styleURL={'mapbox://styles/mapbox/light-v11'}>
           <Mapbox.Camera
             ref={camera}
             followZoomLevel={5}
@@ -264,31 +271,39 @@ export const Map = ({ navigation, params, route }) => {
 
           {users.length > 0
             ? users.map((user, index) => (
-              <Mapbox.MarkerView
-                coordinate={[user.longitude, user.latitude]}
-                key={index}
-                id={index}
-              >
-                <FriendMarker
-                  contact={user}
-                  setUserToPush={setUserToPush}
-                  setVisible={setVisible}
-                />
-              </Mapbox.MarkerView>
-            ))
+                <Mapbox.MarkerView
+                  coordinate={[user.longitude, user.latitude]}
+                  key={index}
+                  id={index}
+                >
+                  <FriendMarker
+                    contact={user}
+                    setUserToPush={setUserToPush}
+                    setVisible={setVisible}
+                  />
+                </Mapbox.MarkerView>
+              ))
             : null}
           <Mapbox.UserLocation showsUserHeadingIndicator={true} />
           {itineraryItems.length > 0 &&
             itineraryItems.map((item, index) => (
-              <Mapbox.MarkerView key={index.toString()} id={index.toString()} coordinate={[item.location.longitude, item.location.latitude]}>
-                <TouchableOpacity style={{ backgroundColor: '#FB5F2D', borderRadius: 10, padding: 5 }}>
+              <Mapbox.MarkerView
+                key={index.toString()}
+                id={index.toString()}
+                coordinate={[item.location.longitude, item.location.latitude]}
+              >
+                <TouchableOpacity
+                  style={{ backgroundColor: '#FB5F2D', borderRadius: 10, padding: 5 }}
+                >
                   <Text style={{ color: 'white', fontWeight: 'bold' }}>{item.title}</Text>
-                  <Text style={{ color: 'white', fontWeight: 'bold' }}>Start Time: {item.startTime}</Text>
+                  <Text style={{ color: 'white', fontWeight: 'bold' }}>
+                    Start Time: {item.startTime}
+                  </Text>
                 </TouchableOpacity>
               </Mapbox.MarkerView>
             ))}
         </Mapbox.MapView>
-      </View>      
+      </View>
       {visible && <OverlayScreen setVisible={setVisible} userToPush={userToPush} />}
     </View>
   );
@@ -299,7 +314,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'relative'
+    position: 'relative',
   },
   container: {
     height: 300,
@@ -307,17 +322,17 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
-    width: '100%'
+    width: '100%',
   },
   toggleWrapper: {
     backgroundColor: '#EBEBEB',
     flexDirection: 'row',
     borderRadius: 43,
   },
-  toggleButton: {    
+  toggleButton: {
     borderRadius: 43,
     padding: 5,
     width: 50,
     alignItems: 'center',
-  }
+  },
 });
