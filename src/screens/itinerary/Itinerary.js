@@ -12,6 +12,8 @@ import Ionicon from 'react-native-vector-icons/Ionicons';
 import { Divider } from 'react-native-elements';
 import normalize from 'react-native-normalize';
 import SearchField from '../../components/utils/SearchField';
+import { createStackNavigator } from '@react-navigation/stack';
+import { ItineraryMap } from '../map/ItineraryMap';
 
 import {
   createItineraryItem,
@@ -22,10 +24,15 @@ import { create } from 'lodash';
 import { AppStyles } from '../../utils/AppStyles';
 
 export const Itinerary = ({ navigation, route }) => {
+  const Stack = createStackNavigator();
   const [query, setQuery] = useState('');
   const { currentGroup } = route.params;
   const [itineraryItems, setItineraryItems] = useState([]);
   const [searchedItems, setSearchedItems] = useState([]);
+  const [viewMode, setViewMode] = useState('list');
+  const handleToggle = (mode) => {
+    setViewMode(mode);
+  };
 
   useEffect(() => {
     async function getItineraryItems() {
@@ -71,33 +78,84 @@ export const Itinerary = ({ navigation, route }) => {
   useEffect(() => {
     let resultItems = searchItineraryItems(query);
     setSearchedItems(resultItems);
-    console.log(resultItems);
-  }, [query]);
+  }, [query, itineraryItems]);
 
   return (
     <View style={styles.container}>
       <SearchField
         search={query}
         setSearch={setQuery}
-        containerStyle={{ width: '100%', color: Colors.gray }}
+        containerStyle={[
+          { width: '100%', color: Colors.gray },
+          viewMode === 'map' ? { display: 'none' } : null,
+        ]}
       />
-
-      <ScrollView style={styles.list}>
-        {searchedItems.map((item, index) => (
-          <View key={index} style={styles.itemContainer}>
-            <Text style={{ ...AppStyles.semibold20 }}>{item.title}</Text>
-            <Divider style={styles.itemDivider} />
-            <Text style={{ ...AppStyles.medium13 }}>{item.description.substring(0, 50)}...</Text>
-            <Text style={{ ...AppStyles.medium13 }}>
-              {item.startTime} - {item.endTime}
+      <View
+        style={[
+          {
+            position: 'absolute',
+            zIndex: 1,
+            top: 10,
+            left: 0,
+            width: '100%',
+            flexDirection: 'row',
+            margin: 5,
+            paddingHorizontal: 10,
+            paddingVertical: 10,
+            justifyContent: 'center',
+          },
+          viewMode === 'list' ? { position: 'relative' } : null,
+        ]}
+      >
+        <View style={styles.toggleWrapper}>
+          <TouchableOpacity
+            onPress={() => handleToggle('list')}
+            style={[
+              styles.toggleButton,
+              {
+                backgroundColor: viewMode === 'list' ? '#FB5F2D' : 'transparent',
+              },
+            ]}
+          >
+            <Text style={{ color: viewMode === 'list' ? 'white' : 'black', fontWeight: 'bold' }}>
+              List
             </Text>
-            <Text style={{ ...AppStyles.medium13 }}>{item.date}</Text>
-            <TouchableOpacity onPress={() => openMaps(item.location.name)}>
-              <Text style={styles.itemLocation}>{item.location.name}</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </ScrollView>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => handleToggle('map')}
+            style={[
+              styles.toggleButton,
+              {
+                backgroundColor: viewMode === 'map' ? '#FB5F2D' : 'transparent',
+              },
+            ]}
+          >
+            <Text style={{ color: viewMode === 'map' ? 'white' : 'black', fontWeight: 'bold' }}>
+              Map
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      {viewMode === 'list' ? (
+        <ScrollView style={styles.list}>
+          {searchedItems.map((item, index) => (
+            <View key={index} style={styles.itemContainer}>
+              <Text style={{ ...AppStyles.semibold20 }}>{item.title}</Text>
+              <Divider style={styles.itemDivider} />
+              <Text style={{ ...AppStyles.medium13 }}>{item.description.substring(0, 50)}...</Text>
+              <Text style={{ ...AppStyles.medium13 }}>
+                {item.startTime} - {item.endTime}
+              </Text>
+              <Text style={{ ...AppStyles.medium13 }}>{item.date}</Text>
+              <TouchableOpacity onPress={() => openMaps(item.location.name)}>
+                <Text style={styles.itemLocation}>{item.location.name}</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>
+      ) : (
+        <ItineraryMap itineraryItems={itineraryItems} />
+      )}
       <TouchableOpacity
         style={styles.addButton}
         onPress={() =>
@@ -184,5 +242,16 @@ const styles = StyleSheet.create({
   itemAddress: {
     fontSize: 12,
     color: '#666', // Medium gray item address color
+  },
+  toggleWrapper: {
+    backgroundColor: '#EBEBEB',
+    flexDirection: 'row',
+    borderRadius: 43,
+  },
+  toggleButton: {
+    borderRadius: 43,
+    padding: 5,
+    width: 50,
+    alignItems: 'center',
   },
 });

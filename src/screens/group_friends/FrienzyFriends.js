@@ -13,7 +13,6 @@ import { Colors } from '../../utils/Colors';
 import SearchField from '../../components/utils/SearchField';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
-import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 // import normalize from 'react-native-normalize';
 import { FriendListItem } from './FriendListItem';
@@ -160,14 +159,7 @@ export const FrienzyFriends = ({ navigation, route }) => {
           }
         />
       ) : (
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Map"
-            component={Map}
-            initialParams={{ currentGroup: currentGroup }}
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
+        <Map _currentGroup={currentGroup} />
       )}
       <TouchableOpacity
         style={styles.addButton}

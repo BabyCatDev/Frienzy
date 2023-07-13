@@ -13,6 +13,7 @@ import { Header } from '../../components/utils/Header';
 import normalize from 'react-native-normalize';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors } from '../../utils/Colors';
+import { createStackNavigator } from '@react-navigation/stack';
 import GetLocation, { LocationError } from 'react-native-get-location';
 import OverlayScreen from './OverlayScreen';
 import Ionicon from 'react-native-vector-icons/Ionicons';
@@ -20,7 +21,7 @@ import { saveUserLocation } from '../../services/location/geolocation';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import { getItineraryItemsForGroup } from '../../services/firebase/itineraryService';
-import FriendMarker from './FriendMarker';
+import ItineraryMarker from './ItineraryMarker';
 import { getGroupById } from '../../services/firebase/conversations';
 import { set } from 'lodash';
 
@@ -30,7 +31,7 @@ Mapbox.setAccessToken(
 );
 // Mapbox?.setConnected(true);
 
-export const Map = ({ _currentGroup }) => {
+export const ItineraryMap = ({ itineraryItems }) => {
   const camera = useRef(null);
   const { height } = useWindowDimensions();
   const [loading, setLoading] = useState(false);
@@ -40,18 +41,12 @@ export const Map = ({ _currentGroup }) => {
   const [visible, setVisible] = useState(false);
   const [userToPush, setUserToPush] = useState('');
   const [viewMode, setViewMode] = useState('map');
-  const [currentGroup, setCurrentGroup] = useState(_currentGroup);
   const [selectedItem, setSelectedItem] = useState('');
-  const [groupDetails, setGroupDetails] = useState({});
   const [isCameraAdjusted, setIsCameraAdjusted] = useState(false);
-  const [itineraryItems, setItineraryItems] = useState([]);
+  console.log('===================', itineraryItems);
 
   // const { currentGroup } = route.params;
   console.log('groupinfo.id', users);
-
-  const handleToggle = (mode) => {
-    setViewMode(mode);
-  };
 
   const getBoundingBoxCorners = (coordinates) => {
     console.log('Getting bounds for coords', coordinates);
@@ -79,99 +74,11 @@ export const Map = ({ _currentGroup }) => {
   const [isInitialMount, setIsInitialMount] = useState(true);
 
   useEffect(() => {
-    let unsubscribe;
-
-    const getUsersLocations = async () => {
-      const querySnapshot = await firestore()
-        .collection('users')
-        .where('groups', 'array-contains', currentGroup)
-        .get();
-
-      const usersLocationsNew = querySnapshot.docs.map((item) => {
-        const itemData = item.data();
-        const location = itemData.currentLocation;
-
-        if ('latitude' in location && 'longitude' in location) {
-          return {
-            latitude: location.latitude,
-            longitude: location.longitude,
-            name: itemData.name,
-            profilePic: itemData.profilePic,
-            id: itemData.uid,
-            time: location.time,
-          };
-        } else if (
-          'coords' in location &&
-          'latitude' in location.coords &&
-          'longitude' in location.coords
-        ) {
-          return {
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            name: itemData.name,
-            profilePic: itemData.profilePic,
-            id: itemData.uid,
-            time: location.time,
-          };
-        } else {
-          return null;
-        }
-      });
-
-      const filteredLocations = usersLocationsNew.filter((location) => location !== null);
-
-      // Update the users or usersLocations state here
-      // setUsersLocations(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
-      setUsers(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
-
-      if (currentGroup && usersLocationsNew.length > 0) {
-        const bounds = getBoundingBoxCorners(
-          usersLocationsNew.map((loc) => [loc.longitude, loc.latitude])
-        );
-
-        // Only update the mapBounds if it's not already set
-        if (!mapBounds) {
-          setMapBounds(bounds);
-        }
-      }
-    };
-
-    if (currentGroup) {
-      unsubscribe = firestore()
-        .collection('users')
-        .where('groups', 'array-contains', currentGroup)
-        .onSnapshot(() => {
-          getUsersLocations();
-        });
-    }
-
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
-  }, [currentGroup]);
-
-  useEffect(() => {
     if (isInitialMount && mapBounds) {
       camera.current.fitBounds(mapBounds.sw, mapBounds.ne, 100, 100);
       setIsInitialMount(false);
     }
   }, [mapBounds, isInitialMount]);
-
-  useEffect(() => {
-    async function getGroupDetails() {
-      const details = await getGroupById(currentGroup);
-      setGroupDetails(details);
-    }
-    async function getItineraryItems() {
-      const tempDetails = await getItineraryItemsForGroup(currentGroup);
-      setItineraryItems(tempDetails);
-      console.log('temp Details', tempDetails);
-    }
-    getItineraryItems();
-    getGroupDetails();
-  }, [currentGroup]);
 
   useEffect(() => {
     // getContacts();
@@ -268,22 +175,6 @@ export const Map = ({ _currentGroup }) => {
             centerCoordinate={location}
             animationDuration={1000}
           />
-
-          {users.length > 0
-            ? users.map((user, index) => (
-                <Mapbox.MarkerView
-                  coordinate={[user.longitude, user.latitude]}
-                  key={index}
-                  id={index}
-                >
-                  <FriendMarker
-                    contact={user}
-                    setUserToPush={setUserToPush}
-                    setVisible={setVisible}
-                  />
-                </Mapbox.MarkerView>
-              ))
-            : null}
           <Mapbox.UserLocation showsUserHeadingIndicator={true} />
           {itineraryItems.length > 0 &&
             itineraryItems.map((item, index) => (
@@ -292,14 +183,7 @@ export const Map = ({ _currentGroup }) => {
                 id={index.toString()}
                 coordinate={[item.location.longitude, item.location.latitude]}
               >
-                <TouchableOpacity
-                  style={{ backgroundColor: '#FB5F2D', borderRadius: 10, padding: 5 }}
-                >
-                  <Text style={{ color: 'white', fontWeight: 'bold' }}>{item.title}</Text>
-                  <Text style={{ color: 'white', fontWeight: 'bold' }}>
-                    Start Time: {item.startTime}
-                  </Text>
-                </TouchableOpacity>
+                <ItineraryMarker number={index + 1} />
               </Mapbox.MarkerView>
             ))}
         </Mapbox.MapView>

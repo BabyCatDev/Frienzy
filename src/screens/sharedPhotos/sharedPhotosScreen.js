@@ -85,7 +85,6 @@ export const SharedPhotosScreen = ({ route }) => {
   // const images = [...(groupInfo?.photos ?? [])];
   let images = [];
   (groupInfo?.photos ?? []).map((item, key) => (images = [...images, { uri: item.url }]));
-  console.log('----------images----------', images);
   return (
     <View style={styles.container}>
       <FlatGrid
