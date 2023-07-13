@@ -72,8 +72,8 @@ export const SharedPhotosScreen = ({ route }) => {
           await addPhotoToItinerary(userDetails.uid, groupInfo, result[i].path);
           console.log(result[i].path);
         }
-        setLoading(false);
       }
+      setLoading(false);
     } catch (e) {
       console.log('photo upload failed', e);
       setLoading(false);

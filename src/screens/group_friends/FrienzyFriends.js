@@ -18,26 +18,44 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { FriendListItem } from './FriendListItem';
 // import { getAllMembersInUsersGroups, getFriendsForUser } from '../../services/firebase/user';
 import { AppStyles } from '../../utils/AppStyles';
-// import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { removeFriendsFromGroup } from '../../services/firebase/user';
+import { RemoveButton } from './RemoveButton';
 import { Map } from '../map/Map';
+import auth from '@react-native-firebase/auth';
 
 export const FrienzyFriends = ({ navigation, route }) => {
+  const userDetails = useSelector((state) => state.FrienzyAuth.userDetails);
   const Stack = createStackNavigator();
   const [viewMode, setViewMode] = useState('list');
   const handleToggle = (mode) => {
     setViewMode(mode);
   };
   const { currentGroup, groupMembers } = route.params;
-  const handleNext = () => {
-    navigation.navigate('AddFriend', {});
-  };
+  const userFriends = groupMembers.filter((item) => item != auth().currentUser.uid);
+
   const { height } = useWindowDimensions();
   const [friendList, setFriendList] = useState([]);
   const [query, setQuery] = useState('');
-  const userFriends = groupMembers;
+  const [loading, setLoading] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
+
   useEffect(() => {
-    console.log(userFriends);
-  }, []);
+    console.log(selectedItems);
+  }, [selectedItems]);
+  useEffect(() => setFriendList(userFriends), {
+    userFriends,
+  });
+  const handleNext = () => {
+    navigation.navigate('AddFriend', {});
+  };
+  const removeSelectedFriends = () => {
+    console.log('==========', selectedItems);
+    if (groupMembers[0] == auth().currentUser.uid) {
+      removeFriendsFromGroup(currentGroup, selectedItems);
+      updated_result = friendList.filter((item) => !selectedItems.includes(item));
+      setFriendList(updated_result);
+    }
+  };
 
   // const filteredItems = useMemo(() => {
   //   return [...friendList];
@@ -141,13 +159,21 @@ export const FrienzyFriends = ({ navigation, route }) => {
       </View>
       {viewMode === 'list' ? (
         <FlatList
-          data={userFriends}
+          data={friendList}
           keyExtractor={(item) => item}
           renderItem={({ item, index }) => (
             <FriendListItem
               item={item}
               index={index}
-              onPressHandler={({ itemClicked }) => console.log(itemClicked)}
+              onPressHandler={({ itemClicked }) => {
+                if (selectedItems.indexOf(item) === -1) {
+                  setSelectedItems([...selectedItems, item]);
+                } else {
+                  // Deselect the item
+                  setSelectedItems(selectedItems.filter((i) => i !== item));
+                }
+              }}
+              selected={selectedItems.includes(item)}
             />
           )}
           ListEmptyComponent={
@@ -163,18 +189,20 @@ export const FrienzyFriends = ({ navigation, route }) => {
       )}
       <TouchableOpacity
         style={styles.addButton}
-        onPress={
-          () => {
-            handleNext();
-          }
-          // navigation.navigate('CreateItineraryItem', {
-          //   onItemCreate: onItemCreate,
-          //   currentGroup: currentGroup,
-          // })
-        }
+        onPress={() => {
+          handleNext();
+        }}
       >
         <Ionicon name="add-circle" size={64} color="#FB5F2D" />
       </TouchableOpacity>
+      <RemoveButton
+        onPress={() => {
+          setLoading(true);
+          removeSelectedFriends();
+          setLoading(false);
+        }}
+        isLoading={loading}
+      />
     </View>
   );
 };
@@ -195,6 +223,7 @@ const styles = StyleSheet.create({
     right: 20,
     zIndex: 1, // Ensure the button is above the ScrollView
   },
+
   toggleWrapper: {
     backgroundColor: '#EBEBEB',
     flexDirection: 'row',

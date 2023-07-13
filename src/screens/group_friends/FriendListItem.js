@@ -7,7 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { useUser } from '../../hooks/useUser';
 
-export const FriendListItem = ({ item, onPressHandler, index, selected, showChecks = false }) => {
+export const FriendListItem = ({ item, onPressHandler, index, selected, showChecks = true }) => {
   const { data: userData, isLoading } = useUser(item);
 
   const getInitials = (name) => {
@@ -54,12 +54,10 @@ export const FriendListItem = ({ item, onPressHandler, index, selected, showChec
           <View
             style={{
               ...AppStyles.checkBoxContainer,
-              backgroundColor: selected ? Colors.primary : Colors.gray,
+              backgroundColor: selected ? Colors.primary : '',
             }}
           >
-            {selected && (
-              <Ionicon name={'checkmark-sharp'} size={normalize(13)} color={'orange'} />
-            )}
+            {selected && <Ionicon name={'checkmark-sharp'} size={normalize(13)} color={'orange'} />}
           </View>
         )}
       </View>

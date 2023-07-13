@@ -200,3 +200,14 @@ export const loadAllUsers = async () => {
     return null;
   }
 };
+
+export const removeFriendsFromGroup = async (groupId, friendsIdList) => {
+  const groupRef = firestore().collection('groups').doc(groupId);
+  const groupData = await groupRef.get();
+  const currentMembers = groupData.data()?.members || [];
+  const newMembers = currentMembers.filter((member) => !friendsIdList.includes(member));
+
+  await groupRef.update({
+    members: newMembers,
+  });
+};
