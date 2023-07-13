@@ -77,10 +77,10 @@ export const InviteFriends = ({ route }) => {
         endDate: endDate,
         pending: selectedContacts.map(item => getMobileNumber(item))
       });
-      
+      console.log("selectedContacts", selectedContacts)
       const phoneNumbers = [
         ...selectedContacts.map(item => ({
-          name: item.displayName,
+          name: item.givenName + " " + item.familyName,
           phone: getMobileNumber(item)
         })),
         ...friends?.filter(
