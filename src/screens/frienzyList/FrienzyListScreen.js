@@ -12,36 +12,49 @@ export const FrienzyList = () => {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState('Active');
 
-
   const userDetails = useSelector((state) => state.FrienzyAuth.userDetails);
   const [groupItems, setGroupItems] = useState([]);
-
+  const [activatedGroup, setActivatedGroup] = useState([]);
+  const [compeletedGroup, setCompeletedGroup] = useState([]);
 
   useEffect(() => {
     async function getUserGroups() {
       const tempDetails = await getGroupsForUser(userDetails.groups);
       const formattedData = tempDetails.map((td) => {
-        return { label: td.name, value: td.id, description: td.description, members: td.members, startDate: td.startDate, endDate: td.endDate };
+        return {
+          label: td.name,
+          value: td.id,
+          description: td.description,
+          members: td.members,
+          startDate: td.startDate,
+          endDate: td.endDate,
+        };
       });
       console.log('formatted data frienzyList', formattedData);
       setGroupItems(formattedData);
     }
     getUserGroups();
   }, [userDetails.groups]);
+  useEffect(() => {
+    let searchResults1 = groupItems.filter((item) => item.endDate.seconds * 1000 < Date.now());
+    setCompeletedGroup(searchResults1);
+    let searchResults2 = groupItems.filter((item) => item.endDate.seconds * 1000 > Date.now());
+    console.log('----------', searchResults2);
+    setActivatedGroup(searchResults2);
 
-
+    // Rest of your code here
+  }, [groupItems]);
 
   const fetchGroupInfo = async (groupId) => {
     const groupInfo = await getGroupById(groupId);
     console.log('groupInfo', groupInfo);
-    navigation.navigate('ActiveFrienzy', { groupInfo: groupInfo })
+    navigation.navigate('ActiveFrienzy', { groupInfo: groupInfo });
     return groupInfo;
 
     //navigate to groupFrienzy
     // pass in groupInfo
-    // 
+    //
   };
-
 
   groupItems.map((groupItem) => {
     if (!groupItem.startDate || !groupItem.endDate) {
@@ -62,57 +75,101 @@ export const FrienzyList = () => {
     navigation.navigate('NewFrienzyCreation');
   };
 
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={{ ...AppStyles.semibold40 }}>Frienzy</Text>
-        <TouchableOpacity style={styles.profileButton} onPress={() => { navigation.navigate("UserProfile") }}>
+        <TouchableOpacity
+          style={styles.profileButton}
+          onPress={() => {
+            navigation.navigate('UserProfile');
+          }}
+        >
           <Ionicon name="person-circle" size={32} color="black" />
         </TouchableOpacity>
       </View>
-  
+
       <View style={styles.tabsContainer}>
         <TouchableOpacity
           style={[styles.tab, activeTab === 'Active' && styles.activeTab]}
           onPress={() => handleTabPress('Active')}
         >
-          <Text style={[AppStyles.semibold20, activeTab === 'Active' && AppStyles.semibold22]}>Active</Text>
+          <Text style={[AppStyles.semibold20, activeTab === 'Active' && AppStyles.semibold22]}>
+            Active
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.tab, activeTab === 'Completed' && styles.activeTab]}
           onPress={() => handleTabPress('Completed')}
         >
-          <Text style={[AppStyles.semibold20, activeTab === 'Completed' && AppStyles.semibold22]}>Completed</Text>
+          <Text style={[AppStyles.semibold20, activeTab === 'Completed' && AppStyles.semibold22]}>
+            Completed
+          </Text>
         </TouchableOpacity>
       </View>
-  
+
       <ScrollView contentContainerStyle={styles.frienzyCardsContainer}>
-        {groupItems.map((groupItem) => (
-          <TouchableOpacity
-            key={groupItem.value}
-            style={styles.frienzyContainer}
-            onPress={() => fetchGroupInfo(groupItem.value)}
-          >
-            <View style={styles.frienzyContentContainer}>
-              <View style={styles.frienzyTextContainer}>
-                <Text style={{ ...AppStyles.semibold17 }}>{groupItem.label}</Text>
-                <Text style={{ ...AppStyles.medium13 }}>{groupItem.description}</Text>
-              </View>
-              <View style={styles.detailsContainer}>
-                <View>
-                  <Text style={{ ...AppStyles.semibold13 }}>
-                    {groupItem.startDate && groupItem.endDate && `${formatDate(new Date(groupItem.startDate.seconds * 1000))} - ${formatDate(new Date(groupItem.endDate.seconds * 1000))}`}
-                  </Text>
-                  <Text style={{ ...AppStyles.medium13, textAlign: 'right', marginTop: 10 }}>{groupItem.members.length} friends</Text>
+        {activeTab == 'Active'
+          ? activatedGroup.map((groupItem) => (
+              <TouchableOpacity
+                key={groupItem.value}
+                style={styles.frienzyContainer}
+                onPress={() => fetchGroupInfo(groupItem.value)}
+              >
+                <View style={styles.frienzyContentContainer}>
+                  <View style={styles.frienzyTextContainer}>
+                    <Text style={{ ...AppStyles.semibold17 }}>{groupItem.label}</Text>
+                    <Text style={{ ...AppStyles.medium13 }}>{groupItem.description}</Text>
+                  </View>
+                  <View style={styles.detailsContainer}>
+                    <View>
+                      <Text style={{ ...AppStyles.semibold13 }}>
+                        {groupItem.startDate &&
+                          groupItem.endDate &&
+                          `${formatDate(
+                            new Date(groupItem.startDate.seconds * 1000)
+                          )} - ${formatDate(new Date(groupItem.endDate.seconds * 1000))}`}
+                      </Text>
+                      <Text style={{ ...AppStyles.medium13, textAlign: 'right', marginTop: 10 }}>
+                        {groupItem.members.length} friends
+                      </Text>
+                    </View>
+                    {/* Render other conversation details */}
+                  </View>
                 </View>
-                {/* Render other conversation details */}
-              </View>
-            </View>
-          </TouchableOpacity>
-        ))}
+              </TouchableOpacity>
+            ))
+          : compeletedGroup.map((groupItem) => (
+              <TouchableOpacity
+                key={groupItem.value}
+                style={styles.frienzyContainer}
+                onPress={() => fetchGroupInfo(groupItem.value)}
+              >
+                <View style={styles.frienzyContentContainer}>
+                  <View style={styles.frienzyTextContainer}>
+                    <Text style={{ ...AppStyles.semibold17 }}>{groupItem.label}</Text>
+                    <Text style={{ ...AppStyles.medium13 }}>{groupItem.description}</Text>
+                  </View>
+                  <View style={styles.detailsContainer}>
+                    <View>
+                      <Text style={{ ...AppStyles.semibold13 }}>
+                        {groupItem.startDate &&
+                          groupItem.endDate &&
+                          `${formatDate(
+                            new Date(groupItem.startDate.seconds * 1000)
+                          )} - ${formatDate(new Date(groupItem.endDate.seconds * 1000))}`}
+                      </Text>
+                      <Text style={{ ...AppStyles.medium13, textAlign: 'right', marginTop: 10 }}>
+                        {groupItem.members.length} friends
+                      </Text>
+                    </View>
+                    {/* Render other conversation details */}
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ))}
       </ScrollView>
-  
+
       <TouchableOpacity style={styles.addButton} onPress={() => handleAddButtonPressed()}>
         <Ionicon name="add-circle" size={64} color="#FB5F2D" />
       </TouchableOpacity>
@@ -191,7 +248,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: .4,
+    shadowOpacity: 0.4,
     shadowRadius: 10,
     elevation: 4,
     padding: 16,
@@ -238,4 +295,3 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
 });
-
