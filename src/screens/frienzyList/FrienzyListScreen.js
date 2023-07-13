@@ -182,6 +182,7 @@ const styles = StyleSheet.create({
     color: '#FB5F2D',
   },
   frienzyCardsContainer: {
+    padding: 10,
     paddingHorizontal: 16,
     paddingBottom: 80, // Adjust paddingBottom to make room for the "+" button
   },

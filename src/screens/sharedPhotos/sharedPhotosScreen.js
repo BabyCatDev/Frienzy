@@ -91,7 +91,7 @@ export const SharedPhotosScreen = ({ route }) => {
       <FlatGrid
         itemDimension={100}
         maxItemsPerRow={3}
-        spacing={0}
+        spacing={5}
         data={photos}
         renderItem={({ item, index }) =>
           item == '+' ? (
