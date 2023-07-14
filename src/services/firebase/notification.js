@@ -17,7 +17,7 @@ export const sendNotification = async ({ tokens, title, message }) => {
       }
     )
     .then((response) => {
-      console.log(`SMS fcm notification successfully:`, response.data);
+      console.log(`push notification successfully:`, response.data);
     })
     .catch((error) => {
       console.log(`Error sending fcm:`, error);
