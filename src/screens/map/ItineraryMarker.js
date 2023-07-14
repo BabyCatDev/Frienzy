@@ -17,7 +17,7 @@ const ItineraryMarker = memo(({ number }) => {
           style={{
             position: 'absolute',
             top: 5,
-            left: 15,
+            left: 14,
             width: 20,
             borderRadius: 10,
             textAlign: 'center',

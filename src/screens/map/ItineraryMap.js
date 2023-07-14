@@ -43,7 +43,6 @@ export const ItineraryMap = ({ itineraryItems }) => {
   const [viewMode, setViewMode] = useState('map');
   const [selectedItem, setSelectedItem] = useState('');
   const [isCameraAdjusted, setIsCameraAdjusted] = useState(false);
-  console.log('===================', itineraryItems);
 
   // const { currentGroup } = route.params;
   console.log('groupinfo.id', users);

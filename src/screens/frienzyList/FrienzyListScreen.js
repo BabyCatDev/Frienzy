@@ -28,6 +28,7 @@ export const FrienzyList = () => {
           members: td.members,
           startDate: td.startDate,
           endDate: td.endDate,
+          isCompleted: td.isCompleted,
         };
       });
       console.log('formatted data frienzyList', formattedData);
@@ -36,9 +37,9 @@ export const FrienzyList = () => {
     getUserGroups();
   }, [userDetails.groups]);
   useEffect(() => {
-    let searchResults1 = groupItems.filter((item) => item.endDate.seconds * 1000 < Date.now());
+    let searchResults1 = groupItems.filter((item) => item.isCompleted == true);
     setCompeletedGroup(searchResults1);
-    let searchResults2 = groupItems.filter((item) => item.endDate.seconds * 1000 > Date.now());
+    let searchResults2 = groupItems.filter((item) => item.isCompleted == false);
     console.log('----------', searchResults2);
     setActivatedGroup(searchResults2);
 

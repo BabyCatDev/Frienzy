@@ -56,7 +56,7 @@ const GroupThread = ({ navigation, route }) => {
     if (!threadData) return;
     if (!threadData.members.includes(auth().currentUser.uid)) {
       setLocked(true);
-    } else {      
+    } else {
       const fIds = threadData.members.filter((e) => e != auth().currentUser.uid);
       getFriendsForUser(fIds).then((data) => {
         setMembers(data ?? []);
@@ -86,12 +86,12 @@ const GroupThread = ({ navigation, route }) => {
     setLoading(true);
     setMessage(null);
     await sendMessage(newMessage, threadId, userDetails);
-    const tokens = members.filter((e) => !!e["fcm_token"]).map((e) => e["fcm_token"]);
+    const tokens = members.filter((e) => !!e['fcm_token']).map((e) => e['fcm_token']);
     await sendNotification({
       tokens: tokens,
       title: `${userDetails.name}`,
-      message: message
-    })
+      message: message,
+    });
     setLoading(false);
   };
 
@@ -178,6 +178,9 @@ const GroupThread = ({ navigation, route }) => {
             await handleSendMessage();
           }}
           renderBubble={({ currentMessage, nextMessage, previousMessage }) => {
+            if (!currentMessage) {
+              return null; // handle null message case
+            }
             return renderItem({
               item: currentMessage,
               prev: previousMessage ?? null,

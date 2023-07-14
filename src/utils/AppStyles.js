@@ -282,11 +282,14 @@ export const AppStyles = {
   searchFieldContainer: {
     width: '100%',
     flexDirection: 'row',
-    backgroundColor: Colors.moreBlack,
+    backgroundColor: '#FAFAFA',
     paddingRight: 15,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
+    borderColor: Colors.moreBlack,
+    // borderWidth: 1,
+    boxShadow: '0px 10px 20px 0px rgba(0, 0, 0, 1)',
   },
   searchField: {
     backgroundColor: Colors.moreBlack,
