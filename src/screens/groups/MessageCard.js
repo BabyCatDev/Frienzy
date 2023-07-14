@@ -60,7 +60,6 @@ const MessageCard = ({ item, prev, next }) => {
       </View>
     );
   const { data: userData, isLoading } = useUser(item.sentBy);
-  console.log('messages sender----', item);
 
   const isCurrentUser = item.sentBy === auth().currentUser.uid;
   const isSameAsNextUser = next == null ? false : next.sentBy === item.sentBy;

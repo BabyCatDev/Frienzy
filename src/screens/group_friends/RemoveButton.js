@@ -20,7 +20,7 @@ export const RemoveButton = ({ onPress, isDisabled = false, isLoading = false })
         ) : (
           // <ActivityIndicator size="small" color="white" />
 
-          <Ionicon name="trash" size={50} color="#FB5F2D" />
+          <Ionicon name="trash" size={50} color={isDisabled ? '#404040' : '#FB5F2D'} />
         )}
       </TouchableOpacity>
     </View>
@@ -40,9 +40,10 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+
   removeButton: {
     position: 'absolute',
-    bottom: 35,
+    bottom: 30,
     left: 20,
     zIndex: 1, // Ensure the button is above the ScrollView
   },

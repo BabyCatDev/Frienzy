@@ -91,6 +91,9 @@ const GroupThread = ({ navigation, route }) => {
       tokens: tokens,
       title: `${userDetails.name}`,
       message: message,
+      data: {
+        threadId: threadId,
+      },
     });
     setLoading(false);
   };

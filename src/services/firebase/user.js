@@ -2,6 +2,7 @@ import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import auth from '@react-native-firebase/auth';
 import messaging from '@react-native-firebase/messaging';
+import { async } from 'q';
 
 export const createUser = async (authResult) => {
   const additionalUserDetails = authResult.additionalUserInfo;
@@ -231,4 +232,17 @@ export const removeFriendsFromGroup = async (groupId, friendsIdList) => {
   await groupRef.update({
     members: newMembers,
   });
+  try {
+    friendsIdList.map(async (item) => {
+      const friendRef = firestore().collection('users').doc(item);
+      const friendData = await friendRef.get();
+      const currentGroups = friendData.data()?.groups || [];
+      const newgroups = currentGroups.filter((member) => !groupId == member);
+      await friendRef.update({
+        groups: newgroups,
+      });
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };

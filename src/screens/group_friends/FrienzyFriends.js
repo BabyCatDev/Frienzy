@@ -10,11 +10,11 @@ import {
 // import LinearGradient from 'react-native-linear-gradient';
 import { Colors } from '../../utils/Colors';
 // import { Header } from '../../components/utils/Header';
-import SearchField from '../../components/utils/SearchField';
-import Ionicon from 'react-native-vector-icons/Ionicons';
+import { SpinnerHOC } from '../../utils/SpinnerHOC';
 import { useSelector } from 'react-redux';
 import { createStackNavigator } from '@react-navigation/stack';
-// import normalize from 'react-native-normalize';
+import Ionicon from 'react-native-vector-icons/Ionicons';
+
 import { FriendListItem } from './FriendListItem';
 // import { getAllMembersInUsersGroups, getFriendsForUser } from '../../services/firebase/user';
 import { AppStyles } from '../../utils/AppStyles';
@@ -32,8 +32,6 @@ export const FrienzyFriends = ({ navigation, route }) => {
   };
   const { currentGroup, groupMembers } = route.params;
   const userFriends = groupMembers.filter((item) => item != auth().currentUser.uid);
-  console.log('--------ww', userFriends);
-
   const { height } = useWindowDimensions();
   const [friendList, setFriendList] = useState([]);
   const [query, setQuery] = useState('');
@@ -49,11 +47,13 @@ export const FrienzyFriends = ({ navigation, route }) => {
     navigation.navigate('AddFriend', { currentGroup: currentGroup });
   };
   const removeSelectedFriends = () => {
+    setLoading(true);
     if (groupMembers[0] == auth().currentUser.uid) {
       removeFriendsFromGroup(currentGroup, selectedItems);
-      updated_result = friendList.filter((item) => !selectedItems.includes(item));
+      const updated_result = friendList.filter((item) => !selectedItems.includes(item));
       setFriendList(updated_result);
     }
+    setLoading(false);
   };
 
   // const filteredItems = useMemo(() => {
@@ -107,7 +107,7 @@ export const FrienzyFriends = ({ navigation, route }) => {
   //     </View>
   //   );
   // }
-
+  const WrappedFrienzyFriends = SpinnerHOC();
   return (
     <View style={styles.container}>
       <View
@@ -195,10 +195,9 @@ export const FrienzyFriends = ({ navigation, route }) => {
         <Ionicon name="add-circle" size={64} color="#FB5F2D" />
       </TouchableOpacity>
       <RemoveButton
+        isDisabled={selectedItems.length == 0 ? true : false}
         onPress={() => {
-          setLoading(true);
           removeSelectedFriends();
-          setLoading(false);
         }}
         isLoading={loading}
       />
