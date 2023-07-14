@@ -1,6 +1,6 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import {Linking} from 'react-native';
+import { Linking } from 'react-native';
 var Url = require('url-parse');
 // importing screens >>>>
 import ContactList from '../../screens/contactList';
@@ -20,6 +20,7 @@ import { MyFriends } from '../../screens/profile/MyFriends';
 import { AddFriend } from '../../screens/group_friends/AddFriend';
 import CreateItineraryItem from '../../screens/itinerary/createItineraryItem';
 import { setLocationEnabled } from '../../redux/actions/data/UserLocation';
+import { addUserToGroup } from '../../services/firebase/conversations';
 
 const GroupsStack = createNativeStackNavigator();
 
@@ -40,13 +41,12 @@ const useInitialURL = () => {
     };
 
     getUrlAsync();
-    subscription = Linking.addEventListener("url", ({url}) => {
-      console.log("incoming url", url);
+    subscription = Linking.addEventListener('url', ({ url }) => {
       setUrl(url);
-    })
+    });
     return () => {
-      subscription && Linking.removeEventListener(subscription);
-    }
+      subscription && Linking.removeEventListener?.(subscription);
+    };
   }, []);
 
   return { url, processing };
@@ -66,8 +66,11 @@ const GroupsStackComponent = ({ navigation }) => {
   useEffect(() => {
     var urlParams = new Url(url, true);
     var query = urlParams.query;
-    console.log("deeplink", urlParams, query)
-    
+    const groupId = urlParams.hash.slice(1);
+    addUserToGroup(groupId);
+    // navigation.navigate('ActiveFrienzy', { groupInfo: groupId });
+
+    // console.log('deeplink', urlParams.hash.slice(1), query);
   }, [url]);
   useEffect(() => {
     //   /// 1.  Subscribe to events.

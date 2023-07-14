@@ -5,7 +5,6 @@ import { AssetImage } from '../../assets/asset_image';
 import normalize from 'react-native-normalize';
 import CacheImage from '../../utils/CacheImage';
 
-
 const FriendMarker = memo(({ contact, setUserToPush, setVisible }) => {
   const [viewTime, setViewTime] = useState(false);
   const [lastUpdate, setLastUpdate] = useState(
@@ -19,8 +18,7 @@ const FriendMarker = memo(({ contact, setUserToPush, setVisible }) => {
     return () => clearInterval(interval);
   }, [contact]);
 
-  const cacheKey = contact.id
-
+  const cacheKey = contact.id;
 
   return (
     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -98,13 +96,13 @@ const FriendMarker = memo(({ contact, setUserToPush, setVisible }) => {
           </Text>
         </View>
       ) : null}
-       <View
+      <View
         style={{
           backgroundColor: '#EBEBEB',
           borderRadius: 10,
           paddingHorizontal: 3,
         }}
-        >
+      >
         <Text
           style={{
             color: 'black',
@@ -114,7 +112,7 @@ const FriendMarker = memo(({ contact, setUserToPush, setVisible }) => {
         >
           {contact.name}
         </Text>
-        </View>
+      </View>
     </View>
   );
 });

@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import NavigationManager from './src/navigation/NavigationManager';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { ToastConfig } from './src/components/utils/toastConfig';
-import { StatusBar } from 'react-native';
+import { StatusBar, Linking } from 'react-native';
 import AuthProvider from './src/utils/AuthProvider';
 import { QueryClientProvider, QueryClient } from 'react-query';
 //import OneSignal from 'react-native-onesignal';

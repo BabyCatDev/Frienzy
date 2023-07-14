@@ -1,6 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
+import { exp } from 'react-native-reanimated';
 
 export const conversationListener = (listener, groupsIDS) => {
   const chunkSize = 10; // Maximum number of elements per query
@@ -44,14 +45,16 @@ export const groupListener = (listener, groupId) => {
   firestore()
     .collection('groups')
     .doc(groupId)
-    .onSnapshot((documentSnapshot) => {
-      if (documentSnapshot.exists)
-        return listener(documentSnapshot.data());
-      return listener(null);
-    }, (error) => {
-      console.log("groupListener error", error);
-      return listener(null);
-    })
+    .onSnapshot(
+      (documentSnapshot) => {
+        if (documentSnapshot.exists) return listener(documentSnapshot.data());
+        return listener(null);
+      },
+      (error) => {
+        console.log('groupListener error', error);
+        return listener(null);
+      }
+    );
 };
 
 export const getGroupById = (threadId) =>
@@ -82,17 +85,25 @@ export const sendMessage = async (messageDetails, threadId) => {
     });
 };
 export const getPreDefinedGroup = () => {
-  return firestore()
-    .collection('groups')
-    .doc();
-}
+  return firestore().collection('groups').doc();
+};
 
-export const createNewGroup = async ({ group, name, pic, startDate, endDate, description, location, members, message = null, pending=[] }) => {
+export const createNewGroup = async ({
+  group,
+  name,
+  pic,
+  startDate,
+  endDate,
+  description,
+  location,
+  members,
+  message = null,
+  pending = [],
+}) => {
   const currentId = auth().currentUser.uid;
   const time = firestore.FieldValue.serverTimestamp();
 
-  if (group === null)
-    group = getPreDefinedGroup();
+  if (group === null) group = getPreDefinedGroup();
 
   var messageToAdd = {};
 
@@ -108,20 +119,19 @@ export const createNewGroup = async ({ group, name, pic, startDate, endDate, des
     messageToAdd.readBy = {};
   }
 
-  await group
-    .set({
-      name: name,
-      members: [...members, currentId],
-      startDate: startDate,
-      endDate: endDate,
-      description: description,
-      location: location,
-      createdBy: currentId,
-      createdAt: time,
-      modifiedAt: time,
-      recentMessage: messageToAdd,
-      pending: pending
-    });
+  await group.set({
+    name: name,
+    members: [...members, currentId],
+    startDate: startDate,
+    endDate: endDate,
+    description: description,
+    location: location,
+    createdBy: currentId,
+    createdAt: time,
+    modifiedAt: time,
+    recentMessage: messageToAdd,
+    pending: pending,
+  });
 
   const filename = pic?.substring(pic?.lastIndexOf('/') + 1);
   const reference = storage().ref(`GroupPhotos/${group.id}/${filename}`);
@@ -148,6 +158,31 @@ export const createNewGroup = async ({ group, name, pic, startDate, endDate, des
   }
 };
 
+export const inviteUserToGroup = async (users, threadId) => {
+  console.log('-------------', threadId);
+  // await firestore()
+  //   .collection('users')
+  //   .doc(userId)
+  //   .update({
+  //     friends: firestore.FieldValue.arrayUnion(ownerId),
+  //     groups: firestore.FieldValue.arrayUnion(threadId),
+  //   });
+
+  await firestore()
+    .collection('groups')
+    .doc(threadId)
+    .update({
+      pending: firestore.FieldValue.arrayUnion(...users),
+    });
+
+  // await firestore()
+  //   .collection('users')
+  //   .doc(ownerId)
+  //   .update({
+  //     friends: firestore.FieldValue.arrayUnion(userId),
+  //   });
+};
+
 export const addPhotoToAlbum = async (groupId, photoFile) => {
   try {
     const filename = photoFile.substring(photoFile.lastIndexOf('/') + 1);
@@ -156,7 +191,11 @@ export const addPhotoToAlbum = async (groupId, photoFile) => {
     const photoUrl = await reference.getDownloadURL();
 
     // Save the photo URL to the album collection in the group document
-    await firestore().collection('groups').doc(groupId).collection('sharedPhotos').add({ url: photoUrl, createdAt: firestore.FieldValue.serverTimestamp()});
+    await firestore()
+      .collection('groups')
+      .doc(groupId)
+      .collection('sharedPhotos')
+      .add({ url: photoUrl, createdAt: firestore.FieldValue.serverTimestamp() });
 
     return true; // Indicate successful addition of the photo to the album
   } catch (error) {
@@ -165,29 +204,39 @@ export const addPhotoToAlbum = async (groupId, photoFile) => {
   }
 };
 
-export const addUserToGroup = async (threadId, userId, ownerId) => {
-  console.log(threadId, userId, ownerId);
-  await firestore()
-    .collection('users')
-    .doc(userId)
-    .update({
-      friends: firestore.FieldValue.arrayUnion(ownerId),
-      groups: firestore.FieldValue.arrayUnion(threadId),
-    });
+export const addUserToGroup = async (threadId) => {
+  groupItem = await firestore().collection('groups').doc(threadId).get();
 
-  await firestore()
-    .collection('groups')
-    .doc(threadId)
-    .update({
-      members: firestore.FieldValue.arrayUnion(userId),
-    });
+  const ownerId = groupItem.data().createdBy;
+  console.log('----threadId', ownerId);
 
-  await firestore()
-    .collection('users')
-    .doc(ownerId)
-    .update({
-      friends: firestore.FieldValue.arrayUnion(userId),
-    });
+  const userId = auth().currentUser.uid;
+  try {
+    await firestore()
+      .collection('users')
+      .doc(userId)
+      .update({
+        friends: firestore.FieldValue.arrayUnion(ownerId),
+        groups: firestore.FieldValue.arrayUnion(threadId),
+      });
+
+    await firestore()
+      .collection('groups')
+      .doc(threadId)
+      .update({
+        members: firestore.FieldValue.arrayUnion(userId),
+      });
+
+    await firestore()
+      .collection('users')
+      .doc(ownerId)
+      .update({
+        friends: firestore.FieldValue.arrayUnion(userId),
+      });
+  } catch (error) {
+    console.log('Error adding add user to group:', error);
+    return false; // Indicate failure in adding the photo to the album
+  }
 };
 
 export const removeUserFromGroup = async (threadId, userId) => {

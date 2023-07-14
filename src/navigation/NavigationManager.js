@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Linking } from 'react-native';
 import SplashScreen from '../screens/splash/SplashScreen';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllUsers, userAuthStateListener } from '../redux/actions/data/UserDetails';
@@ -9,7 +9,7 @@ import { GetMainAppComponents } from './MainStack/MainStack';
 import { GetOnboardingComponents } from './AuthStack/OnboardingStack';
 
 const linking = {
-  prefixes: ['frienzy://'],
+  prefixes: ['https://www.frienzy.io/invite/'],
   config: {
     screens: {
       Frienzy: {
@@ -27,6 +27,21 @@ const linking = {
 };
 
 const NavigationManager = (props) => {
+  // const handleDeepLink = (event) => {
+  //   alert('!!!!!!!!!');
+  //   console.log('Deep link detected!');
+  //   console.log('Event data:', event);
+  //   groupId = event.url.replace(/.*?:\/\//, '');
+  //   // ...handle the deep link and navigate to the appropriate screen
+  // };
+  // useEffect(() => {
+  //   // Add an event listener for deep links
+  //   Linking.addEventListener(
+  //     'https://www.frienzy.io/invite/groups/thread/FpdUSvEyrDVtwECTFeIn',
+  //     handleDeepLink
+  //   );
+  //   return () => Linking.removeEventListener?.('https://www.frienzy.io/invite', handleDeepLink);
+  // }, []);
   const currentUserObj = useSelector((state) => state.FrienzyAuth);
   const dispatch = useDispatch();
 

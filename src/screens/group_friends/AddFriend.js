@@ -26,6 +26,7 @@ import { MainButton } from '../../components/utils/MainButton';
 import { sendInviteSMSToUsers } from '../../services/twillioService';
 import { getMobileNumber } from '../../utils/helper';
 import { sendNotification } from '../../services/firebase/notification';
+import { inviteUserToGroup } from '../../services/firebase/conversations';
 
 export const AddFriend = ({ route }) => {
   const [query, setQuery] = useState('');
@@ -35,7 +36,7 @@ export const AddFriend = ({ route }) => {
   const [selectedFriends, setSelectedFriends] = useState([]);
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const {} = route.params;
+  const { currentGroup } = route.params;
   const { data: friends, isLoading } = useFriends(userFriends);
   const { contactsToAdd, contactsLoading } = useContacts(userFriends);
   const newFbGroupRef = getPreDefinedGroup();
@@ -49,11 +50,6 @@ export const AddFriend = ({ route }) => {
       data: [],
     },
   ]);
-
-  const handleInvite = (friend) => {
-    // Implement your invite logic here
-    console.log('Inviting friend:', friend);
-  };
 
   const toggleFriendSelection = (friendId) => {
     if (selectedFriends.includes(friendId)) {
@@ -70,7 +66,7 @@ export const AddFriend = ({ route }) => {
     }
   };
 
-  const handleCreatePress = async () => {
+  const handleInvitePress = async () => {
     try {
       setLoading(true);
 
@@ -86,7 +82,12 @@ export const AddFriend = ({ route }) => {
             phone: item.phone,
           })),
       ];
-      await sendInviteSMSToUsers(userDetails.name, newFbGroupRef.id, phoneNumbers);
+
+      inviteUserToGroup(
+        phoneNumbers.map((item) => item.phone),
+        currentGroup
+      );
+      await sendInviteSMSToUsers(userDetails.name, currentGroup, phoneNumbers);
       /** notification part */
       const fcmTokens = friends
         ?.filter((item) => selectedFriends.includes(item.uid) && !!item['fcm_token'])
@@ -94,19 +95,19 @@ export const AddFriend = ({ route }) => {
       await sendNotification({
         tokens: fcmTokens,
         title: 'Invitation from Frienzy',
-        message: `You are invited to ${userDetails.name}'s group, ${title}, on Frienzy, an app for group travel planning.\nPlease check your SMS inbox.`,
+        message: `You are invited to ${userDetails.name}'s group, ${currentGroup}, on Frienzy, an app for group travel planning.\nPlease check your SMS inbox.`,
       });
       /////
       setLoading(false);
       navigation.navigate('FrienzyList');
     } catch (error) {
       setLoading(false);
-      console.log('handleCreatePress error:', error);
+      console.log('handleInvitePress error:', error);
     }
   };
 
   const handleCopyLink = () => {
-    const invitationLink = `https://www.frienzy.io/invite/#${newFbGroupRef.id}`; // Replace with your actual invitation link
+    const invitationLink = `https://www.frienzy.io/invite/#${currentGroup}`; // Replace with your actual invitation link
     Clipboard.setString(invitationLink);
     console.log('Invitation link copied to clipboard:', invitationLink);
 
@@ -201,7 +202,7 @@ export const AddFriend = ({ route }) => {
         title="Add Friends"
         isLoading={loading}
         isDisabled={loading}
-        onPress={async () => handleCreatePress()}
+        onPress={async () => handleInvitePress()}
         containerStyle={{
           alignSelf: 'center',
         }}
@@ -210,7 +211,7 @@ export const AddFriend = ({ route }) => {
         <Ionicon name="copy-outline" size={24} color="black" />
         <Text style={styles.copyButtonText}>Copy Invitation Link</Text>
       </Pressable>
-      <Toast ref={(ref) => Toast.setRef(ref)} />
+      {/* <Toast ref={(ref) => Toast.setRef(ref)} /> */}
     </View>
   );
 };
