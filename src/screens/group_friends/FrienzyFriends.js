@@ -32,6 +32,7 @@ export const FrienzyFriends = ({ navigation, route }) => {
   };
   const { currentGroup, groupMembers } = route.params;
   const userFriends = groupMembers.filter((item) => item != auth().currentUser.uid);
+  console.log('--------ww', userFriends);
 
   const { height } = useWindowDimensions();
   const [friendList, setFriendList] = useState([]);
@@ -42,14 +43,11 @@ export const FrienzyFriends = ({ navigation, route }) => {
   useEffect(() => {
     console.log(selectedItems);
   }, [selectedItems]);
-  useEffect(() => setFriendList(userFriends), {
-    userFriends,
-  });
+  useEffect(() => setFriendList(userFriends), { userFriends });
   const handleNext = () => {
     navigation.navigate('AddFriend', {});
   };
   const removeSelectedFriends = () => {
-    console.log('==========', selectedItems);
     if (groupMembers[0] == auth().currentUser.uid) {
       removeFriendsFromGroup(currentGroup, selectedItems);
       updated_result = friendList.filter((item) => !selectedItems.includes(item));

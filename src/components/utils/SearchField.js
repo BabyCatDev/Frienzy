@@ -10,13 +10,13 @@ const SearchField = ({
   search,
   setSearch,
   containerStyle,
-  backgroundColor = Colors.moreBlack,
+  backgroundColor = Colors.white,
   textColor = Colors.lightText,
   placeholderColor = Colors.someGray,
 }) => {
   return (
     <View style={containerStyle}>
-      <View style={[AppStyles.searchFieldContainer, { backgroundColor }]}>
+      <View style={[AppStyles.searchFieldContainer]}>
         <TextInput
           placeholder="Name"
           placeholderTextColor={placeholderColor ?? Colors.someGray}

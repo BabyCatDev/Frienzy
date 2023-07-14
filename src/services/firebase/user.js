@@ -128,17 +128,38 @@ export const saveNameAndPhoto = async (uid, photoURL, username) => {
   }
 };
 
-export const getGroupsForUser = async (groups) => {
-  try {
-    const groupsData = [];
-    for (const group of groups) {
-      const temp = await firestore().collection('groups').doc(group).get();
-      if (temp.data() !== undefined) groupsData.push(temp.data());
+export const getGroupsForUser = (groups) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const groupsData = [];
+      const promises = groups.map((group) => {
+        return new Promise((resolve, reject) => {
+          firestore()
+            .collection('groups')
+            .doc(group)
+            .onSnapshot(
+              (doc) => {
+                if (doc.exists) {
+                  groupsData.push(doc.data());
+                  resolve();
+                } else {
+                  reject(`Document does not exist: '${group}'`);
+                }
+              },
+              (error) => {
+                reject(error);
+              }
+            );
+        });
+      });
+      Promise.all(promises).then(() => {
+        resolve(groupsData);
+      });
+    } catch (e) {
+      console.log(e);
+      reject(e);
     }
-    return groupsData;
-  } catch (e) {
-    console.log(e);
-  }
+  });
 };
 
 export const getFriendsForUser = async (friendsIDS) => {
