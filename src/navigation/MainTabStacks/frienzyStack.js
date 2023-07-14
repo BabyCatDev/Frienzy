@@ -1,5 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {Linking} from 'react-native';
+var Url = require('url-parse');
 // importing screens >>>>
 import ContactList from '../../screens/contactList';
 import GroupThread from '../../screens/groups/GroupThread';
@@ -21,16 +23,52 @@ import { setLocationEnabled } from '../../redux/actions/data/UserLocation';
 
 const GroupsStack = createNativeStackNavigator();
 
+const useInitialURL = () => {
+  const [url, setUrl] = useState(null);
+  const [processing, setProcessing] = useState(true);
+  useEffect(() => {
+    let subscription = null;
+    const getUrlAsync = async () => {
+      // Get the deep link used to open the app
+      const initialUrl = await Linking.getInitialURL();
+
+      // The setTimeout is just for testing purpose
+      setTimeout(() => {
+        setUrl(initialUrl);
+        setProcessing(false);
+      }, 1000);
+    };
+
+    getUrlAsync();
+    subscription = Linking.addEventListener("url", ({url}) => {
+      console.log("incoming url", url);
+      setUrl(url);
+    })
+    return () => {
+      subscription && Linking.removeEventListener(subscription);
+    }
+  }, []);
+
+  return { url, processing };
+};
+
 const GroupsStackComponent = ({ navigation }) => {
   useConversations();
   const enabled = useSelector((state) => state.FrienzyData.isEnabled);
   const bigState = useSelector((state) => state.FrienzyData);
+  const { url, processing } = useInitialURL();
   console.log(bigState);
   //const [enabled, setEnabled] = useState(false);
   const [location, setLocation] = useState('');
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    var urlParams = new Url(url, true);
+    var query = urlParams.query;
+    console.log("deeplink", urlParams, query)
+    
+  }, [url]);
   useEffect(() => {
     //   /// 1.  Subscribe to events.
     const onLocation = BackgroundGeolocation.onLocation((event) => {
