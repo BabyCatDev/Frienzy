@@ -9,12 +9,14 @@ import { Map } from '../map/Map';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { TouchableOpacity } from '@gorhom/bottom-sheet';
 import { formatDate } from '../../utils/FormatDate';
+
 // Placeholder components for the three tabs
 
 export const ActiveFrienzy = ({ navigation, route }) => {
   const Tab = createMaterialTopTabNavigator();
   const { groupInfo } = route.params;
   const [viewMode, setViewMode] = useState('list');
+
   const handleToggle = (mode) => {
     alert('123123');
     setViewMode(mode);

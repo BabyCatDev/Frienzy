@@ -1,4 +1,5 @@
 import React from 'react';
+import { useCallback } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Linking } from 'react-native';
 var Url = require('url-parse');
@@ -54,6 +55,7 @@ const useInitialURL = () => {
 
 const GroupsStackComponent = ({ navigation }) => {
   useConversations();
+
   const enabled = useSelector((state) => state.FrienzyData.isEnabled);
   const bigState = useSelector((state) => state.FrienzyData);
   const { url, processing } = useInitialURL();

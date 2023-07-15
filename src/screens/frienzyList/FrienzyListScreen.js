@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { AppStyles } from '../../utils/AppStyles';
@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import { getGroupsForUser } from '../../services/firebase/user';
 import { getGroupById } from '../../services/firebase/conversations';
 import { formatDate } from '../../utils/FormatDate';
+import messaging from '@react-native-firebase/messaging';
+import { AppState } from 'react-native';
 
 export const FrienzyList = () => {
   const navigation = useNavigation();
@@ -16,6 +18,26 @@ export const FrienzyList = () => {
   const [groupItems, setGroupItems] = useState([]);
   const [activatedGroup, setActivatedGroup] = useState([]);
   const [compeletedGroup, setCompeletedGroup] = useState([]);
+  const handleNotificationTap = useCallback(async (remoteMessage) => {
+    console.log('Notification tapped:', remoteMessage);
+    const group_id = remoteMessage.data.groupId;
+    navigation.navigate('GroupThread', { threadId: group_id });
+  }, []);
+
+  messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+    const appState = AppState.currentState;
+    if (appState === 'background' || appState === 'inactive') {
+      // App is in the background or closed
+      await handleNotificationTap(remoteMessage);
+    }
+  });
+  messaging().onMessage(async (remoteMessage) => {
+    const appState = AppState.currentState;
+    if (appState === 'background' || appState === 'inactive') {
+      // App is in the background or closed
+      await handleNotificationTap(remoteMessage);
+    }
+  });
 
   useEffect(() => {
     async function getUserGroups() {
@@ -74,6 +96,7 @@ export const FrienzyList = () => {
 
   const handleAddButtonPressed = () => {
     navigation.navigate('NewFrienzyCreation');
+    // navigation.navigate('GroupThread', { threadId: 'FpdUSvEyrDVtwECTFeIn' });
   };
 
   return (
