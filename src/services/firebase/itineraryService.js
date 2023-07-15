@@ -1,6 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
+import { Image } from 'react-native-compressor';
 
 export const createItineraryItem = async (groupId, itineraryItem) => {
   const groupRef = firestore().collection('groups').doc(groupId);
@@ -26,8 +27,12 @@ export const addPhotoToItinerary = async (userId, group, pic) => {
   try {
     const filename = pic?.substring(pic?.lastIndexOf('/') + 1);
     const reference = storage().ref(`SharedPhotos/${group.id}/${filename}`);
+    const result = await Image.compress(pic, {
+      compressionMethod: 'auto',
+    });
+    console.log('-image--compress', pic);
     console.log('addPhotoToItinerary: start putFile');
-    await reference.putFile(pic);
+    await reference.putFile(result);
     console.log('addPhotoToItinerary: end putFile');
     const url = await storage().ref(`SharedPhotos/${group.id}/${filename}`).getDownloadURL();
     console.log('addPhotoToItinerary: getDownloadURL', url);
@@ -67,6 +72,7 @@ export const addPhotoToItinerary = async (userId, group, pic) => {
 export const DeletePhotoFromItinerary = async (group, pic) => {
   const filename = pic?.substring(pic?.lastIndexOf('/') + 1);
   const photoIndex = group.photos.findIndex((photo) => photo.url === pic);
+  alert(pic);
   const reference = storage().ref(`SharedPhotos/${group.id}/${filename}`);
 
   if (photoIndex !== -1) {
