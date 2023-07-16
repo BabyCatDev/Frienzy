@@ -58,17 +58,16 @@ export const FrienzyList = () => {
   // Callback function to handle isCompleted field changes
 
   const onIsCompletedChange = (groupId, isCompleted) => {
-    console.log('isCompleted field changed for group:', groupId, 'New value:', isCompleted);
     const tempItems = groupItems;
-    console.log('updated Items', tempItems);
 
     tempItems.map((item) => {
       if (item.value == groupId) item.isCompleted = isCompleted;
     });
+    console.log('---groupItems---', groupItems);
     if (tempItems.length != 0) {
       let searchResults1 = tempItems.filter((item) => item.isCompleted == true);
       setCompeletedGroup(searchResults1);
-      let searchResults2 = groupItems.filter((item) => item.isCompleted == false);
+      let searchResults2 = groupItems.filter((item) => item.isCompleted != true);
       setActivatedGroup(searchResults2);
     }
     // Call getUserGroups when isCompleted changes
@@ -79,11 +78,12 @@ export const FrienzyList = () => {
     getUserGroups();
   }, [userDetails.groups]);
   useEffect(() => {
-    console.log('created Items--------------------->>', groupItems);
     let searchResults1 = groupItems.filter((item) => item.isCompleted == true);
     setCompeletedGroup(searchResults1);
-    let searchResults2 = groupItems.filter((item) => item.isCompleted == false);
+    let searchResults2 = groupItems.filter((item) => item.isCompleted != true);
     setActivatedGroup(searchResults2);
+    console.log('result1--------', searchResults1);
+    console.log('result2--------', activatedGroup);
   }, [groupItems]);
 
   const fetchGroupInfo = async (groupId) => {

@@ -154,9 +154,9 @@ export const getGroupsForUser = (groups, onIsCompletedChange) => {
             const isCompleted = snapshot.data().isCompleted;
 
             const index = groupsData.findIndex((item) => item.id === group);
-            console.log('-----------heyhey1--', index);
 
-            if (index !== -1) {
+            if (index !== -1 && groupsData[index].isCompleted != isCompleted) {
+              console.log('hihihihihii');
               groupsData[index].isCompleted = isCompleted;
 
               // Invoke the callback function when isCompleted changes
