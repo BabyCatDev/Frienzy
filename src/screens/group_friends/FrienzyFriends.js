@@ -41,11 +41,16 @@ export const FrienzyFriends = ({ navigation, route }) => {
   useEffect(() => {
     console.log(selectedItems);
   }, [selectedItems]);
-  useEffect(() => setFriendList(userFriends), { userFriends });
+
+  useEffect(() => {
+    setFriendList(userFriends)
+  }, [groupMembers]);
+
   const handleNext = () => {
     console.log('=======cur===', currentGroup);
     navigation.navigate('AddFriend', { currentGroup: currentGroup });
   };
+  
   const removeSelectedFriends = () => {
     setLoading(true);
     if (groupMembers[0] == auth().currentUser.uid) {
