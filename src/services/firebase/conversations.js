@@ -131,6 +131,7 @@ export const createNewGroup = async ({
     modifiedAt: time,
     recentMessage: messageToAdd,
     pending: pending,
+    isCompleted: false,
   });
 
   const filename = pic?.substring(pic?.lastIndexOf('/') + 1);

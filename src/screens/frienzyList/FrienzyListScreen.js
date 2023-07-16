@@ -61,7 +61,7 @@ export const FrienzyList = () => {
   useEffect(() => {
     let searchResults1 = groupItems.filter((item) => item.isCompleted == true);
     setCompeletedGroup(searchResults1);
-    let searchResults2 = groupItems.filter((item) => item.isCompleted == false);
+    let searchResults2 = groupItems.filter((item) => item.isCompleted != true);
     console.log('----------', searchResults2);
     setActivatedGroup(searchResults2);
 
