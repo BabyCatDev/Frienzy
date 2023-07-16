@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from 'react-native';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Colors } from '../../utils/Colors';
 import { AppStyles } from '../../utils/AppStyles';
-
 
 export const CreateItineraryItem = ({ route, navigation }) => {
   const [title, setTitle] = useState('');
@@ -36,7 +43,8 @@ export const CreateItineraryItem = ({ route, navigation }) => {
 
   const handleSearch = async () => {
     try {
-      const token = 'pk.eyJ1Ijoibm9sYW5kb25sZXkxNCIsImEiOiJjazJta2dqNmowaXR2M25uM3RyNzl4bmU1In0.IG-7dVSFafe9cSEpQJoU2A';
+      const token =
+        'pk.eyJ1Ijoibm9sYW5kb25sZXkxNCIsImEiOiJjazJta2dqNmowaXR2M25uM3RyNzl4bmU1In0.IG-7dVSFafe9cSEpQJoU2A';
       const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchQuery}.json?access_token=${token}&types=address,poi,place&limit=10&fuzzyMatch=true&language=en`;
 
       const response = await fetch(endpoint);
@@ -53,7 +61,10 @@ export const CreateItineraryItem = ({ route, navigation }) => {
   const handleSelectLocation = (location) => {
     const selectedFeature = searchResults.find((feature) => feature.place_name === location);
     if (selectedFeature) {
-      const { place_name: name, center: [longitude, latitude] } = selectedFeature;
+      const {
+        place_name: name,
+        center: [longitude, latitude],
+      } = selectedFeature;
       setSelectedLocation({ name, latitude, longitude });
       console.log('Selected location:', selectedLocation);
     }
@@ -62,11 +73,14 @@ export const CreateItineraryItem = ({ route, navigation }) => {
   const handleCreateItem = () => {
     // Check if all required fields are filled
     if (!title || !description || !startTime || !endTime || !date || !selectedLocation) {
-     Alert.alert('Please fill all the required fields.');
+      Alert.alert('Please fill all the required fields.');
       return;
     }
 
-    const formattedStartTime = startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const formattedStartTime = startTime.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
     const formattedEndTime = endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const formattedDate = date.toDateString();
 
@@ -103,27 +117,46 @@ export const CreateItineraryItem = ({ route, navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicon name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        <Text style={{...AppStyles.semibold20, marginLeft: 15 }}>Create New Itinerary Item</Text>
+        <Text style={{ ...AppStyles.semibold20, marginLeft: 15 }}>Create New Itinerary Item</Text>
       </View>
 
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
-        <TextInput
-          style={styles.input}
-          placeholder="Title"
-          value={title}
-          onChangeText={setTitle}
-        />
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        <TextInput style={styles.input} placeholder="Title" value={title} onChangeText={setTitle} />
         <TextInput
           style={styles.input}
           placeholder="Description"
           value={description}
           onChangeText={setDescription}
         />
-        <TouchableOpacity style={styles.timePickerButton} onPress={() => setShowStartTimePicker(true)}>
-          <Text style={styles.title}>{startTime ? `Start Time: ${startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : 'Select Start Time'}</Text>
+        <TouchableOpacity
+          style={styles.timePickerButton}
+          onPress={() => setShowStartTimePicker(true)}
+        >
+          <Text style={styles.title}>
+            {startTime
+              ? `Start Time: ${startTime.toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}`
+              : 'Select Start Time'}
+          </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.timePickerButton} onPress={() => setShowEndTimePicker(true)}>
-          <Text style={styles.title}>{endTime ? `End Time: ${endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : 'Select End Time'}</Text>
+        <TouchableOpacity
+          style={styles.timePickerButton}
+          onPress={() => setShowEndTimePicker(true)}
+        >
+          <Text style={styles.title}>
+            {endTime
+              ? `End Time: ${endTime.toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}`
+              : 'Select End Time'}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.timePickerButton} onPress={() => setShowDatePicker(true)}>
           <Text style={styles.title}>{date ? `Date: ${date.toDateString()}` : 'Select Date'}</Text>

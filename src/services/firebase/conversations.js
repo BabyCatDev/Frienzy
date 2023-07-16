@@ -131,6 +131,7 @@ export const createNewGroup = async ({
     modifiedAt: time,
     recentMessage: messageToAdd,
     pending: pending,
+    isCompleted: false,
   });
 
   const filename = pic?.substring(pic?.lastIndexOf('/') + 1);
@@ -159,7 +160,6 @@ export const createNewGroup = async ({
 };
 
 export const inviteUserToGroup = async (users, threadId) => {
-  console.log('-------------', threadId);
   // await firestore()
   //   .collection('users')
   //   .doc(userId)

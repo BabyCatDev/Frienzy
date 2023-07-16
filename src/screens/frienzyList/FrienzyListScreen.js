@@ -38,34 +38,52 @@ export const FrienzyList = () => {
       await handleNotificationTap(remoteMessage);
     }
   });
+  async function getUserGroups() {
+    const tempDetails = await getGroupsForUser(userDetails.groups, onIsCompletedChange);
+    const formattedData = tempDetails.map((td) => {
+      return {
+        label: td.name,
+        value: td.id,
+        description: td.description,
+        members: td.members,
+        startDate: td.startDate,
+        endDate: td.endDate,
+        isCompleted: td.isCompleted,
+      };
+    });
+    console.log('formatted data frienzyList', formattedData);
+    setGroupItems(formattedData);
+  }
+
+  // Callback function to handle isCompleted field changes
+
+  const onIsCompletedChange = (groupId, isCompleted) => {
+    console.log('isCompleted field changed for group:', groupId, 'New value:', isCompleted);
+    const tempItems = groupItems;
+    console.log('updated Items', tempItems);
+
+    tempItems.map((item) => {
+      if (item.value == groupId) item.isCompleted = isCompleted;
+    });
+    if (tempItems.length != 0) {
+      let searchResults1 = tempItems.filter((item) => item.isCompleted == true);
+      setCompeletedGroup(searchResults1);
+      let searchResults2 = groupItems.filter((item) => item.isCompleted == false);
+      setActivatedGroup(searchResults2);
+    }
+    // Call getUserGroups when isCompleted changes
+    // getUserGroups();
+  };
 
   useEffect(() => {
-    async function getUserGroups() {
-      const tempDetails = await getGroupsForUser(userDetails.groups);
-      const formattedData = tempDetails.map((td) => {
-        return {
-          label: td.name,
-          value: td.id,
-          description: td.description,
-          members: td.members,
-          startDate: td.startDate,
-          endDate: td.endDate,
-          isCompleted: td.isCompleted,
-        };
-      });
-      console.log('formatted data frienzyList', formattedData);
-      setGroupItems(formattedData);
-    }
     getUserGroups();
   }, [userDetails.groups]);
   useEffect(() => {
+    console.log('created Items--------------------->>', groupItems);
     let searchResults1 = groupItems.filter((item) => item.isCompleted == true);
     setCompeletedGroup(searchResults1);
     let searchResults2 = groupItems.filter((item) => item.isCompleted == false);
-    console.log('----------', searchResults2);
     setActivatedGroup(searchResults2);
-
-    // Rest of your code here
   }, [groupItems]);
 
   const fetchGroupInfo = async (groupId) => {

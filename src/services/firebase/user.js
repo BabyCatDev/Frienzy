@@ -2,7 +2,6 @@ import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import auth from '@react-native-firebase/auth';
 import messaging from '@react-native-firebase/messaging';
-import { async } from 'q';
 
 export const createUser = async (authResult) => {
   const additionalUserDetails = authResult.additionalUserInfo;
@@ -129,28 +128,46 @@ export const saveNameAndPhoto = async (uid, photoURL, username) => {
   }
 };
 
-export const getGroupsForUser = (groups) => {
+export const getGroupsForUser = (groups, onIsCompletedChange) => {
+  console.log('--------groups----------', groups);
   return new Promise((resolve, reject) => {
     try {
       const groupsData = [];
+      const resolvedPromises = [];
       const promises = groups.map((group) => {
         return new Promise((resolve, reject) => {
-          firestore()
-            .collection('groups')
-            .doc(group)
-            .onSnapshot(
-              (doc) => {
-                if (doc.exists) {
-                  groupsData.push(doc.data());
-                  resolve();
-                } else {
-                  reject(`Document does not exist: '${group}'`);
-                }
-              },
-              (error) => {
-                reject(error);
+          const docRef = firestore().collection('groups').doc(group);
+          const unsubscribe = docRef.onSnapshot(
+            (doc) => {
+              if (doc.exists) {
+                groupsData.push(doc.data());
+                resolve();
+              } else {
+                reject(`Document does not exist: '${group}'`);
               }
-            );
+            },
+            (error) => {
+              reject(error);
+            }
+          );
+          docRef.onSnapshot((snapshot) => {
+            const isCompleted = snapshot.data().isCompleted;
+
+            const index = groupsData.findIndex((item) => item.id === group);
+            console.log('-----------heyhey1--', index);
+
+            if (index !== -1) {
+              groupsData[index].isCompleted = isCompleted;
+
+              // Invoke the callback function when isCompleted changes
+              onIsCompletedChange(group, isCompleted);
+            }
+          });
+        }).then(() => {
+          resolvedPromises.push(group);
+          if (resolvedPromises.length === groups.length) {
+            resolve(groupsData);
+          }
         });
       });
       Promise.all(promises).then(() => {

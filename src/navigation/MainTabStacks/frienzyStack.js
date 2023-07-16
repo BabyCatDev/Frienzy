@@ -59,7 +59,6 @@ const GroupsStackComponent = ({ navigation }) => {
   const enabled = useSelector((state) => state.FrienzyData.isEnabled);
   const bigState = useSelector((state) => state.FrienzyData);
   const { url, processing } = useInitialURL();
-  console.log(bigState);
   //const [enabled, setEnabled] = useState(false);
   const [location, setLocation] = useState('');
 
