@@ -8,7 +8,6 @@ import {
   Linking,
   Platform,
 } from 'react-native';
-import Ionicon from 'react-native-vector-icons/Ionicons';
 import { Divider } from 'react-native-elements';
 import normalize from 'react-native-normalize';
 import SearchField from '../../components/utils/SearchField';
@@ -165,7 +164,7 @@ export const Itinerary = ({ navigation, route }) => {
           })
         }
       >
-        <Ionicon name="add-circle" size={64} color="#FB5F2D" />
+        <Text style={{ fontSize: 30, color: 'white' }}>+</Text>
       </TouchableOpacity>
     </View>
   );
@@ -237,7 +236,18 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     right: 20,
-    zIndex: 1, // Ensure the button is above the ScrollView
+    width: 60,
+    height: 60,
+    backgroundColor: '#FB5F2D',
+    borderRadius: 50,
+    paddingTop: 3,
+    paddingBottom: 17,
+    paddingRight: 15,
+    paddingLeft: 17,
+    borderWidth: 5,
+    borderColor: 'white',
+    boxShadow: '3px 3px 5px #000000',
+    elevation: 5,
   },
   itemAddress: {
     fontSize: 12,

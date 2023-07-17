@@ -25,7 +25,7 @@ export const AppStyles = {
     color: 'black',
     fontSize: normalize(35),
     lineHeight: normalize(45),
-    fontFamily: 'Poppins-Semibold',
+    fontFamily: 'Jost',
   },
   semibold20: {
     color: Colors.lightText,

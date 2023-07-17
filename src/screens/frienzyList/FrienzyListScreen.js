@@ -9,6 +9,9 @@ import { getGroupById } from '../../services/firebase/conversations';
 import { formatDate } from '../../utils/FormatDate';
 import messaging from '@react-native-firebase/messaging';
 import { AppState } from 'react-native';
+import normalize from 'react-native-normalize';
+import Assets from '../../assets';
+import { AssetImage } from '../../assets/asset_image';
 
 export const FrienzyList = () => {
   const navigation = useNavigation();
@@ -127,7 +130,7 @@ export const FrienzyList = () => {
             navigation.navigate('UserProfile');
           }}
         >
-          <Ionicon name="person-circle" size={32} color="black" />
+          <Ionicon name="person-sharp" size={25} color="black" />
         </TouchableOpacity>
       </View>
 
@@ -151,8 +154,11 @@ export const FrienzyList = () => {
       </View>
 
       <ScrollView contentContainerStyle={styles.frienzyCardsContainer}>
-        {activeTab == 'Active'
-          ? activatedGroup.map((groupItem) => (
+        {activeTab == 'Active' ? (
+          activatedGroup.length == 0 ? (
+            <AssetImage asset={Assets.emptyFrienzy} />
+          ) : (
+            activatedGroup.map((groupItem) => (
               <TouchableOpacity
                 key={groupItem.value}
                 style={styles.frienzyContainer}
@@ -181,39 +187,45 @@ export const FrienzyList = () => {
                 </View>
               </TouchableOpacity>
             ))
-          : compeletedGroup.map((groupItem) => (
-              <TouchableOpacity
-                key={groupItem.value}
-                style={styles.frienzyContainer}
-                onPress={() => fetchGroupInfo(groupItem.value)}
-              >
-                <View style={styles.frienzyContentContainer}>
-                  <View style={styles.frienzyTextContainer}>
-                    <Text style={{ ...AppStyles.semibold17 }}>{groupItem.label}</Text>
-                    <Text style={{ ...AppStyles.medium13 }}>{groupItem.description}</Text>
-                  </View>
-                  <View style={styles.detailsContainer}>
-                    <View>
-                      <Text style={{ ...AppStyles.semibold13 }}>
-                        {groupItem.startDate &&
-                          groupItem.endDate &&
-                          `${formatDate(
-                            new Date(groupItem.startDate.seconds * 1000)
-                          )} - ${formatDate(new Date(groupItem.endDate.seconds * 1000))}`}
-                      </Text>
-                      <Text style={{ ...AppStyles.medium13, textAlign: 'right', marginTop: 10 }}>
-                        {groupItem.members.length} friends
-                      </Text>
-                    </View>
-                    {/* Render other conversation details */}
-                  </View>
+          )
+        ) : compeletedGroup.length == 0 ? (
+          <AssetImage asset={Assets.emptyFrienzy} width={normalize(250)} height={normalize(270)} />
+        ) : (
+          // <Text>hiohohiohiohohohohiohio</Text>
+          compeletedGroup.map((groupItem) => (
+            <TouchableOpacity
+              key={groupItem.value}
+              style={styles.frienzyContainer}
+              onPress={() => fetchGroupInfo(groupItem.value)}
+            >
+              <View style={styles.frienzyContentContainer}>
+                <View style={styles.frienzyTextContainer}>
+                  <Text style={{ ...AppStyles.semibold17 }}>{groupItem.label}</Text>
+                  <Text style={{ ...AppStyles.medium13 }}>{groupItem.description}</Text>
                 </View>
-              </TouchableOpacity>
-            ))}
+                <View style={styles.detailsContainer}>
+                  <View>
+                    <Text style={{ ...AppStyles.semibold13 }}>
+                      {groupItem.startDate &&
+                        groupItem.endDate &&
+                        `${formatDate(new Date(groupItem.startDate.seconds * 1000))} - ${formatDate(
+                          new Date(groupItem.endDate.seconds * 1000)
+                        )}`}
+                    </Text>
+                    <Text style={{ ...AppStyles.medium13, textAlign: 'right', marginTop: 10 }}>
+                      {groupItem.members.length} friends
+                    </Text>
+                  </View>
+                  {/* Render other conversation details */}
+                </View>
+              </View>
+            </TouchableOpacity>
+          ))
+        )}
       </ScrollView>
 
-      <TouchableOpacity style={styles.addButton} onPress={() => handleAddButtonPressed()}>
-        <Ionicon name="add-circle" size={64} color="#FB5F2D" />
+      <TouchableOpacity onPress={() => handleAddButtonPressed()} style={styles.addButton}>
+        <Text style={{ fontSize: 30, color: 'white' }}>+</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -222,7 +234,7 @@ export const FrienzyList = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#FAFAFA',
     paddingTop: Platform.OS === 'android' ? 24 : 0,
   },
   headerContainer: {
@@ -281,13 +293,15 @@ const styles = StyleSheet.create({
     color: '#FB5F2D',
   },
   frienzyCardsContainer: {
-    padding: 10,
+    padding: 40,
     paddingHorizontal: 16,
-    paddingBottom: 80, // Adjust paddingBottom to make room for the "+" button
+    paddingBottom: 80,
+
+    // Adjust paddingBottom to make room for the "+" button
   },
   frienzyContainer: {
     borderRadius: 8,
-    backgroundColor: 'white',
+    backgroundColor: '#FAFAFA',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
@@ -305,9 +319,20 @@ const styles = StyleSheet.create({
   },
   addButton: {
     position: 'absolute',
-    bottom: 80,
-    right: 16,
-    zIndex: 1, // Ensure the button is above the ScrollViee button's size and shape
+    bottom: 20,
+    right: 20,
+    width: 60,
+    height: 60,
+    backgroundColor: '#FB5F2D',
+    borderRadius: 50,
+    paddingTop: 3,
+    paddingBottom: 17,
+    paddingRight: 15,
+    paddingLeft: 17,
+    borderWidth: 5,
+    borderColor: 'white',
+    boxShadow: '3px 3px 5px #000000',
+    elevation: 5,
   },
   detailsContainer: {
     flexDirection: 'row',
