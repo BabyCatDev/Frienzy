@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import configureStore from './src/redux/store/configureStore';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { Provider } from 'react-redux';
@@ -13,6 +13,7 @@ import FBSaver from './src/services/FBSaver';
 import messaging from '@react-native-firebase/messaging';
 import { updateFcmToken } from './src/services/firebase/user';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
+import SplashScreen from './src/screens/splash/SplashScreen';
 // OneSignal Initialization
 // OneSignal.setAppId('146aaecb-a485-4ccd-82b7-5f154569d9c8');
 
@@ -61,6 +62,7 @@ async function requestUserPermission() {
 }
 
 const App = () => {
+  const [splash_screen, setSplashScreen] = useState(true);
   const fetchCredentials = async () => {
     const key = FBSaver.getInstance().userKey;
     const phone = FBSaver.getInstance().keyToPhone[key];
@@ -75,9 +77,15 @@ const App = () => {
       await updateFcmToken();
     }
     appStart();
+    const timer = setTimeout(() => setSplashScreen(false), 5000);
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
 
-  return (
+  return splash_screen == true ? (
+    <SplashScreen></SplashScreen>
+  ) : (
     <Provider store={store2}>
       <QueryClientProvider client={queryClient}>
         <StatusBar barStyle="light-content" backgroundColor={'#1A1822'} />

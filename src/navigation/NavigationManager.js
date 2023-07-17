@@ -50,12 +50,8 @@ const NavigationManager = (props) => {
     dispatch(getAllUsers());
   }, [currentUserObj.userDetails?.loggedIn]);
 
-  if (!currentUserObj.loaded) {
-    return <SplashScreen />;
-  }
-
   return (
-    <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
+    <NavigationContainer linking={linking}>
       <View style={{ flex: 1, backgroundColor: '#fff' }}>
         {currentUserObj.userDetails == null || currentUserObj.userDetails?.loggedIn == false ? (
           <GetAuthComponents />
