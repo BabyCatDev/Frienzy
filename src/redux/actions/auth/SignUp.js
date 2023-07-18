@@ -23,7 +23,7 @@ async function createFirebaseUser(user, token) {
     groups: [],
     profilePic: '',
     name: '',
-    fcm_token: token
+    fcm_token: token,
   };
   await firestore().collection('users').doc(auth().currentUser.uid).set(newData);
   await updateMyPendingGroups(user.phoneNumber);
@@ -42,13 +42,11 @@ export function signInUpWithPhone(confirmFunc, code) {
           await createFirebaseUser(userData, token);
         } else {
           console.log('Existing User');
-          await firestore()
-            .collection('users')
-            .doc(auth().currentUser.uid)
-            .update({ 
-              fcm_token: token,
-              loggedIn: true,
-            });
+          await firestore().collection('users').doc(auth().currentUser.uid).update({
+            fcm_token: token,
+            loggedIn: true,
+          });
+          await updateMyPendingGroups(userData.phoneNumber);
         }
         await dispatch(signInUpAction(userData.uid));
       });

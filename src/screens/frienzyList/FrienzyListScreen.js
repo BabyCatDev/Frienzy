@@ -82,9 +82,25 @@ export const FrienzyList = () => {
   }, [userDetails.groups]);
   useEffect(() => {
     let searchResults1 = groupItems.filter((item) => item.isCompleted == true);
-    setCompeletedGroup(searchResults1);
+    const sortedComp = searchResults1.sort((a, b) => {
+      // Convert the start dates to Date objects for comparison
+      const startDateA = new Date(a.startDate.seconds * 1000);
+      const startDateB = new Date(b.startDate.seconds * 1000);
+
+      // Compare the start dates
+      return startDateA - startDateB;
+    });
+    setCompeletedGroup(sortedComp);
     let searchResults2 = groupItems.filter((item) => item.isCompleted != true);
-    setActivatedGroup(searchResults2);
+    const sortedActive = searchResults2.sort((a, b) => {
+      // Convert the start dates to Date objects for comparison
+      const startDateA = new Date(a.startDate.seconds * 1000);
+      const startDateB = new Date(b.startDate.seconds * 1000);
+
+      // Compare the start dates
+      return startDateA - startDateB;
+    });
+    setActivatedGroup(sortedActive);
     console.log('result1--------', searchResults1);
     console.log('result2--------', activatedGroup);
   }, [groupItems]);
