@@ -36,7 +36,13 @@ export const Itinerary = ({ navigation, route }) => {
   useEffect(() => {
     async function getItineraryItems() {
       const tempDetails = await getItineraryItemsForGroup(currentGroup);
-      setItineraryItems(tempDetails);
+      const sortedItems = tempDetails.sort((a, b) => {
+        const dateA = new Date(a.date + ' ' + a.startTime);
+        const dateB = new Date(b.date + ' ' + b.startTime);
+
+        return dateA - dateB;
+      });
+      setItineraryItems(sortedItems);
     }
     getItineraryItems();
   }, [currentGroup]);
@@ -70,8 +76,15 @@ export const Itinerary = ({ navigation, route }) => {
 
     console.log('onItemCreate', currentGroup, itineraryItem);
     createItineraryItem(currentGroup, itineraryItem);
+    const tempDetails = [...itineraryItems, itineraryItem];
+    const sortedItems = tempDetails.sort((a, b) => {
+      const dateA = new Date(a.date + ' ' + a.startTime);
+      const dateB = new Date(b.date + ' ' + b.startTime);
 
-    setItineraryItems([...itineraryItems, itineraryItem]);
+      return dateA - dateB;
+    });
+    setItineraryItems(sortedItems);
+
     console.log('create item', itineraryItem, currentGroup);
   };
   useEffect(() => {
