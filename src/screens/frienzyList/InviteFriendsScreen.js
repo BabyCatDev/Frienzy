@@ -1,5 +1,14 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, Text, FlatList, Pressable, StyleSheet, Clipboard, Platform, SectionList } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Clipboard,
+  Platform,
+  SectionList,
+} from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useSelector } from 'react-redux';
 import { Colors } from '../../utils/Colors';
@@ -26,19 +35,20 @@ export const InviteFriends = ({ route }) => {
   const [selectedFriends, setSelectedFriends] = useState([]);
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { photo, title, description, location, startDate, endDate } = route.params;  
+  const { photo, title, description, location, startDate, endDate } = route.params;
   const { data: friends, isLoading } = useFriends(userFriends);
   const { contactsToAdd, contactsLoading } = useContacts(userFriends);
   const newFbGroupRef = getPreDefinedGroup();
-  const [suggestions, setSuggestions] = useState([{
-      title: "Friends on Frienzy",
-      data: []
-    }, {
-      title: "From your contactlist",
-      data: []
+  const [suggestions, setSuggestions] = useState([
+    {
+      title: 'Friends on Frienzy',
+      data: [],
+    },
+    {
+      title: 'From your contactlist',
+      data: [],
     },
   ]);
-  
 
   const handleInvite = (friend) => {
     // Implement your invite logic here
@@ -60,68 +70,57 @@ export const InviteFriends = ({ route }) => {
     }
   };
 
-
-  
-
   const handleCreatePress = async () => {
     try {
       setLoading(true);
       await createNewGroup({
         group: newFbGroupRef,
         name: title,
-        pic:  photo,
+        pic: photo,
         members: selectedFriends,
         location: location,
         description: description,
         startDate: startDate,
         endDate: endDate,
-        pending: selectedContacts.map(item => getMobileNumber(item))
+        pending: selectedContacts.map((item) => getMobileNumber(item)),
       });
-      console.log("selectedContacts", selectedContacts)
+      console.log('selectedContacts', selectedContacts);
       const phoneNumbers = [
-        ...selectedContacts.map(item => ({
-          name: item.givenName + " " + item.familyName,
-          phone: getMobileNumber(item)
+        ...selectedContacts.map((item) => ({
+          name: item.givenName + ' ' + item.familyName,
+          phone: getMobileNumber(item),
         })),
-        ...friends?.filter(
-          item => selectedFriends.includes(item.uid)
-        ).map(
-          item => ({
+        ...friends
+          ?.filter((item) => selectedFriends.includes(item.uid))
+          .map((item) => ({
             name: item.name,
-            phone: item.phone, 
-          })
-        )
+            phone: item.phone,
+          })),
       ];
-      await sendInviteSMSToUsers(
-        userDetails.name,
-        newFbGroupRef.id,
-        phoneNumbers
-      );
+      await sendInviteSMSToUsers(userDetails.name, newFbGroupRef.id, phoneNumbers);
       /** notification part */
-      const fcmTokens = friends?.filter(
-        item => selectedFriends.includes(item.uid) && !!item["fcm_token"]
-      ).map(
-        item => item["fcm_token"]
-      );      
+      const fcmTokens = friends
+        ?.filter((item) => selectedFriends.includes(item.uid) && !!item['fcm_token'])
+        .map((item) => item['fcm_token']);
       await sendNotification({
         tokens: fcmTokens,
-        title: "Invitation from Frienzy",
-        message: `You are invited to ${userDetails.name}'s group, ${title}, on Frienzy, an app for group travel planning.\nPlease check your SMS inbox.`
+        title: 'Invitation from Frienzy',
+        message: `You are invited to ${userDetails.name}'s group, ${title}, on Frienzy, an app for group travel planning.\nPlease check your SMS inbox.`,
       });
       /////
       setLoading(false);
       navigation.navigate('FrienzyList');
-    } catch ( error ) {
+    } catch (error) {
       setLoading(false);
-      console.log("handleCreatePress error:", error);
-    }    
+      console.log('handleCreatePress error:', error);
+    }
   };
 
   const handleCopyLink = () => {
     const invitationLink = `https://www.frienzy.io/invite/#${newFbGroupRef.id}`; // Replace with your actual invitation link
     Clipboard.setString(invitationLink);
     console.log('Invitation link copied to clipboard:', invitationLink);
-  
+
     // Show a toast message to inform the user
     Toast.show({
       type: 'success',
@@ -132,18 +131,24 @@ export const InviteFriends = ({ route }) => {
   };
 
   useEffect(() => {
-    const filteredFriends = friends ?
-      friends.filter((e) => e.name?.toUpperCase().includes(query.toUpperCase())) : [];
-    const filteredContacts = contactsToAdd.filter((e) => 
-        e.familyName?.toUpperCase().includes(query.toUpperCase()) || e.givenName?.toUpperCase().includes(query.toUpperCase()));
-    setSuggestions([{
-        title: "Friends on Frienzy",
-        data: filteredFriends
-      }, {
-        title: "From your contactlist",
-        data: filteredContacts 
+    const filteredFriends = friends
+      ? friends.filter((e) => e.name?.toUpperCase().includes(query.toUpperCase()))
+      : [];
+    const filteredContacts = contactsToAdd.filter(
+      (e) =>
+        e.familyName?.toUpperCase().includes(query.toUpperCase()) ||
+        e.givenName?.toUpperCase().includes(query.toUpperCase())
+    );
+    setSuggestions([
+      {
+        title: 'Friends on Frienzy',
+        data: filteredFriends,
       },
-    ])
+      {
+        title: 'From your contactlist',
+        data: filteredContacts,
+      },
+    ]);
   }, [userFriends, contactsToAdd, query]);
 
   return (
@@ -163,15 +168,15 @@ export const InviteFriends = ({ route }) => {
         />
         <SectionList
           sections={suggestions}
-          keyExtractor={(item, index) => item.recordID !== undefined ? item.recordID : item.uid}
-          renderItem={({item, index}) => (
+          keyExtractor={(item, index) => (item.recordID !== undefined ? item.recordID : item.uid)}
+          renderItem={({ item, index }) =>
             item.recordID !== undefined ? (
               <ContactItem
                 item={item}
                 index={index}
                 onPress={({ item }) => toggleContactSelection(item)}
-                check={selectedContacts.map(item => item.recordID).includes(item.recordID)}
-                />
+                check={selectedContacts.map((item) => item.recordID).includes(item.recordID)}
+              />
             ) : (
               <FriendListItem
                 item={item.uid}
@@ -187,15 +192,17 @@ export const InviteFriends = ({ route }) => {
                 containerStyle={{ paddingHorizontal: 20, paddingVertical: 10 }}
               />
             )
-          )}
+          }
           stickySectionHeadersEnabled={false}
-          renderSectionHeader={({section: {title}}) => (
+          renderSectionHeader={({ section: { title } }) => (
             <View style={styles.sectionHeaderWrapper}>
               <Text style={styles.sectionHeader}>{title}</Text>
             </View>
           )}
           ListEmptyComponent={
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 40 }}>
+            <View
+              style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 40 }}
+            >
               <Text style={{ ...AppStyles.medium22, color: 'gray' }}>No Friends to Invite</Text>
             </View>
           }
@@ -210,10 +217,6 @@ export const InviteFriends = ({ route }) => {
           alignSelf: 'center',
         }}
       />
-      <Pressable style={styles.copyButton} onPress={handleCopyLink}>
-        <Ionicon name="copy-outline" size={24} color="black" />
-        <Text style={styles.copyButtonText}>Copy Invitation Link</Text>
-      </Pressable>
       <Toast ref={(ref) => Toast.setRef(ref)} />
     </View>
   );
@@ -238,7 +241,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginVertical: 6,
     maxHeight: 7 * 100, // Adjust the height as per your requirement
-    paddingHorizontal: 8
+    paddingHorizontal: 8,
   },
   copyButton: {
     backgroundColor: Colors.primary,
@@ -257,23 +260,22 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 5,
   },
-  sectionHeaderWrapper: {
-  },
+  sectionHeaderWrapper: {},
   sectionHeader: {
     paddingHorizontal: 10,
     paddingTop: 15,
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   createButton: {
-      height: 40,
-      backgroundColor: '#FB5F2D',
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 20,
+    height: 40,
+    backgroundColor: '#FB5F2D',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
   },
   createButtonText: {
-      fontSize: 16,
-      color: 'white',
+    fontSize: 16,
+    color: 'white',
   },
 });

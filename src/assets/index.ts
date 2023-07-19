@@ -97,4 +97,5 @@ export default class Assets {
   static splash = Assets.getBitmap(require('../../assets/imgs/splash.png'));
   static plusIcon = Assets.getBitmap(require('../../assets/imgs/Plus.png'));
   static emptyFrienzy = Assets.getBitmap(require('../../assets/imgs/empty_frienzy.png'));
+  static addFrienzy = Assets.getBitmap(require('../../assets/imgs/add_frienzy.png'));
 }

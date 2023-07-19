@@ -207,10 +207,6 @@ export const AddFriend = ({ route }) => {
           alignSelf: 'center',
         }}
       />
-      <Pressable style={styles.copyButton} onPress={handleCopyLink}>
-        <Ionicon name="copy-outline" size={24} color="black" />
-        <Text style={styles.copyButtonText}>Copy Invitation Link</Text>
-      </Pressable>
       {/* <Toast ref={(ref) => Toast.setRef(ref)} /> */}
     </View>
   );

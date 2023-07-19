@@ -172,7 +172,22 @@ export const FrienzyList = () => {
       <ScrollView contentContainerStyle={styles.frienzyCardsContainer}>
         {activeTab == 'Active' ? (
           activatedGroup.length == 0 ? (
-            <AssetImage asset={Assets.emptyFrienzy} />
+            <View>
+              <AssetImage
+                asset={Assets.addFrienzy}
+                containerStyle={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: 40,
+                }}
+                width={normalize(250)}
+                height={normalize(270)}
+              />
+              <Text style={{ fontSize: 25, color: '#AFAFAF', textAlign: 'center' }}>
+                Add your Frist Frienzy
+              </Text>
+            </View>
           ) : (
             activatedGroup.map((groupItem) => (
               <TouchableOpacity
@@ -205,7 +220,22 @@ export const FrienzyList = () => {
             ))
           )
         ) : compeletedGroup.length == 0 ? (
-          <AssetImage asset={Assets.emptyFrienzy} width={normalize(250)} height={normalize(270)} />
+          <View>
+            <AssetImage
+              asset={Assets.emptyFrienzy}
+              containerStyle={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 40,
+              }}
+              width={normalize(250)}
+              height={normalize(270)}
+            />
+            <Text style={{ fontSize: 25, color: '#AFAFAF', textAlign: 'center' }}>
+              No Frienzies
+            </Text>
+          </View>
         ) : (
           // <Text>hiohohiohiohohohohiohio</Text>
           compeletedGroup.map((groupItem) => (

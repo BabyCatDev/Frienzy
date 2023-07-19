@@ -1,6 +1,6 @@
-import React from "react";
-import {View, StyleSheet, Image} from "react-native";
-import { Colors } from "../utils/AppConstants";
+import React from 'react';
+import { View, StyleSheet, Image } from 'react-native';
+import { Colors } from '../utils/AppConstants';
 
 export const AssetImage = ({
   asset,
@@ -12,7 +12,7 @@ export const AssetImage = ({
   imageStyle,
 }) => {
   switch (asset.type) {
-    case "vector":
+    case 'vector':
       return (
         <View style={[styles.container, containerStyle]}>
           <asset.path
@@ -24,7 +24,7 @@ export const AssetImage = ({
         </View>
       );
 
-    case "bitmap":
+    case 'bitmap':
       return (
         <View style={[styles.container, containerStyle]}>
           <Image
@@ -45,8 +45,8 @@ const styles = StyleSheet.create({
     // backgroundColor: Colors.GREEN,
   },
   imageStyle: {
-    resizeMode: "contain",
-    width: "100%",
-    height: "100%",
+    resizeMode: 'contain',
+    width: '100%',
+    height: '100%',
   },
 });
