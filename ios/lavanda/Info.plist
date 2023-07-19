@@ -95,7 +95,7 @@
 	<key>NSMotionUsageDescription</key>
 	<string>Reduce energy consumption by intelegent motion detection</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like access to your photo gallery</string>
+	<string>$(PRODUCT_NAME) would like to access your photos you can select photos to be uploaded to the shared photo album</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Roboto-Black.ttf</string>
