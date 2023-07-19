@@ -11,7 +11,6 @@ import {
   Text,
 } from 'react-native';
 import { FlatGrid } from 'react-native-super-grid';
-// import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import ImageView from 'react-native-image-viewing';
@@ -22,12 +21,11 @@ import { addPhotoToItinerary } from '../../services/firebase/itineraryService';
 import { useSelector } from 'react-redux';
 import { PhotoItem } from './PhotoItem';
 import { setSelectedContacts } from '../../utils/helper';
-// import { MultipleImagePicker } from '@baronha/react-native-multiple-image-picker';
 
 const pickerOptions = {
   mediaType: 'photo',
   // multiple: true,
-  // maxSelectedAssets: 5,
+  maxSelectedAssets: 5,
   includeBase64: false,
 };
 const screenWidth = Dimensions.get('window').width;
@@ -44,41 +42,53 @@ export const SharedPhotosScreen = ({ route }) => {
   const handlePlusClick = async () => {
     const options = ['Open Camera', 'Open Library', 'Cancel'];
     const cancelButtonIndex = 2;
-    let selectedIndex = 1;
-    // showActionSheetWithOptions({
-    //   options,
-    //   cancelButtonIndex,
-    // }, async (selectedIndex) => {
-    try {
-      let result = null;
-      setLoading(true);
-      switch (selectedIndex) {
-        case 0:
-          result = await launchCamera(pickerOptions);
-          break;
-        case 1:
-          // result = await launchImageLibrary(pickerOptions);
-          try {
-            result = await ImagePicker.openPicker({
-              multiple: true,
-            });
-          } catch (error) {
-            console.log(error);
+    // let selectedIndex = 1;
+    showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+      },
+      async (selectedIndex) => {
+        try {
+          let result = null;
+          setLoading(true);
+          switch (selectedIndex) {
+            case 0:
+              try {
+                result = [
+                  await ImagePicker.openCamera({
+                    width: 300,
+                    height: 400,
+                  }),
+                ];
+              } catch (error) {
+                console.log(error);
+              }
+              break;
+            case 1:
+              // result = await launchImageLibrary(pickerOptions);
+              try {
+                result = await ImagePicker.openPicker({
+                  multiple: true,
+                });
+              } catch (error) {
+                console.log(error);
+              }
+              break;
           }
-          break;
-      }
-      if (result) {
-        for (var i = 0; i < result.length; i++) {
-          await addPhotoToItinerary(userDetails.uid, groupInfo, result[i].path);
-          console.log(result[i].path);
+          if (result) {
+            console.log(result);
+            for (var i = 0; i < result.length; i++) {
+              await addPhotoToItinerary(userDetails.uid, groupInfo, result[i].path);
+            }
+          }
+          setLoading(false);
+        } catch (e) {
+          console.log('photo upload failed', e);
+          setLoading(false);
         }
       }
-      setLoading(false);
-    } catch (e) {
-      console.log('photo upload failed', e);
-      setLoading(false);
-    }
-    //});
+    );
   };
 
   const photos = ['+', ...(groupInfo?.photos ?? [])];

@@ -43,14 +43,14 @@ export const FrienzyFriends = ({ navigation, route }) => {
   }, [selectedItems]);
 
   useEffect(() => {
-    setFriendList(userFriends)
+    setFriendList(userFriends);
   }, [groupMembers]);
 
   const handleNext = () => {
     console.log('=======cur===', currentGroup);
     navigation.navigate('AddFriend', { currentGroup: currentGroup });
   };
-  
+
   const removeSelectedFriends = () => {
     setLoading(true);
     if (groupMembers[0] == auth().currentUser.uid) {
@@ -197,7 +197,7 @@ export const FrienzyFriends = ({ navigation, route }) => {
           handleNext();
         }}
       >
-        <Ionicon name="add-circle" size={64} color="#FB5F2D" />
+        <Text style={{ fontSize: 30, color: 'white' }}>+</Text>
       </TouchableOpacity>
       <RemoveButton
         isDisabled={selectedItems.length == 0 ? true : false}
@@ -224,7 +224,18 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     right: 20,
-    zIndex: 1, // Ensure the button is above the ScrollView
+    width: 60,
+    height: 60,
+    backgroundColor: '#FB5F2D',
+    borderRadius: 50,
+    paddingTop: 3,
+    paddingBottom: 17,
+    paddingRight: 15,
+    paddingLeft: 17,
+    borderWidth: 5,
+    borderColor: 'white',
+    boxShadow: '3px 3px 5px #000000',
+    elevation: 5,
   },
 
   toggleWrapper: {

@@ -9,7 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { DeletePhotoFromItinerary } from '../../services/firebase/itineraryService';
-
+import Ionicon from 'react-native-vector-icons/Ionicons';
 export const PhotoItem = ({ onPress, photo, isDisabled = false, owner, groupInfo }) => {
   const handleLongPress = () => {
     if (photo.owner == owner) {
@@ -41,7 +41,11 @@ export const PhotoItem = ({ onPress, photo, isDisabled = false, owner, groupInfo
             uri: photo.url,
           }}
         >
-          {photo.owner == owner ? <Text>*</Text> : <></>}
+          {photo.owner == owner ? (
+            <Ionicon name="star" size={20} color={'#FB5F2D'}></Ionicon>
+          ) : (
+            <></>
+          )}
         </ImageBackground>
       </TouchableOpacity>
     </View>
