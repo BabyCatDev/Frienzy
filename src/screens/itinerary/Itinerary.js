@@ -94,14 +94,6 @@ export const Itinerary = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <SearchField
-        search={query}
-        setSearch={setQuery}
-        containerStyle={[
-          { width: '100%', color: Colors.gray },
-          viewMode === 'map' ? { display: 'none' } : null,
-        ]}
-      />
       <View
         style={[
           {
@@ -148,6 +140,14 @@ export const Itinerary = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
       </View>
+      <SearchField
+        search={query}
+        setSearch={setQuery}
+        containerStyle={[
+          { width: '100%', color: Colors.gray },
+          viewMode === 'map' ? { display: 'none' } : null,
+        ]}
+      />
       {viewMode === 'list' ? (
         <ScrollView style={styles.list}>
           {searchedItems.map((item, index) => (

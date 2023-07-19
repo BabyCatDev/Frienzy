@@ -263,3 +263,34 @@ export const removeFriendsFromGroup = async (groupId, friendsIdList) => {
     console.log(error);
   }
 };
+export const DeleteAccount = async (uid) => {
+  try {
+    const currentUserRef = firestore().collection('users').doc(uid);
+    const currentUserData = await currentUserRef.get();
+
+    const currentGroup = currentUserData.data()?.groups;
+    const currentFriends = currentUserData.data()?.friends;
+    for (const groupId of currentGroup) {
+      const groupRef = firestore().collection('groups').doc(groupId);
+      const groupData = await groupRef.get();
+      const mems = groupData.data()?.members ?? [];
+      const newmems = mems.filter((member) => !uid == member);
+      await groupRef.update({
+        members: newmems,
+      });
+    }
+    for (const friendID of currentFriends) {
+      const friendRef = await firestore().collection('users').doc(friendID);
+      const friendData = await friendRef.get();
+      const memfriends = friendData.data()?.friends ?? [];
+      const newfriends = memfriends.filter((member) => !uid == member);
+      await friendRef.update({
+        friends: newfriends,
+      });
+    }
+    await currentUserRef.delete();
+    await auth().currentUser.delete();
+  } catch (error) {
+    console.log(error);
+  }
+};

@@ -72,7 +72,6 @@ export const addPhotoToItinerary = async (userId, group, pic) => {
 export const DeletePhotoFromItinerary = async (group, pic) => {
   const filename = pic?.substring(pic?.lastIndexOf('/') + 1);
   const photoIndex = group.photos.findIndex((photo) => photo.url === pic);
-  alert(pic);
   const reference = storage().ref(`SharedPhotos/${group.id}/${filename}`);
 
   if (photoIndex !== -1) {

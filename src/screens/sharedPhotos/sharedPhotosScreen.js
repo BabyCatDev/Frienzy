@@ -70,6 +70,7 @@ export const SharedPhotosScreen = ({ route }) => {
               try {
                 result = await ImagePicker.openPicker({
                   multiple: true,
+                  maxFiles: 5,
                 });
               } catch (error) {
                 console.log(error);

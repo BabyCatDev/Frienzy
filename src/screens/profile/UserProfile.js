@@ -26,6 +26,7 @@ import DeleteAccountOverlay from './DeleteAccountOverlay';
 import { setLocationEnabled } from '../../redux/actions/data/UserLocation';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { updateUserName } from '../../services/firebase/user';
+import { DeleteAccount } from '../../services/firebase/user';
 import MyFriends from './MyFriends';
 
 const UserProfile = ({ navigation }) => {
@@ -67,7 +68,11 @@ const UserProfile = ({ navigation }) => {
 
   const onDeleteAccount = async () => {
     try {
-      await AuthProvider.logoutUser();
+      const uID = auth().currentUser.uid;
+      // onLogout();
+
+      await DeleteAccount(uID);
+      setConfirm(false);
 
       await FBSaver.getInstance().reset();
       await removeValue('image');
@@ -76,7 +81,7 @@ const UserProfile = ({ navigation }) => {
       await removeValue('counter');
       await removeValue('selectedContactList');
       await removeValue('phoneNumber');
-      dispatch(logout());
+      // dispatch(logout());
     } catch (e) {
       console.log(e);
     }
@@ -242,6 +247,7 @@ const UserProfile = ({ navigation }) => {
             {/* PROFILE ROW */}
             <ProfileRow title={'Change Name'} onPress={() => setIsChange(!isChange)} />
             <ProfileRow title={'Log out'} onPress={async () => await onLogout()} />
+            <ProfileRow title={'Delete Account'} onPress={() => setConfirm(true)} />
             {/* <ProfileRow title={'My QR code'} onPress={() => setVisible(true)} qrCode /> */}
           </View>
         </View>

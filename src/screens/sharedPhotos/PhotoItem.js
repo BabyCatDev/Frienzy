@@ -45,6 +45,7 @@ export const PhotoItem = ({ onPress, photo, isDisabled = false, owner, groupInfo
             <Ionicon name="star" size={20} color={'#FB5F2D'}></Ionicon>
           ) : (
             <></>
+            // <Text>{photo.owner}</Text>
           )}
         </ImageBackground>
       </TouchableOpacity>
