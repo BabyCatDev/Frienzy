@@ -184,7 +184,7 @@ export const FrienzyFriends = ({ navigation, route }) => {
             <View
               style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 40 }}
             >
-              <Text style={{ ...AppStyles.medium22, color: 'white' }}>{'No Friends Yet  :('}</Text>
+              <Text style={{ ...AppStyles.medium22, color: 'black' }}>{'No Friends Yet  :('}</Text>
             </View>
           }
         />
