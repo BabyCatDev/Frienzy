@@ -1,15 +1,20 @@
 import React, { memo, useState, useEffect } from 'react';
-import { View, Pressable, Text } from 'react-native';
+import { View, Pressable, TouchableOpacity } from 'react-native';
 import Assets from '../../assets';
 import { AssetImage } from '../../assets/asset_image';
+import { Text } from 'react-native-elements';
+
 import normalize from 'react-native-normalize';
 
-const ItineraryMarker = memo(({ number }) => {
+const ItineraryMarker = memo(({ number, onpress }) => {
   return (
     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-      <View
+      <TouchableOpacity
         style={{
           paddingHorizontal: 3,
+        }}
+        onPress={() => {
+          onpress(number);
         }}
       >
         <AssetImage asset={Assets.mapMarker} width={normalize(40)} height={normalize(40)} />
@@ -17,7 +22,7 @@ const ItineraryMarker = memo(({ number }) => {
           style={{
             position: 'absolute',
             top: 5,
-            left: 14,
+            left: 13,
             width: 20,
             borderRadius: 10,
             textAlign: 'center',
@@ -29,7 +34,7 @@ const ItineraryMarker = memo(({ number }) => {
         >
           {number}
         </Text>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 });

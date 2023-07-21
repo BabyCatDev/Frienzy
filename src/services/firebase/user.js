@@ -48,6 +48,11 @@ export const updateMyPendingGroups = (phoneNumber) =>
             .update({
               members: firestore.FieldValue.arrayUnion(uid),
             });
+          const updated_pending = group.pending.filter((item) => item != phoneNumber);
+          console.log('here------>', updated_pending);
+          await firestore().collection('groups').doc(group.id).update({
+            pending: updated_pending,
+          });
         });
         await firestore().collection('users').doc(uid).update({
           groups: groupIds,
@@ -151,7 +156,7 @@ export const getGroupsForUser = (groups, onIsCompletedChange) => {
             }
           );
           docRef.onSnapshot((snapshot) => {
-            const isCompleted = snapshot.data().isCompleted;
+            const isCompleted = snapshot.data()?.isCompleted;
 
             const index = groupsData.findIndex((item) => item.id === group);
 
@@ -273,11 +278,26 @@ export const DeleteAccount = async (uid) => {
     for (const groupId of currentGroup) {
       const groupRef = firestore().collection('groups').doc(groupId);
       const groupData = await groupRef.get();
-      const mems = groupData.data()?.members ?? [];
-      const newmems = mems.filter((member) => !uid == member);
-      await groupRef.update({
-        members: newmems,
-      });
+      if (groupData.data()?.createdBy == uid) {
+        const mems = groupData.data()?.members ?? [];
+        mems.map(async (item) => {
+          const friendRef = firestore().collection('users').doc(item);
+          const friendData = await friendRef.get();
+          const currentGroups = friendData.data()?.groups || [];
+          const newgroups = currentGroups.filter((member) => !groupId == member);
+          await friendRef.update({
+            groups: newgroups,
+          });
+        });
+
+        groupRef.delete();
+      } else {
+        const mems = groupData.data()?.members ?? [];
+        const newmems = mems.filter((member) => !uid == member);
+        await groupRef.update({
+          members: newmems,
+        });
+      }
     }
     for (const friendID of currentFriends) {
       const friendRef = await firestore().collection('users').doc(friendID);

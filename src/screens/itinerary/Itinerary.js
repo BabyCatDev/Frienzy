@@ -7,19 +7,21 @@ import {
   TouchableOpacity,
   Linking,
   Platform,
+  Modal,
 } from 'react-native';
-import { Divider } from 'react-native-elements';
+import { Button, Divider } from 'react-native-elements';
 import normalize from 'react-native-normalize';
 import SearchField from '../../components/utils/SearchField';
 import { createStackNavigator } from '@react-navigation/stack';
 import { ItineraryMap } from '../map/ItineraryMap';
+import Timeline from 'react-native-timeline-flatlist';
+import Ionicon from 'react-native-vector-icons/Ionicons';
 
 import {
   createItineraryItem,
   getItineraryItemsForGroup,
 } from '../../services/firebase/itineraryService';
 import { Colors } from '../../utils/Colors';
-import { create } from 'lodash';
 import { AppStyles } from '../../utils/AppStyles';
 
 export const Itinerary = ({ navigation, route }) => {
@@ -29,23 +31,11 @@ export const Itinerary = ({ navigation, route }) => {
   const [itineraryItems, setItineraryItems] = useState([]);
   const [searchedItems, setSearchedItems] = useState([]);
   const [viewMode, setViewMode] = useState('list');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalData, setModalData] = useState([]);
   const handleToggle = (mode) => {
     setViewMode(mode);
   };
-
-  useEffect(() => {
-    async function getItineraryItems() {
-      const tempDetails = await getItineraryItemsForGroup(currentGroup);
-      const sortedItems = tempDetails.sort((a, b) => {
-        const dateA = new Date(a.date + ' ' + a.startTime);
-        const dateB = new Date(b.date + ' ' + b.startTime);
-
-        return dateA - dateB;
-      });
-      setItineraryItems(sortedItems);
-    }
-    getItineraryItems();
-  }, [currentGroup]);
 
   const openMaps = (address) => {
     const mapUrl = Platform.select({
@@ -87,9 +77,74 @@ export const Itinerary = ({ navigation, route }) => {
 
     console.log('create item', itineraryItem, currentGroup);
   };
+  const renderCustomTooltipContent = () => {
+    return (
+      <View style={styles.tooltipContent}>
+        <Text style={styles.tooltipText}>This is a custom tooltip content!</Text>
+      </View>
+    );
+  };
+  const renderDetail = (rowData, sectionID, rowID) => {
+    return (
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}
+      >
+        <View>
+          <Text style={{ ...AppStyles.semibold20 }}>{rowData.title}</Text>
+          <Text style={{ ...AppStyles.medium13 }}>{rowData.description}</Text>
+        </View>
+        <TouchableOpacity
+          onPress={() => {
+            setModalData(rowData);
+            setModalVisible();
+          }}
+        >
+          <Ionicon
+            name={'menu-outline'}
+            size={normalize(24)}
+            style={{ marginLeft: 9 }}
+            color={'black'}
+          />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const renderCircle = ({ time, isLast }) => {
+    // Custom styling for the last circle
+    const circleStyle = isLast ? styles.lastCircle : styles.circle;
+    console.log('data---->', time);
+
+    return (
+      <View style={circleStyle}>
+        <Text style={{ color: '#FFF', textAlign: 'center' }}>{time}</Text>
+      </View>
+    );
+  };
+  useEffect(() => {
+    async function getItineraryItems() {
+      const tempDetails = await getItineraryItemsForGroup(currentGroup);
+      const sortedItems = tempDetails.sort((a, b) => {
+        const dateA = new Date(a.date + ' ' + a.startTime);
+        const dateB = new Date(b.date + ' ' + b.startTime);
+
+        return dateA - dateB;
+      });
+      setItineraryItems(sortedItems);
+    }
+    getItineraryItems();
+  }, [currentGroup]);
   useEffect(() => {
     let resultItems = searchItineraryItems(query);
-    setSearchedItems(resultItems);
+    let edtieditems = [];
+    resultItems.map((item, index) => {
+      edtieditems.push({ ...item, time: index + 1 });
+    });
+    setSearchedItems(edtieditems);
   }, [query, itineraryItems]);
 
   return (
@@ -149,24 +204,19 @@ export const Itinerary = ({ navigation, route }) => {
         ]}
       />
       {viewMode === 'list' ? (
-        <ScrollView style={styles.list}>
-          {searchedItems.map((item, index) => (
-            <View key={index} style={styles.itemContainer}>
-              <Text style={{ ...AppStyles.semibold20 }}>{item.title}</Text>
-              <Divider style={styles.itemDivider} />
-              <Text style={{ ...AppStyles.medium13 }}>{item.description.substring(0, 50)}...</Text>
-              <Text style={{ ...AppStyles.medium13 }}>
-                {item.startTime} - {item.endTime}
-              </Text>
-              <Text style={{ ...AppStyles.medium13 }}>{item.date}</Text>
-              <TouchableOpacity onPress={() => openMaps(item.location.name)}>
-                <Text style={styles.itemLocation}>{item.location.name}</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
-        </ScrollView>
+        <Timeline
+          data={searchedItems}
+          lineColor="#101010"
+          showTime={false}
+          renderCircle={renderCircle}
+          renderDetail={renderDetail}
+        />
       ) : (
-        <ItineraryMap itineraryItems={itineraryItems} />
+        <ItineraryMap
+          itineraryItems={itineraryItems}
+          setModalData={setModalData}
+          setModalVisible={setModalVisible}
+        />
       )}
       <TouchableOpacity
         style={styles.addButton}
@@ -179,6 +229,46 @@ export const Itinerary = ({ navigation, route }) => {
       >
         <Text style={{ fontSize: 30, color: 'white' }}>+</Text>
       </TouchableOpacity>
+      <Modal
+        animationType={'slide'}
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          console.log('Modal has been closed.');
+        }}
+      >
+        {/*All views of Modal*/}
+        {/*Animation can be slide, slide, none*/}
+        <View style={styles.modal_container}>
+          <Text style={styles.modal_title}>{modalData?.title}</Text>
+          <Text style={styles.modal_description}>{modalData?.description}</Text>
+          <Text style={styles.modal_description}>{modalData?.location?.name}</Text>
+          <View style={styles.modal_timeContainer}>
+            <Text style={styles.modal_time}>{`Start Time: ${modalData?.startTime}`}</Text>
+            <Text style={styles.modal_time}>{`End Time: ${modalData?.endTime}`}</Text>
+          </View>
+          <Text style={styles.modal_date}>{modalData?.date}</Text>
+          <TouchableOpacity
+            title="Click To Close Modal"
+            onPress={() => {
+              setModalVisible(!setModalVisible);
+            }}
+            style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}
+          >
+            <Text
+              style={{
+                backgroundColor: '#AFAFAF',
+                borderRadius: 10,
+                textAlign: 'center',
+                width: '30%',
+                boxShadow: '3px 3px 5px #000000',
+              }}
+            >
+              Close
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -209,11 +299,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   itemContainer: {
-    backgroundColor: '#fff', // White background color for each itinerary item
+    width: '90%',
+    backgroundColor: '#F6F6F6',
+    // White background color for each itinerary item
     padding: 10,
     marginBottom: 5,
-    borderRadius: 8,
-    elevation: 2, // Add a slight elevation for a card-like effect
   },
   itemDivider: {
     marginVertical: 5,
@@ -276,5 +366,64 @@ const styles = StyleSheet.create({
     padding: 5,
     width: 50,
     alignItems: 'center',
+  },
+  circle: {
+    position: 'absolute',
+    left: 5,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#FB5F2D',
+    borderWidth: 3,
+    borderColor: 'white',
+    boxShadow: '3px 3px 5px #000000',
+  },
+  lastCircle: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: 'green',
+  },
+  modal_container: {
+    width: '100%',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    backgroundColor: '#FFFFFF',
+    padding: 16,
+    borderRadius: 8,
+    marginTop: 200,
+    marginBottom: 16,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  modal_title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  modal_description: {
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  modal_timeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  modal_time: {
+    fontSize: 14,
+    color: '#555555',
+  },
+  modal_date: {
+    fontSize: 14,
+    color: '#555555',
+    textAlign: 'right',
   },
 });

@@ -1,15 +1,6 @@
 import React, { memo, useEffect, useState, useRef } from 'react';
-import {
-  View,
-  StyleSheet,
-  useWindowDimensions,
-  Text,
-  TouchableOpacity,
-  Image,
-  Platform,
-} from 'react-native';
+import { View, StyleSheet, useWindowDimensions, Text, TouchableOpacity, Image } from 'react-native';
 import Mapbox from '@rnmapbox/maps';
-import { Header } from '../../components/utils/Header';
 import normalize from 'react-native-normalize';
 import LinearGradient from 'react-native-linear-gradient';
 import { Colors } from '../../utils/Colors';
@@ -23,7 +14,7 @@ import auth from '@react-native-firebase/auth';
 import { getItineraryItemsForGroup } from '../../services/firebase/itineraryService';
 import ItineraryMarker from './ItineraryMarker';
 import { getGroupById } from '../../services/firebase/conversations';
-import { set } from 'lodash';
+import { Tooltip } from 'react-native-elements';
 
 //this is my personal access token, you can use your own, I think it's tied to my secret token which is hardcoded to my environment
 Mapbox.setAccessToken(
@@ -31,8 +22,9 @@ Mapbox.setAccessToken(
 );
 // Mapbox?.setConnected(true);
 
-export const ItineraryMap = ({ itineraryItems }) => {
+export const ItineraryMap = ({ itineraryItems, setModalData, setModalVisible }) => {
   const camera = useRef(null);
+  console.log('itineraryItems:', itineraryItems);
   const { height } = useWindowDimensions();
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState([]);
@@ -40,10 +32,6 @@ export const ItineraryMap = ({ itineraryItems }) => {
   const [users, setUsers] = useState([]);
   const [visible, setVisible] = useState(false);
   const [userToPush, setUserToPush] = useState('');
-  const [viewMode, setViewMode] = useState('map');
-  const [selectedItem, setSelectedItem] = useState('');
-  const [isCameraAdjusted, setIsCameraAdjusted] = useState(false);
-
   // const { currentGroup } = route.params;
   console.log('groupinfo.id', users);
 
@@ -71,6 +59,10 @@ export const ItineraryMap = ({ itineraryItems }) => {
 
   const [mapBounds, setMapBounds] = useState(null);
   const [isInitialMount, setIsInitialMount] = useState(true);
+  const handleToggleMark = (index) => {
+    setModalData(itineraryItems[index - 1]);
+    setModalVisible(true);
+  };
 
   useEffect(() => {
     if (isInitialMount && mapBounds) {
@@ -182,7 +174,7 @@ export const ItineraryMap = ({ itineraryItems }) => {
                 id={index.toString()}
                 coordinate={[item.location.longitude, item.location.latitude]}
               >
-                <ItineraryMarker number={index + 1} />
+                <ItineraryMarker number={index + 1} onpress={handleToggleMark} />
               </Mapbox.MarkerView>
             ))}
         </Mapbox.MapView>
