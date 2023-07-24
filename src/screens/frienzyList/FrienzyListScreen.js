@@ -107,7 +107,6 @@ export const FrienzyList = () => {
 
   const fetchGroupInfo = async (groupId) => {
     const groupInfo = await getGroupById(groupId);
-    console.log('groupInfo', groupInfo);
     navigation.navigate('ActiveFrienzy', { groupInfo: groupInfo });
     return groupInfo;
 

@@ -12,6 +12,7 @@ import Ionicon from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Colors } from '../../utils/Colors';
 import { AppStyles } from '../../utils/AppStyles';
+import auth from '@react-native-firebase/auth';
 
 export const CreateItineraryItem = ({ route, navigation }) => {
   const [title, setTitle] = useState('');
@@ -92,6 +93,7 @@ export const CreateItineraryItem = ({ route, navigation }) => {
       endTime: formattedEndTime,
       date: formattedDate,
       location: selectedLocation,
+      createdBy: auth().currentUser.uid,
     };
 
     // Call the onItemCreate function to handle the item creation

@@ -16,13 +16,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { ItineraryMap } from '../map/ItineraryMap';
 import Timeline from 'react-native-timeline-flatlist';
 import Ionicon from 'react-native-vector-icons/Ionicons';
-
+import { getUserById } from '../../services/firebase/user';
 import {
   createItineraryItem,
   getItineraryItemsForGroup,
 } from '../../services/firebase/itineraryService';
 import { Colors } from '../../utils/Colors';
 import { AppStyles } from '../../utils/AppStyles';
+import { groupBy } from 'lodash';
 
 export const Itinerary = ({ navigation, route }) => {
   const Stack = createStackNavigator();
@@ -33,6 +34,7 @@ export const Itinerary = ({ navigation, route }) => {
   const [viewMode, setViewMode] = useState('list');
   const [modalVisible, setModalVisible] = useState(false);
   const [modalData, setModalData] = useState([]);
+
   const handleToggle = (mode) => {
     setViewMode(mode);
   };
@@ -84,7 +86,7 @@ export const Itinerary = ({ navigation, route }) => {
       </View>
     );
   };
-  const renderDetail = (rowData, sectionID, rowID) => {
+  const renderDetail = (rowData) => {
     return (
       <View
         style={{
@@ -93,8 +95,17 @@ export const Itinerary = ({ navigation, route }) => {
           justifyContent: 'space-between',
         }}
       >
-        <View>
-          <Text style={{ ...AppStyles.semibold20 }}>{rowData.title}</Text>
+        <View style={{ width: '90%', display: 'flex', flexDirection: 'column' }}>
+          <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={{ maxwidth: '70%' }}>
+              <Text style={{ ...AppStyles.semibold20 }}>{rowData.title}</Text>
+            </View>
+            <View style={{ position: 'absolute', bottom: 0, right: 0 }}>
+              <Text style={[{ ...AppStyles.medium13 }, { textAlign: 'right' }]}>
+                {rowData?.creator}
+              </Text>
+            </View>
+          </View>
           <Text style={{ ...AppStyles.medium13 }}>{rowData.description}</Text>
         </View>
         <TouchableOpacity
@@ -117,7 +128,6 @@ export const Itinerary = ({ navigation, route }) => {
   const renderCircle = ({ time, isLast }) => {
     // Custom styling for the last circle
     const circleStyle = isLast ? styles.lastCircle : styles.circle;
-    console.log('data---->', time);
 
     return (
       <View style={circleStyle}>
@@ -139,12 +149,17 @@ export const Itinerary = ({ navigation, route }) => {
     getItineraryItems();
   }, [currentGroup]);
   useEffect(() => {
+    console.log(searchedItems);
     let resultItems = searchItineraryItems(query);
-    let edtieditems = [];
-    resultItems.map((item, index) => {
-      edtieditems.push({ ...item, time: index + 1 });
+    const promises = resultItems.map((item) => getUserById(item.createdBy));
+    Promise.all(promises).then((users) => {
+      let edtieditems = resultItems.map((item, i) => ({
+        ...item,
+        time: i + 1,
+        creator: users[i]?.name,
+      }));
+      setSearchedItems(edtieditems);
     });
-    setSearchedItems(edtieditems);
   }, [query, itineraryItems]);
 
   return (
