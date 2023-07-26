@@ -22,8 +22,7 @@ import auth from '@react-native-firebase/auth';
 import { getItineraryItemsForGroup } from '../../services/firebase/itineraryService';
 import FriendMarker from './FriendMarker';
 import { getGroupById } from '../../services/firebase/conversations';
-import { set } from 'lodash';
-
+import ItineraryMarker from './ItineraryMarker';
 //this is my personal access token, you can use your own, I think it's tied to my secret token which is hardcoded to my environment
 Mapbox.setAccessToken(
   'pk.eyJ1Ijoibm9sYW5kb25sZXkxNCIsImEiOiJjazJta2dqNmowaXR2M25uM3RyNzl4bmU1In0.IG-7dVSFafe9cSEpQJoU2A'
@@ -47,7 +46,6 @@ export const Map = ({ _currentGroup }) => {
   const [itineraryItems, setItineraryItems] = useState([]);
 
   // const { currentGroup } = route.params;
-  console.log('groupinfo.id', users);
 
   const handleToggle = (mode) => {
     setViewMode(mode);
@@ -263,7 +261,7 @@ export const Map = ({ _currentGroup }) => {
         <Mapbox.MapView style={styles.map} styleURL={'mapbox://styles/mapbox/light-v11'}>
           <Mapbox.Camera
             ref={camera}
-            followZoomLevel={5}
+            followZoomLevel={1}
             zoomLevel={1}
             centerCoordinate={location}
             animationDuration={1000}
@@ -292,6 +290,8 @@ export const Map = ({ _currentGroup }) => {
                 id={index.toString()}
                 coordinate={[item.location.longitude, item.location.latitude]}
               >
+                <ItineraryMarker number={index + 1} />
+
                 <TouchableOpacity
                   style={{ backgroundColor: '#FB5F2D', borderRadius: 10, padding: 5 }}
                 >

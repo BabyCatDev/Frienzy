@@ -15,6 +15,7 @@ import { getItineraryItemsForGroup } from '../../services/firebase/itineraryServ
 import ItineraryMarker from './ItineraryMarker';
 import { getGroupById } from '../../services/firebase/conversations';
 import { Tooltip } from 'react-native-elements';
+import FriendMarker from './FriendMarker';
 
 //this is my personal access token, you can use your own, I think it's tied to my secret token which is hardcoded to my environment
 Mapbox.setAccessToken(
@@ -22,7 +23,7 @@ Mapbox.setAccessToken(
 );
 // Mapbox?.setConnected(true);
 
-export const ItineraryMap = ({ itineraryItems, setModalData, setModalVisible }) => {
+export const ItineraryMap = ({ itineraryItems, setModalData, setModalVisible, currentGroup }) => {
   const camera = useRef(null);
   console.log('itineraryItems:', itineraryItems);
   const { height } = useWindowDimensions();
@@ -33,7 +34,6 @@ export const ItineraryMap = ({ itineraryItems, setModalData, setModalVisible }) 
   const [visible, setVisible] = useState(false);
   const [userToPush, setUserToPush] = useState('');
   // const { currentGroup } = route.params;
-  console.log('groupinfo.id', users);
 
   const getBoundingBoxCorners = (coordinates) => {
     console.log('Getting bounds for coords', coordinates);
@@ -80,7 +80,79 @@ export const ItineraryMap = ({ itineraryItems, setModalData, setModalVisible }) 
   const handleMarkerPress = (item) => {
     setSelectedItem(item);
   };
+  useEffect(() => {
+    let unsubscribe;
 
+    const getUsersLocations = async () => {
+      const querySnapshot = await firestore()
+        .collection('users')
+        .where('groups', 'array-contains', currentGroup)
+        .get();
+
+      const usersLocationsNew = querySnapshot.docs.map((item) => {
+        const itemData = item.data();
+        const location = itemData.currentLocation;
+
+        if ('latitude' in location && 'longitude' in location) {
+          return {
+            latitude: location.latitude,
+            longitude: location.longitude,
+            name: itemData.name,
+            profilePic: itemData.profilePic,
+            id: itemData.uid,
+            time: location.time,
+          };
+        } else if (
+          'coords' in location &&
+          'latitude' in location.coords &&
+          'longitude' in location.coords
+        ) {
+          return {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            name: itemData.name,
+            profilePic: itemData.profilePic,
+            id: itemData.uid,
+            time: location.time,
+          };
+        } else {
+          return null;
+        }
+      });
+
+      const filteredLocations = usersLocationsNew.filter((location) => location !== null);
+
+      // Update the users or usersLocations state here
+      // setUsersLocations(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
+      setUsers(filteredLocations.filter((uLN) => uLN.id !== auth().currentUser.uid));
+
+      if (currentGroup && usersLocationsNew.length > 0) {
+        const bounds = getBoundingBoxCorners(
+          usersLocationsNew.map((loc) => [loc.longitude, loc.latitude])
+        );
+
+        // Only update the mapBounds if it's not already set
+        if (!mapBounds) {
+          setMapBounds(bounds);
+        }
+      }
+    };
+
+    if (currentGroup) {
+      unsubscribe = firestore()
+        .collection('users')
+        .where('groups', 'array-contains', currentGroup)
+        .onSnapshot(() => {
+          getUsersLocations();
+        });
+    }
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [currentGroup]);
   const requestLocation = () => {
     setLoading(true);
     setLocation([1, 1]);
@@ -115,48 +187,6 @@ export const ItineraryMap = ({ itineraryItems, setModalData, setModalVisible }) 
 
   return (
     <View style={styles.page}>
-      {/* <View
-        style={{
-          position: 'absolute',
-          zIndex: 10000,
-          top: 50,
-          left: 0,
-          width: '100%',
-          flexDirection: 'row',
-          margin: 5,
-          paddingHorizontal: 10,
-          justifyContent: 'center',
-        }}
-      >
-        <View style={styles.toggleWrapper}>
-          <TouchableOpacity
-            onPress={() => handleToggle('list')}
-            style={[
-              styles.toggleButton,
-              {
-                backgroundColor: viewMode === 'list' ? '#FB5F2D' : 'transparent',
-              },
-            ]}
-          >
-            <Text style={{ color: viewMode === 'list' ? 'white' : 'black', fontWeight: 'bold' }}>
-              List
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => handleToggle('map')}
-            style={[
-              styles.toggleButton,
-              {
-                backgroundColor: viewMode === 'map' ? '#FB5F2D' : 'transparent',
-              },
-            ]}
-          >
-            <Text style={{ color: viewMode === 'map' ? 'white' : 'black', fontWeight: 'bold' }}>
-              Map
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View> */}
       <View style={{ height: '100%', width: '100%' }}>
         <Mapbox.MapView style={styles.map} styleURL={'mapbox://styles/mapbox/light-v11'}>
           <Mapbox.Camera
@@ -164,8 +194,23 @@ export const ItineraryMap = ({ itineraryItems, setModalData, setModalVisible }) 
             followZoomLevel={5}
             zoomLevel={1}
             centerCoordinate={location}
-            animationDuration={1000}
+            animationDuration={500}
           />
+          {users.length > 0
+            ? users.map((user, index) => (
+                <Mapbox.MarkerView
+                  coordinate={[user.longitude, user.latitude]}
+                  key={index}
+                  id={index}
+                >
+                  <FriendMarker
+                    contact={user}
+                    setUserToPush={setUserToPush}
+                    setVisible={setVisible}
+                  />
+                </Mapbox.MarkerView>
+              ))
+            : null}
           <Mapbox.UserLocation showsUserHeadingIndicator={true} />
           {itineraryItems.length > 0 &&
             itineraryItems.map((item, index) => (
@@ -175,6 +220,14 @@ export const ItineraryMap = ({ itineraryItems, setModalData, setModalVisible }) 
                 coordinate={[item.location.longitude, item.location.latitude]}
               >
                 <ItineraryMarker number={index + 1} onpress={handleToggleMark} />
+                <TouchableOpacity
+                  style={{ backgroundColor: '#FB5F2D', borderRadius: 10, padding: 5 }}
+                >
+                  <Text style={{ color: 'white', fontWeight: 'bold' }}>{item.title}</Text>
+                  <Text style={{ color: 'white', fontWeight: 'bold' }}>
+                    Start Time: {item.startTime}
+                  </Text>
+                </TouchableOpacity>
               </Mapbox.MarkerView>
             ))}
         </Mapbox.MapView>

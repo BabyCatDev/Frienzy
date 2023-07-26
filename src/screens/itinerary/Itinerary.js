@@ -23,7 +23,7 @@ import {
 } from '../../services/firebase/itineraryService';
 import { Colors } from '../../utils/Colors';
 import { AppStyles } from '../../utils/AppStyles';
-import { groupBy } from 'lodash';
+import moment from 'moment-timezone';
 
 export const Itinerary = ({ navigation, route }) => {
   const Stack = createStackNavigator();
@@ -37,6 +37,10 @@ export const Itinerary = ({ navigation, route }) => {
 
   const handleToggle = (mode) => {
     setViewMode(mode);
+  };
+  const convertToSortableFormat = (date, time, timezone) => {
+    const dateTime = `${date} ${time}`;
+    return moment.tz(dateTime, 'ddd MMM DD YYYY hh:mm A', timezone);
   };
 
   const openMaps = (address) => {
@@ -70,10 +74,10 @@ export const Itinerary = ({ navigation, route }) => {
     createItineraryItem(currentGroup, itineraryItem);
     const tempDetails = [...itineraryItems, itineraryItem];
     const sortedItems = tempDetails.sort((a, b) => {
-      const dateA = new Date(a.date + ' ' + a.startTime);
-      const dateB = new Date(b.date + ' ' + b.startTime);
+      const aTime = convertToSortableFormat(a.date, a.startTime, a.timezone);
+      const bTime = convertToSortableFormat(b.date, b.startTime, b.timezone);
 
-      return dateA - dateB;
+      return aTime.diff(bTime);
     });
     setItineraryItems(sortedItems);
 
@@ -231,6 +235,7 @@ export const Itinerary = ({ navigation, route }) => {
           itineraryItems={itineraryItems}
           setModalData={setModalData}
           setModalVisible={setModalVisible}
+          currentGroup={currentGroup}
         />
       )}
       <TouchableOpacity
@@ -262,6 +267,7 @@ export const Itinerary = ({ navigation, route }) => {
             <Text style={styles.modal_time}>{`Start Time: ${modalData?.startTime}`}</Text>
             <Text style={styles.modal_time}>{`End Time: ${modalData?.endTime}`}</Text>
           </View>
+          <Text style={styles.modal_time}>{`Timezone: ${modalData?.timezone}`}</Text>
           <Text style={styles.modal_date}>{modalData?.date}</Text>
           <TouchableOpacity
             title="Click To Close Modal"

@@ -13,6 +13,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Colors } from '../../utils/Colors';
 import { AppStyles } from '../../utils/AppStyles';
 import auth from '@react-native-firebase/auth';
+import moment from 'moment-timezone';
 
 export const CreateItineraryItem = ({ route, navigation }) => {
   const [title, setTitle] = useState('');
@@ -84,6 +85,7 @@ export const CreateItineraryItem = ({ route, navigation }) => {
     });
     const formattedEndTime = endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const formattedDate = date.toDateString();
+    const localTimezone = moment.tz.guess();
 
     // Create the itinerary item
     const newItem = {
@@ -92,6 +94,7 @@ export const CreateItineraryItem = ({ route, navigation }) => {
       startTime: formattedStartTime,
       endTime: formattedEndTime,
       date: formattedDate,
+      timezone: localTimezone,
       location: selectedLocation,
       createdBy: auth().currentUser.uid,
     };
